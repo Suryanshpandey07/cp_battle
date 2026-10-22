@@ -43,9 +43,3 @@ Make sure you have the following installed:
 - Python 3
 - PostgreSQL
 - Git
-
-### 1. Clone the Repository
-
-```bash
-git clone <YOUR_REPOSITORY_URL>
-cd cp-battle
