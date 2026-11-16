@@ -53,7 +53,7 @@ erDiagram
     }
 
     USERS ||--o{ BATTLE_PARTICIPANTS : participates
-    BATTLES ||--|{ BATTLE_PARTICIPANTS : has
+    BATTLES ||--o{ BATTLE_PARTICIPANTS : has
     BATTLE_PARTICIPANTS ||--o{ SUBMISSIONS : makes
     BATTLES ||--o| BATTLE_RESULTS : produces
     BATTLE_PARTICIPANTS ||--o| BATTLE_RESULTS : wins
@@ -74,3 +74,4 @@ erDiagram
 - A composite primary key in `battle_participants` prevents the same user from joining the same battle twice.
 - A unique constraint on `(battle_id, player_slot)` limits a battle to two player slots.
 - The winner is linked to a participant of the corresponding battle.
+- The submissions table uses a composite foreign key (battle_id, user_id) referencing the composite primary key of battle_participants.

@@ -62,10 +62,28 @@ ON submissions(submitted_at);
 
 CREATE INDEX idx_battle_results_winner
 ON battle_results(winner_user_id);
+```
 
-### Step 23: Verify the final file
+### Purpose of the Indexes
 
-After the command finishes, run:
+| Index | Optimization Purpose |
+|---|---|
+| idx_battles_status | Speeds up filtering battles by status. |
+| idx_battle_participants_user | Speeds up finding battles for a particular user. |
+| idx_submissions_battle_user | Supports filtering submissions by battle and user. |
+| idx_submissions_submitted_at | Helps retrieve recent submissions efficiently. |
+| idx_battle_results_winner | Helps find results associated with a winner. |
 
-```bash
-cd ~/Desktop/cp_battle && wc -l dbms/05_query_timings.md && git diff --check
+## 5. Benchmark Comparison Notes
+
+The baseline timings are documented above. The optimized execution timings were not retained in the available benchmark records, so no numerical improvement is claimed.
+
+The additional indexes are designed to reduce the work required for frequent filtering, lookup, and sorting operations. PostgreSQL's query planner decides whether to use an index based on table statistics, data distribution, and query cost.
+
+## 6. Conclusion
+
+The benchmark used a dataset of 102,500 records across five tables.
+
+Baseline execution times were recorded for five representative queries. Additional indexes were created to improve commonly used lookup and filtering operations.
+
+Further performance comparison can be performed by running EXPLAIN (ANALYZE, BUFFERS) again after index creation and recording the actual execution times.
