@@ -43,3 +43,15 @@ Make sure you have the following installed:
 - Python 3
 - PostgreSQL
 - Git
+
+## 🗄️ Database Management System (DBMS)
+
+The DBMS component documents the PostgreSQL database design used by CP Battle.
+
+### DBMS Deliverables
+
+- [Database Normalization](dbms/01_normalization.md) — Functional dependencies and normalization up to 3NF/BCNF.
+- [ER Diagram](dbms/02_er_diagram.md) — Database entities and their relationships.
+- [Database Schema](dbms/03_schema.sql) — PostgreSQL table definitions and constraints.
+- [SQL Queries](dbms/04_queries.sql) — Queries for retrieving and analysing battle data.
+- [Query Performance Analysis](dbms/05_query_timings.md) — Query execution timings and performance observations.
