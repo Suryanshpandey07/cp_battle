@@ -1,0 +1,43 @@
+Query 1: Display all registered users
+Database: cp_battle_schema_test
+Generated: 2026-11-20 00:43:00.169194
+======================================================================
+
+RUN 1
+----------------------------------------------------------------------
+Sort  (cost=1885.77..1935.77 rows=20000 width=40) (actual time=5.245..6.113 rows=20000.00 loops=1)
+  Sort Key: rating DESC
+  Sort Method: quicksort  Memory: 1940kB
+  Buffers: shared hit=260
+  ->  Seq Scan on users  (cost=0.00..457.00 rows=20000 width=40) (actual time=0.010..2.132 rows=20000.00 loops=1)
+        Buffers: shared hit=257
+Planning:
+  Buffers: shared hit=141 read=1
+Planning Time: 0.831 ms
+Execution Time: 6.973 ms
+
+RUN 2
+----------------------------------------------------------------------
+Sort  (cost=1885.77..1935.77 rows=20000 width=40) (actual time=4.081..4.606 rows=20000.00 loops=1)
+  Sort Key: rating DESC
+  Sort Method: quicksort  Memory: 1940kB
+  Buffers: shared hit=260
+  ->  Seq Scan on users  (cost=0.00..457.00 rows=20000 width=40) (actual time=0.006..1.679 rows=20000.00 loops=1)
+        Buffers: shared hit=257
+Planning:
+  Buffers: shared hit=142
+Planning Time: 0.311 ms
+Execution Time: 5.139 ms
+
+RUN 3
+----------------------------------------------------------------------
+Sort  (cost=1885.77..1935.77 rows=20000 width=40) (actual time=3.325..3.770 rows=20000.00 loops=1)
+  Sort Key: rating DESC
+  Sort Method: quicksort  Memory: 1940kB
+  Buffers: shared hit=260
+  ->  Seq Scan on users  (cost=0.00..457.00 rows=20000 width=40) (actual time=0.004..1.336 rows=20000.00 loops=1)
+        Buffers: shared hit=257
+Planning:
+  Buffers: shared hit=142
+Planning Time: 0.262 ms
+Execution Time: 4.237 ms

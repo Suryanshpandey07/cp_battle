@@ -1,0 +1,64 @@
+Query 11: Find users whose rating is above the average user rating
+Database: cp_battle_schema_test
+Generated: 2026-11-20 00:43:01.223169
+======================================================================
+
+RUN 1
+----------------------------------------------------------------------
+Sort  (cost=1487.46..1504.13 rows=6667 width=24) (actual time=3.591..3.774 rows=10000.00 loops=1)
+  Sort Key: users.rating DESC
+  Sort Method: quicksort  Memory: 814kB
+  Buffers: shared hit=517
+  InitPlan 1
+    ->  Aggregate  (cost=507.00..507.01 rows=1 width=32) (actual time=1.198..1.198 rows=1.00 loops=1)
+          Buffers: shared hit=257
+          ->  Seq Scan on users users_1  (cost=0.00..457.00 rows=20000 width=4) (actual time=0.001..0.532 rows=20000.00 loops=1)
+                Buffers: shared hit=257
+  ->  Seq Scan on users  (cost=0.00..557.00 rows=6667 width=24) (actual time=1.259..2.773 rows=10000.00 loops=1)
+        Filter: ((rating)::numeric > (InitPlan 1).col1)
+        Rows Removed by Filter: 10000
+        Buffers: shared hit=514
+Planning:
+  Buffers: shared hit=145
+Planning Time: 0.246 ms
+Execution Time: 3.987 ms
+
+RUN 2
+----------------------------------------------------------------------
+Sort  (cost=1487.46..1504.13 rows=6667 width=24) (actual time=3.205..3.396 rows=10000.00 loops=1)
+  Sort Key: users.rating DESC
+  Sort Method: quicksort  Memory: 814kB
+  Buffers: shared hit=517
+  InitPlan 1
+    ->  Aggregate  (cost=507.00..507.01 rows=1 width=32) (actual time=1.152..1.153 rows=1.00 loops=1)
+          Buffers: shared hit=257
+          ->  Seq Scan on users users_1  (cost=0.00..457.00 rows=20000 width=4) (actual time=0.001..0.532 rows=20000.00 loops=1)
+                Buffers: shared hit=257
+  ->  Seq Scan on users  (cost=0.00..557.00 rows=6667 width=24) (actual time=1.220..2.463 rows=10000.00 loops=1)
+        Filter: ((rating)::numeric > (InitPlan 1).col1)
+        Rows Removed by Filter: 10000
+        Buffers: shared hit=514
+Planning:
+  Buffers: shared hit=145
+Planning Time: 0.297 ms
+Execution Time: 3.617 ms
+
+RUN 3
+----------------------------------------------------------------------
+Sort  (cost=1487.46..1504.13 rows=6667 width=24) (actual time=3.088..3.270 rows=10000.00 loops=1)
+  Sort Key: users.rating DESC
+  Sort Method: quicksort  Memory: 814kB
+  Buffers: shared hit=517
+  InitPlan 1
+    ->  Aggregate  (cost=507.00..507.01 rows=1 width=32) (actual time=1.183..1.183 rows=1.00 loops=1)
+          Buffers: shared hit=257
+          ->  Seq Scan on users users_1  (cost=0.00..457.00 rows=20000 width=4) (actual time=0.001..0.523 rows=20000.00 loops=1)
+                Buffers: shared hit=257
+  ->  Seq Scan on users  (cost=0.00..557.00 rows=6667 width=24) (actual time=1.245..2.422 rows=10000.00 loops=1)
+        Filter: ((rating)::numeric > (InitPlan 1).col1)
+        Rows Removed by Filter: 10000
+        Buffers: shared hit=514
+Planning:
+  Buffers: shared hit=145
+Planning Time: 0.263 ms
+Execution Time: 3.477 ms

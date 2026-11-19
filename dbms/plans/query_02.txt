@@ -1,0 +1,43 @@
+Query 2: Display all battles with their current status
+Database: cp_battle_schema_test
+Generated: 2026-11-20 00:43:00.250559
+======================================================================
+
+RUN 1
+----------------------------------------------------------------------
+Sort  (cost=921.39..946.39 rows=10000 width=60) (actual time=2.432..2.631 rows=10000.00 loops=1)
+  Sort Key: created_at DESC
+  Sort Method: quicksort  Memory: 1185kB
+  Buffers: shared hit=3 read=157
+  ->  Seq Scan on battles  (cost=0.00..257.00 rows=10000 width=60) (actual time=0.173..1.429 rows=10000.00 loops=1)
+        Buffers: shared read=157
+Planning:
+  Buffers: shared hit=124 read=5
+Planning Time: 1.027 ms
+Execution Time: 2.933 ms
+
+RUN 2
+----------------------------------------------------------------------
+Sort  (cost=921.39..946.39 rows=10000 width=60) (actual time=1.501..1.690 rows=10000.00 loops=1)
+  Sort Key: created_at DESC
+  Sort Method: quicksort  Memory: 1185kB
+  Buffers: shared hit=160
+  ->  Seq Scan on battles  (cost=0.00..257.00 rows=10000 width=60) (actual time=0.003..0.596 rows=10000.00 loops=1)
+        Buffers: shared hit=157
+Planning:
+  Buffers: shared hit=129
+Planning Time: 0.194 ms
+Execution Time: 2.005 ms
+
+RUN 3
+----------------------------------------------------------------------
+Sort  (cost=921.39..946.39 rows=10000 width=60) (actual time=1.414..1.591 rows=10000.00 loops=1)
+  Sort Key: created_at DESC
+  Sort Method: quicksort  Memory: 1185kB
+  Buffers: shared hit=160
+  ->  Seq Scan on battles  (cost=0.00..257.00 rows=10000 width=60) (actual time=0.003..0.588 rows=10000.00 loops=1)
+        Buffers: shared hit=157
+Planning:
+  Buffers: shared hit=129
+Planning Time: 0.182 ms
+Execution Time: 1.883 ms

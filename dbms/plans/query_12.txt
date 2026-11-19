@@ -1,0 +1,64 @@
+Query 12: Display the number of participants in each battle
+Database: cp_battle_schema_test
+Generated: 2026-11-20 00:43:01.313528
+======================================================================
+
+RUN 1
+----------------------------------------------------------------------
+GroupAggregate  (cost=0.57..1673.57 rows=10000 width=28) (actual time=0.548..7.006 rows=10000.00 loops=1)
+  Group Key: b.battle_id
+  Buffers: shared hit=161 read=142
+  ->  Merge Left Join  (cost=0.57..1473.57 rows=20000 width=28) (actual time=0.540..5.820 rows=20000.00 loops=1)
+        Merge Cond: (b.battle_id = bp.battle_id)
+        Buffers: shared hit=161 read=142
+        ->  Index Scan using battles_pkey on battles b  (cost=0.29..430.29 rows=10000 width=20) (actual time=0.004..0.960 rows=10000.00 loops=1)
+              Index Searches: 1
+              Buffers: shared hit=160 read=26
+        ->  Index Only Scan using battle_participants_pkey on battle_participants bp  (cost=0.29..768.29 rows=20000 width=16) (actual time=0.529..3.494 rows=20000.00 loops=1)
+              Heap Fetches: 0
+              Index Searches: 1
+              Buffers: shared hit=1 read=116
+Planning:
+  Buffers: shared hit=191
+Planning Time: 0.377 ms
+Execution Time: 7.225 ms
+
+RUN 2
+----------------------------------------------------------------------
+GroupAggregate  (cost=0.57..1673.57 rows=10000 width=28) (actual time=0.015..4.119 rows=10000.00 loops=1)
+  Group Key: b.battle_id
+  Buffers: shared hit=303
+  ->  Merge Left Join  (cost=0.57..1473.57 rows=20000 width=28) (actual time=0.011..2.877 rows=20000.00 loops=1)
+        Merge Cond: (b.battle_id = bp.battle_id)
+        Buffers: shared hit=303
+        ->  Index Scan using battles_pkey on battles b  (cost=0.29..430.29 rows=10000 width=20) (actual time=0.004..0.686 rows=10000.00 loops=1)
+              Index Searches: 1
+              Buffers: shared hit=186
+        ->  Index Only Scan using battle_participants_pkey on battle_participants bp  (cost=0.29..768.29 rows=20000 width=16) (actual time=0.005..0.775 rows=20000.00 loops=1)
+              Heap Fetches: 0
+              Index Searches: 1
+              Buffers: shared hit=117
+Planning:
+  Buffers: shared hit=191
+Planning Time: 0.472 ms
+Execution Time: 4.349 ms
+
+RUN 3
+----------------------------------------------------------------------
+GroupAggregate  (cost=0.57..1673.57 rows=10000 width=28) (actual time=0.015..3.862 rows=10000.00 loops=1)
+  Group Key: b.battle_id
+  Buffers: shared hit=303
+  ->  Merge Left Join  (cost=0.57..1473.57 rows=20000 width=28) (actual time=0.012..2.636 rows=20000.00 loops=1)
+        Merge Cond: (b.battle_id = bp.battle_id)
+        Buffers: shared hit=303
+        ->  Index Scan using battles_pkey on battles b  (cost=0.29..430.29 rows=10000 width=20) (actual time=0.004..0.583 rows=10000.00 loops=1)
+              Index Searches: 1
+              Buffers: shared hit=186
+        ->  Index Only Scan using battle_participants_pkey on battle_participants bp  (cost=0.29..768.29 rows=20000 width=16) (actual time=0.005..0.711 rows=20000.00 loops=1)
+              Heap Fetches: 0
+              Index Searches: 1
+              Buffers: shared hit=117
+Planning:
+  Buffers: shared hit=191
+Planning Time: 0.513 ms
+Execution Time: 4.078 ms
