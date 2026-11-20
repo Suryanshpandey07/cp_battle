@@ -1,0 +1,79 @@
+Query 5: Count the total battles played by each user
+Database: cp_battle_schema_test
+Generated: 2026-11-20 00:43:00.540950
+======================================================================
+
+RUN 1
+----------------------------------------------------------------------
+Sort  (cost=2836.28..2886.28 rows=20000 width=28) (actual time=8.302..8.661 rows=20000.00 loops=1)
+  Sort Key: (count(bp.battle_id)) DESC
+  Sort Method: quicksort  Memory: 1706kB
+  Buffers: shared hit=408
+  ->  HashAggregate  (cost=1207.51..1407.51 rows=20000 width=28) (actual time=6.359..7.346 rows=20000.00 loops=1)
+        Group Key: u.username
+        Batches: 1  Memory Usage: 1817kB
+        Buffers: shared hit=405
+        ->  Hash Right Join  (cost=707.00..1107.51 rows=20000 width=28) (actual time=1.809..4.328 rows=20000.00 loops=1)
+              Hash Cond: (bp.user_id = u.user_id)
+              Buffers: shared hit=405
+              ->  Seq Scan on battle_participants bp  (cost=0.00..348.00 rows=20000 width=16) (actual time=0.003..0.587 rows=20000.00 loops=1)
+                    Buffers: shared hit=148
+              ->  Hash  (cost=457.00..457.00 rows=20000 width=20) (actual time=1.790..1.790 rows=20000.00 loops=1)
+                    Buckets: 32768  Batches: 1  Memory Usage: 1281kB
+                    Buffers: shared hit=257
+                    ->  Seq Scan on users u  (cost=0.00..457.00 rows=20000 width=20) (actual time=0.003..0.908 rows=20000.00 loops=1)
+                          Buffers: shared hit=257
+Planning:
+  Buffers: shared hit=218
+Planning Time: 0.475 ms
+Execution Time: 9.072 ms
+
+RUN 2
+----------------------------------------------------------------------
+Sort  (cost=2836.28..2886.28 rows=20000 width=28) (actual time=8.371..8.732 rows=20000.00 loops=1)
+  Sort Key: (count(bp.battle_id)) DESC
+  Sort Method: quicksort  Memory: 1706kB
+  Buffers: shared hit=408
+  ->  HashAggregate  (cost=1207.51..1407.51 rows=20000 width=28) (actual time=6.383..7.410 rows=20000.00 loops=1)
+        Group Key: u.username
+        Batches: 1  Memory Usage: 1817kB
+        Buffers: shared hit=405
+        ->  Hash Right Join  (cost=707.00..1107.51 rows=20000 width=28) (actual time=1.775..4.284 rows=20000.00 loops=1)
+              Hash Cond: (bp.user_id = u.user_id)
+              Buffers: shared hit=405
+              ->  Seq Scan on battle_participants bp  (cost=0.00..348.00 rows=20000 width=16) (actual time=0.003..0.542 rows=20000.00 loops=1)
+                    Buffers: shared hit=148
+              ->  Hash  (cost=457.00..457.00 rows=20000 width=20) (actual time=1.754..1.754 rows=20000.00 loops=1)
+                    Buckets: 32768  Batches: 1  Memory Usage: 1281kB
+                    Buffers: shared hit=257
+                    ->  Seq Scan on users u  (cost=0.00..457.00 rows=20000 width=20) (actual time=0.003..0.860 rows=20000.00 loops=1)
+                          Buffers: shared hit=257
+Planning:
+  Buffers: shared hit=218
+Planning Time: 0.431 ms
+Execution Time: 9.154 ms
+
+RUN 3
+----------------------------------------------------------------------
+Sort  (cost=2836.28..2886.28 rows=20000 width=28) (actual time=8.179..8.547 rows=20000.00 loops=1)
+  Sort Key: (count(bp.battle_id)) DESC
+  Sort Method: quicksort  Memory: 1706kB
+  Buffers: shared hit=408
+  ->  HashAggregate  (cost=1207.51..1407.51 rows=20000 width=28) (actual time=6.283..7.248 rows=20000.00 loops=1)
+        Group Key: u.username
+        Batches: 1  Memory Usage: 1817kB
+        Buffers: shared hit=405
+        ->  Hash Right Join  (cost=707.00..1107.51 rows=20000 width=28) (actual time=1.747..4.281 rows=20000.00 loops=1)
+              Hash Cond: (bp.user_id = u.user_id)
+              Buffers: shared hit=405
+              ->  Seq Scan on battle_participants bp  (cost=0.00..348.00 rows=20000 width=16) (actual time=0.004..0.604 rows=20000.00 loops=1)
+                    Buffers: shared hit=148
+              ->  Hash  (cost=457.00..457.00 rows=20000 width=20) (actual time=1.720..1.720 rows=20000.00 loops=1)
+                    Buckets: 32768  Batches: 1  Memory Usage: 1281kB
+                    Buffers: shared hit=257
+                    ->  Seq Scan on users u  (cost=0.00..457.00 rows=20000 width=20) (actual time=0.003..0.857 rows=20000.00 loops=1)
+                          Buffers: shared hit=257
+Planning:
+  Buffers: shared hit=218
+Planning Time: 0.430 ms
+Execution Time: 8.963 ms
