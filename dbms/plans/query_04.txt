@@ -1,0 +1,103 @@
+Query 4: Display completed battles and their winners
+Database: cp_battle_schema_test
+Generated: 2026-11-20 00:43:00.440234
+======================================================================
+
+RUN 1
+----------------------------------------------------------------------
+Sort  (cost=840.37..841.93 rows=625 width=62) (actual time=2.871..2.917 rows=2500.00 loops=1)
+  Sort Key: br.completed_at DESC
+  Sort Method: quicksort  Memory: 309kB
+  Buffers: shared hit=7635 read=53
+  ->  Nested Loop Left Join  (cost=112.20..811.35 rows=625 width=62) (actual time=0.300..2.688 rows=2500.00 loops=1)
+        Buffers: shared hit=7632 read=53
+        ->  Hash Join  (cost=111.91..306.72 rows=625 width=58) (actual time=0.296..0.761 rows=2500.00 loops=1)
+              Hash Cond: (b.battle_id = br.battle_id)
+              Buffers: shared hit=185
+              ->  Bitmap Heap Scan on battles b  (cost=31.66..219.91 rows=2500 width=20) (actual time=0.039..0.261 rows=2500.00 loops=1)
+                    Recheck Cond: ((status)::text = 'completed'::text)
+                    Heap Blocks: exact=157
+                    Buffers: shared hit=161
+                    ->  Bitmap Index Scan on idx_battles_status  (cost=0.00..31.04 rows=2500 width=0) (actual time=0.028..0.028 rows=2500.00 loops=1)
+                          Index Cond: ((status)::text = 'completed'::text)
+                          Index Searches: 1
+                          Buffers: shared hit=4
+              ->  Hash  (cost=49.00..49.00 rows=2500 width=46) (actual time=0.252..0.252 rows=2500.00 loops=1)
+                    Buckets: 4096  Batches: 1  Memory Usage: 228kB
+                    Buffers: shared hit=24
+                    ->  Seq Scan on battle_results br  (cost=0.00..49.00 rows=2500 width=46) (actual time=0.002..0.119 rows=2500.00 loops=1)
+                          Buffers: shared hit=24
+        ->  Index Scan using users_pkey on users winner  (cost=0.29..0.81 rows=1 width=20) (actual time=0.001..0.001 rows=1.00 loops=2500)
+              Index Cond: (user_id = br.winner_user_id)
+              Index Searches: 2500
+              Buffers: shared hit=7447 read=53
+Planning:
+  Buffers: shared hit=330 read=7
+Planning Time: 1.623 ms
+Execution Time: 2.990 ms
+
+RUN 2
+----------------------------------------------------------------------
+Sort  (cost=840.37..841.93 rows=625 width=62) (actual time=2.879..2.924 rows=2500.00 loops=1)
+  Sort Key: br.completed_at DESC
+  Sort Method: quicksort  Memory: 309kB
+  Buffers: shared hit=7688
+  ->  Nested Loop Left Join  (cost=112.20..811.35 rows=625 width=62) (actual time=0.298..2.651 rows=2500.00 loops=1)
+        Buffers: shared hit=7685
+        ->  Hash Join  (cost=111.91..306.72 rows=625 width=58) (actual time=0.295..0.835 rows=2500.00 loops=1)
+              Hash Cond: (b.battle_id = br.battle_id)
+              Buffers: shared hit=185
+              ->  Bitmap Heap Scan on battles b  (cost=31.66..219.91 rows=2500 width=20) (actual time=0.037..0.322 rows=2500.00 loops=1)
+                    Recheck Cond: ((status)::text = 'completed'::text)
+                    Heap Blocks: exact=157
+                    Buffers: shared hit=161
+                    ->  Bitmap Index Scan on idx_battles_status  (cost=0.00..31.04 rows=2500 width=0) (actual time=0.027..0.027 rows=2500.00 loops=1)
+                          Index Cond: ((status)::text = 'completed'::text)
+                          Index Searches: 1
+                          Buffers: shared hit=4
+              ->  Hash  (cost=49.00..49.00 rows=2500 width=46) (actual time=0.253..0.253 rows=2500.00 loops=1)
+                    Buckets: 4096  Batches: 1  Memory Usage: 228kB
+                    Buffers: shared hit=24
+                    ->  Seq Scan on battle_results br  (cost=0.00..49.00 rows=2500 width=46) (actual time=0.002..0.103 rows=2500.00 loops=1)
+                          Buffers: shared hit=24
+        ->  Index Scan using users_pkey on users winner  (cost=0.29..0.81 rows=1 width=20) (actual time=0.001..0.001 rows=1.00 loops=2500)
+              Index Cond: (user_id = br.winner_user_id)
+              Index Searches: 2500
+              Buffers: shared hit=7500
+Planning:
+  Buffers: shared hit=337
+Planning Time: 0.597 ms
+Execution Time: 2.998 ms
+
+RUN 3
+----------------------------------------------------------------------
+Sort  (cost=840.37..841.93 rows=625 width=62) (actual time=2.424..2.469 rows=2500.00 loops=1)
+  Sort Key: br.completed_at DESC
+  Sort Method: quicksort  Memory: 309kB
+  Buffers: shared hit=7688
+  ->  Nested Loop Left Join  (cost=112.20..811.35 rows=625 width=62) (actual time=0.289..2.244 rows=2500.00 loops=1)
+        Buffers: shared hit=7685
+        ->  Hash Join  (cost=111.91..306.72 rows=625 width=58) (actual time=0.286..0.749 rows=2500.00 loops=1)
+              Hash Cond: (b.battle_id = br.battle_id)
+              Buffers: shared hit=185
+              ->  Bitmap Heap Scan on battles b  (cost=31.66..219.91 rows=2500 width=20) (actual time=0.039..0.270 rows=2500.00 loops=1)
+                    Recheck Cond: ((status)::text = 'completed'::text)
+                    Heap Blocks: exact=157
+                    Buffers: shared hit=161
+                    ->  Bitmap Index Scan on idx_battles_status  (cost=0.00..31.04 rows=2500 width=0) (actual time=0.030..0.030 rows=2500.00 loops=1)
+                          Index Cond: ((status)::text = 'completed'::text)
+                          Index Searches: 1
+                          Buffers: shared hit=4
+              ->  Hash  (cost=49.00..49.00 rows=2500 width=46) (actual time=0.242..0.242 rows=2500.00 loops=1)
+                    Buckets: 4096  Batches: 1  Memory Usage: 228kB
+                    Buffers: shared hit=24
+                    ->  Seq Scan on battle_results br  (cost=0.00..49.00 rows=2500 width=46) (actual time=0.002..0.110 rows=2500.00 loops=1)
+                          Buffers: shared hit=24
+        ->  Index Scan using users_pkey on users winner  (cost=0.29..0.81 rows=1 width=20) (actual time=0.000..0.000 rows=1.00 loops=2500)
+              Index Cond: (user_id = br.winner_user_id)
+              Index Searches: 2500
+              Buffers: shared hit=7500
+Planning:
+  Buffers: shared hit=337
+Planning Time: 0.614 ms
+Execution Time: 2.542 ms

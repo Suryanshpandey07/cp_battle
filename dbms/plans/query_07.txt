@@ -1,0 +1,46 @@
+Query 7: Find users who have never participated in a battle
+Database: cp_battle_schema_test
+Generated: 2026-11-20 00:43:00.761059
+======================================================================
+
+RUN 1
+----------------------------------------------------------------------
+Seq Scan on users  (cost=398.00..905.00 rows=10000 width=41) (actual time=3.216..3.216 rows=0.00 loops=1)
+  Filter: (NOT (ANY (user_id = (hashed SubPlan 1).col1)))
+  Rows Removed by Filter: 20000
+  Buffers: shared hit=405
+  SubPlan 1
+    ->  Seq Scan on battle_participants  (cost=0.00..348.00 rows=20000 width=8) (actual time=0.004..0.643 rows=20000.00 loops=1)
+          Buffers: shared hit=148
+Planning:
+  Buffers: shared hit=158
+Planning Time: 0.335 ms
+Execution Time: 3.258 ms
+
+RUN 2
+----------------------------------------------------------------------
+Seq Scan on users  (cost=398.00..905.00 rows=10000 width=41) (actual time=3.593..3.594 rows=0.00 loops=1)
+  Filter: (NOT (ANY (user_id = (hashed SubPlan 1).col1)))
+  Rows Removed by Filter: 20000
+  Buffers: shared hit=405
+  SubPlan 1
+    ->  Seq Scan on battle_participants  (cost=0.00..348.00 rows=20000 width=8) (actual time=0.003..0.811 rows=20000.00 loops=1)
+          Buffers: shared hit=148
+Planning:
+  Buffers: shared hit=158
+Planning Time: 0.363 ms
+Execution Time: 3.643 ms
+
+RUN 3
+----------------------------------------------------------------------
+Seq Scan on users  (cost=398.00..905.00 rows=10000 width=41) (actual time=3.161..3.162 rows=0.00 loops=1)
+  Filter: (NOT (ANY (user_id = (hashed SubPlan 1).col1)))
+  Rows Removed by Filter: 20000
+  Buffers: shared hit=405
+  SubPlan 1
+    ->  Seq Scan on battle_participants  (cost=0.00..348.00 rows=20000 width=8) (actual time=0.012..0.667 rows=20000.00 loops=1)
+          Buffers: shared hit=148
+Planning:
+  Buffers: shared hit=158
+Planning Time: 0.349 ms
+Execution Time: 3.199 ms

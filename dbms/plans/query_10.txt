@@ -1,0 +1,43 @@
+Query 10: Find the average execution time of accepted submissions
+Database: cp_battle_schema_test
+Generated: 2026-11-20 00:43:01.131720
+======================================================================
+
+RUN 1
+----------------------------------------------------------------------
+Aggregate  (cost=1307.10..1307.11 rows=1 width=32) (actual time=2.725..2.725 rows=1.00 loops=1)
+  Buffers: shared hit=657
+  ->  Seq Scan on submissions  (cost=0.00..1282.00 rows=10038 width=4) (actual time=0.820..2.112 rows=10000.00 loops=1)
+        Filter: ((execution_time_ms IS NOT NULL) AND ((verdict)::text = 'OK'::text))
+        Rows Removed by Filter: 40000
+        Buffers: shared hit=657
+Planning:
+  Buffers: shared hit=104 read=1
+Planning Time: 0.398 ms
+Execution Time: 2.749 ms
+
+RUN 2
+----------------------------------------------------------------------
+Aggregate  (cost=1307.10..1307.11 rows=1 width=32) (actual time=2.764..2.765 rows=1.00 loops=1)
+  Buffers: shared hit=657
+  ->  Seq Scan on submissions  (cost=0.00..1282.00 rows=10038 width=4) (actual time=0.996..2.486 rows=10000.00 loops=1)
+        Filter: ((execution_time_ms IS NOT NULL) AND ((verdict)::text = 'OK'::text))
+        Rows Removed by Filter: 40000
+        Buffers: shared hit=657
+Planning:
+  Buffers: shared hit=105
+Planning Time: 0.209 ms
+Execution Time: 2.786 ms
+
+RUN 3
+----------------------------------------------------------------------
+Aggregate  (cost=1307.10..1307.11 rows=1 width=32) (actual time=2.352..2.353 rows=1.00 loops=1)
+  Buffers: shared hit=657
+  ->  Seq Scan on submissions  (cost=0.00..1282.00 rows=10038 width=4) (actual time=0.798..2.136 rows=10000.00 loops=1)
+        Filter: ((execution_time_ms IS NOT NULL) AND ((verdict)::text = 'OK'::text))
+        Rows Removed by Filter: 40000
+        Buffers: shared hit=657
+Planning:
+  Buffers: shared hit=105
+Planning Time: 0.206 ms
+Execution Time: 2.374 ms
