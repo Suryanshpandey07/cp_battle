@@ -92,11 +92,29 @@ All values represent measured PostgreSQL execution times in milliseconds. The or
 
 ## 6. Optimized Execution Timings for the Five Representative Queries
 
-Optimized execution timings for the five representative benchmark queries must be collected by running the same queries after creating the five additional indexes.
+The five additional indexes were verified in `cp_battle_schema_test`. Each reconstructed representative query was executed three times using `EXPLAIN (ANALYZE, BUFFERS)`.
 
-The 12 application query measurements above are a separate benchmark set and must not be treated as the optimized results for these five representative queries.
+| Query | Run 1 (ms) | Run 2 (ms) | Run 3 (ms) | Average (ms) |
+|---|---:|---:|---:|---:|
+| Battles by status (`status = 'completed'`) | 0.729 | 0.511 | 0.476 | 0.572 |
+| Participants by user ID (`user_id = 1`) | 0.037 | 0.036 | 0.031 | 0.035 |
+| Submissions by battle and user (`battle_id = 1`, `user_id = 1`) | 0.046 | 0.044 | 0.040 | 0.043 |
+| Latest 20 submissions (`ORDER BY submitted_at DESC`) | 0.024 | 0.023 | 0.036 | 0.028 |
+| Results by winner ID (`winner_user_id = 8`) | 0.030 | 0.028 | 0.029 | 0.029 |
 
-The five-query optimized measurements and before-and-after comparison remain pending verification.
+### Index Usage Observed
+
+| Query | Index Used | Execution Plan |
+|---|---|---|
+| Battles by status | `idx_battles_status` | Bitmap Index Scan |
+| Participants by user ID | `idx_battle_participants_user` | Index Scan |
+| Submissions by battle and user | `idx_submissions_battle_user` | Index Scan |
+| Latest 20 submissions | `idx_submissions_submitted_at` | Backward Index Scan |
+| Results by winner ID | `idx_battle_results_winner` | Index Scan |
+
+Average execution time is the arithmetic mean of the three runs, rounded to three decimal places. The database contained 102,500 records, and all five additional indexes were verified before benchmarking.
+
+**Measurement limitation:** The original SQL and filter values used for the historical baseline measurements were not available. These optimized results use reconstructed representative queries and documented filter values. Therefore, the baseline and optimized timings are reported separately and are not presented as a definitive before-and-after speedup comparison.
 
 ## 7. Conclusion
 
