@@ -41,11 +41,11 @@ The baseline measurements were collected after removing the five additional perf
 | Latest 20 submissions | 6.647 ms |
 | Results by winner ID | 0.145 ms |
 
-The query plans primarily used sequential scans. Retrieving the latest submissions also required sorting the submissions table.
+The baseline query plans primarily used sequential scans. Retrieving the latest submissions also required sorting the submissions table.
 
 ## 4. Indexing and Optimization Strategies
 
-The following indexes were created:
+The following additional indexes were created:
 
 ```sql
 CREATE INDEX idx_battles_status
@@ -62,10 +62,18 @@ ON submissions(submitted_at);
 
 CREATE INDEX idx_battle_results_winner
 ON battle_results(winner_user_id);
+```
 
-### Step 23: Verify the final file
+These indexes target columns used in filtering, searching, and retrieving recent submissions.
 
-After the command finishes, run:
+## 5. Optimized Execution Timings
 
-```bash
-cd ~/Desktop/cp_battle && wc -l dbms/05_query_timings.md && git diff --check
+Optimized execution timings must be collected by running the same five benchmark queries after creating the additional indexes.
+
+The actual optimized measurements should be added here after verification using PostgreSQL EXPLAIN (ANALYZE, BUFFERS).
+
+## 6. Conclusion
+
+The baseline benchmark establishes query performance before adding the five additional performance indexes. The indexes target frequently filtered columns and the submission timestamp used for retrieving recent submissions.
+
+A final comparison of baseline and optimized execution times should use measurements from the same dataset and benchmark environment.
