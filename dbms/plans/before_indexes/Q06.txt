@@ -1,0 +1,70 @@
+Q06 · READ · Refresh: the token, its user and their profile
+App: api/auth.py:129, :141 and :145 (three lookups); here one JOIN.
+
+SELECT t.id AS token_id, t.expires_at, t.revoked_at,
+       u.id AS user_id, u.role, u.suspended_until,
+       p.id AS profile_id
+FROM refresh_tokens t
+JOIN users u ON u.id = t.user_id
+JOIN profiles p ON p.user_id = u.id
+WHERE t.token_hash = '63cb14d415156152101161aa436b76b38f0fdab62416603f916dbc448895b357';
+
+---- Run 1: execution 0.053 ms, planning 0.458 ms ----
+Nested Loop  (cost=0.99..17.15 rows=1 width=42) (actual time=0.034..0.036 rows=1 loops=1)
+  Join Filter: (t.user_id = u.id)
+  Buffers: shared hit=10 read=2 dirtied=2
+  ->  Nested Loop  (cost=0.70..16.74 rows=1 width=32) (actual time=0.030..0.032 rows=1 loops=1)
+        Buffers: shared hit=7 read=2 dirtied=2
+        ->  Index Scan using ix_refresh_tokens_token_hash on refresh_tokens t  (cost=0.41..8.43 rows=1 width=24) (actual time=0.023..0.025 rows=1 loops=1)
+              Index Cond: ((token_hash)::text = '63cb14d415156152101161aa436b76b38f0fdab62416603f916dbc448895b357'::text)
+              Buffers: shared hit=4 read=2 dirtied=2
+        ->  Index Scan using uq_profiles_user_id on profiles p  (cost=0.29..8.30 rows=1 width=8) (actual time=0.004..0.004 rows=1 loops=1)
+              Index Cond: (user_id = t.user_id)
+              Buffers: shared hit=3
+  ->  Index Scan using users_pkey on users u  (cost=0.29..0.40 rows=1 width=18) (actual time=0.002..0.002 rows=1 loops=1)
+        Index Cond: (id = p.user_id)
+        Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=61 read=5
+Planning Time: 0.458 ms
+Execution Time: 0.053 ms
+
+---- Run 2: execution 0.069 ms, planning 0.453 ms ----
+Nested Loop  (cost=0.99..17.15 rows=1 width=42) (actual time=0.040..0.044 rows=1 loops=1)
+  Join Filter: (t.user_id = u.id)
+  Buffers: shared hit=12
+  ->  Nested Loop  (cost=0.70..16.74 rows=1 width=32) (actual time=0.037..0.040 rows=1 loops=1)
+        Buffers: shared hit=9
+        ->  Index Scan using ix_refresh_tokens_token_hash on refresh_tokens t  (cost=0.41..8.43 rows=1 width=24) (actual time=0.026..0.029 rows=1 loops=1)
+              Index Cond: ((token_hash)::text = '63cb14d415156152101161aa436b76b38f0fdab62416603f916dbc448895b357'::text)
+              Buffers: shared hit=6
+        ->  Index Scan using uq_profiles_user_id on profiles p  (cost=0.29..8.30 rows=1 width=8) (actual time=0.007..0.007 rows=1 loops=1)
+              Index Cond: (user_id = t.user_id)
+              Buffers: shared hit=3
+  ->  Index Scan using users_pkey on users u  (cost=0.29..0.40 rows=1 width=18) (actual time=0.002..0.002 rows=1 loops=1)
+        Index Cond: (id = p.user_id)
+        Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=66
+Planning Time: 0.453 ms
+Execution Time: 0.069 ms
+
+---- Run 3: execution 0.045 ms, planning 0.314 ms ----
+Nested Loop  (cost=0.99..17.15 rows=1 width=42) (actual time=0.027..0.029 rows=1 loops=1)
+  Join Filter: (t.user_id = u.id)
+  Buffers: shared hit=12
+  ->  Nested Loop  (cost=0.70..16.74 rows=1 width=32) (actual time=0.024..0.026 rows=1 loops=1)
+        Buffers: shared hit=9
+        ->  Index Scan using ix_refresh_tokens_token_hash on refresh_tokens t  (cost=0.41..8.43 rows=1 width=24) (actual time=0.017..0.019 rows=1 loops=1)
+              Index Cond: ((token_hash)::text = '63cb14d415156152101161aa436b76b38f0fdab62416603f916dbc448895b357'::text)
+              Buffers: shared hit=6
+        ->  Index Scan using uq_profiles_user_id on profiles p  (cost=0.29..8.30 rows=1 width=8) (actual time=0.004..0.004 rows=1 loops=1)
+              Index Cond: (user_id = t.user_id)
+              Buffers: shared hit=3
+  ->  Index Scan using users_pkey on users u  (cost=0.29..0.40 rows=1 width=18) (actual time=0.001..0.001 rows=1 loops=1)
+        Index Cond: (id = p.user_id)
+        Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=66
+Planning Time: 0.314 ms
+Execution Time: 0.045 ms

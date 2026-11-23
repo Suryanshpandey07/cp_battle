@@ -1,0 +1,121 @@
+Q58 · WRITE · Buy a skin: take the Arena Points, add it to the inventory, record the purchase
+App: skins/service.py:59-75 (checks in Python, then an UPDATE and two
+INSERTs); here one statement that does nothing when the player cannot pay
+or already owns it.
+
+WITH paid AS (
+    UPDATE profiles
+    SET points = points - 1800
+    WHERE id = 26
+      AND points >= 1800
+      AND NOT EXISTS (SELECT 1 FROM inventory WHERE profile_id = 26 AND skin_id = 'arena.sakura')
+    RETURNING id
+), owned AS (
+    INSERT INTO inventory (profile_id, skin_id, source)
+    SELECT id, 'arena.sakura', 'ap'
+    FROM paid
+    RETURNING profile_id
+)
+INSERT INTO purchases (profile_id, skin_id, idem_key, price)
+SELECT profile_id, 'arena.sakura', 'b7c1e5d0-buy-arena-sakura', 1800
+FROM owned
+RETURNING id;
+
+---- Run 1: execution 0.519 ms, planning 0.163 ms ----
+Insert on purchases  (cost=16.78..16.81 rows=1 width=280) (actual time=0.323..0.326 rows=1 loops=1)
+  Buffers: shared hit=31 read=8 dirtied=3
+  CTE paid
+    ->  Update on profiles  (cost=8.73..16.75 rows=1 width=10) (actual time=0.099..0.101 rows=1 loops=1)
+          Buffers: shared hit=9
+          InitPlan 1 (returns $0)
+            ->  Index Only Scan using uq_inventory_profile_skin on inventory  (cost=0.42..8.44 rows=1 width=0) (actual time=0.043..0.043 rows=0 loops=1)
+                  Index Cond: ((profile_id = 26) AND (skin_id = 'arena.sakura'::text))
+                  Heap Fetches: 0
+                  Buffers: shared hit=3
+          ->  Result  (cost=0.29..8.31 rows=1 width=10) (actual time=0.053..0.054 rows=1 loops=1)
+                One-Time Filter: (NOT $0)
+                Buffers: shared hit=6
+                ->  Index Scan using profiles_pkey on profiles  (cost=0.29..8.31 rows=1 width=10) (actual time=0.008..0.009 rows=1 loops=1)
+                      Index Cond: (id = 26)
+                      Filter: (points >= 1800)
+                      Buffers: shared hit=3
+  CTE owned
+    ->  Insert on inventory inventory_1  (cost=0.00..0.03 rows=1 width=180) (actual time=0.148..0.150 rows=1 loops=1)
+          Buffers: shared hit=17
+          ->  CTE Scan on paid  (cost=0.00..0.03 rows=1 width=180) (actual time=0.105..0.107 rows=1 loops=1)
+                Buffers: shared hit=10
+  ->  CTE Scan on owned  (cost=0.00..0.03 rows=1 width=280) (actual time=0.211..0.213 rows=1 loops=1)
+        Buffers: shared hit=28 read=1 dirtied=1
+Planning:
+  Buffers: shared hit=3
+Planning Time: 0.163 ms
+Trigger for constraint profiles_user_id_fkey on profiles: time=0.067 calls=1
+Trigger for constraint inventory_profile_id_fkey on inventory: time=0.014 calls=1
+Trigger for constraint purchases_profile_id_fkey on purchases: time=0.075 calls=1
+Execution Time: 0.519 ms
+
+---- Run 2: execution 0.508 ms, planning 0.171 ms ----
+Insert on purchases  (cost=16.78..16.81 rows=1 width=280) (actual time=0.262..0.267 rows=1 loops=1)
+  Buffers: shared hit=39
+  CTE paid
+    ->  Update on profiles  (cost=8.73..16.75 rows=1 width=10) (actual time=0.081..0.083 rows=1 loops=1)
+          Buffers: shared hit=9
+          InitPlan 1 (returns $0)
+            ->  Index Only Scan using uq_inventory_profile_skin on inventory  (cost=0.42..8.44 rows=1 width=0) (actual time=0.011..0.011 rows=0 loops=1)
+                  Index Cond: ((profile_id = 26) AND (skin_id = 'arena.sakura'::text))
+                  Heap Fetches: 0
+                  Buffers: shared hit=3
+          ->  Result  (cost=0.29..8.31 rows=1 width=10) (actual time=0.019..0.020 rows=1 loops=1)
+                One-Time Filter: (NOT $0)
+                Buffers: shared hit=6
+                ->  Index Scan using profiles_pkey on profiles  (cost=0.29..8.31 rows=1 width=10) (actual time=0.006..0.007 rows=1 loops=1)
+                      Index Cond: (id = 26)
+                      Filter: (points >= 1800)
+                      Buffers: shared hit=3
+  CTE owned
+    ->  Insert on inventory inventory_1  (cost=0.00..0.03 rows=1 width=180) (actual time=0.152..0.154 rows=1 loops=1)
+          Buffers: shared hit=17
+          ->  CTE Scan on paid  (cost=0.00..0.03 rows=1 width=180) (actual time=0.090..0.092 rows=1 loops=1)
+                Buffers: shared hit=10
+  ->  CTE Scan on owned  (cost=0.00..0.03 rows=1 width=280) (actual time=0.200..0.203 rows=1 loops=1)
+        Buffers: shared hit=29
+Planning:
+  Buffers: shared hit=3
+Planning Time: 0.171 ms
+Trigger for constraint profiles_user_id_fkey on profiles: time=0.089 calls=1
+Trigger for constraint inventory_profile_id_fkey on inventory: time=0.015 calls=1
+Trigger for constraint purchases_profile_id_fkey on purchases: time=0.092 calls=1
+Execution Time: 0.508 ms
+
+---- Run 3: execution 0.274 ms, planning 0.105 ms ----
+Insert on purchases  (cost=16.78..16.81 rows=1 width=280) (actual time=0.148..0.151 rows=1 loops=1)
+  Buffers: shared hit=39
+  CTE paid
+    ->  Update on profiles  (cost=8.73..16.75 rows=1 width=10) (actual time=0.054..0.056 rows=1 loops=1)
+          Buffers: shared hit=9
+          InitPlan 1 (returns $0)
+            ->  Index Only Scan using uq_inventory_profile_skin on inventory  (cost=0.42..8.44 rows=1 width=0) (actual time=0.005..0.005 rows=0 loops=1)
+                  Index Cond: ((profile_id = 26) AND (skin_id = 'arena.sakura'::text))
+                  Heap Fetches: 0
+                  Buffers: shared hit=3
+          ->  Result  (cost=0.29..8.31 rows=1 width=10) (actual time=0.024..0.025 rows=1 loops=1)
+                One-Time Filter: (NOT $0)
+                Buffers: shared hit=6
+                ->  Index Scan using profiles_pkey on profiles  (cost=0.29..8.31 rows=1 width=10) (actual time=0.017..0.018 rows=1 loops=1)
+                      Index Cond: (id = 26)
+                      Filter: (points >= 1800)
+                      Buffers: shared hit=3
+  CTE owned
+    ->  Insert on inventory inventory_1  (cost=0.00..0.03 rows=1 width=180) (actual time=0.086..0.088 rows=1 loops=1)
+          Buffers: shared hit=17
+          ->  CTE Scan on paid  (cost=0.00..0.03 rows=1 width=180) (actual time=0.059..0.060 rows=1 loops=1)
+                Buffers: shared hit=10
+  ->  CTE Scan on owned  (cost=0.00..0.03 rows=1 width=280) (actual time=0.107..0.108 rows=1 loops=1)
+        Buffers: shared hit=29
+Planning:
+  Buffers: shared hit=3
+Planning Time: 0.105 ms
+Trigger for constraint profiles_user_id_fkey on profiles: time=0.037 calls=1
+Trigger for constraint inventory_profile_id_fkey on inventory: time=0.009 calls=1
+Trigger for constraint purchases_profile_id_fkey on purchases: time=0.046 calls=1
+Execution Time: 0.274 ms

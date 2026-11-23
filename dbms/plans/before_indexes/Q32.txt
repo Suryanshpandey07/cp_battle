@@ -1,0 +1,87 @@
+Q32 · READ · Reconnect or open the result page: the match and the public events after the last one the browser has
+App: api/matches.py:202 and :205-206 (the match, then its events); also
+api/matches.py:178. Here one LEFT JOIN.
+
+SELECT m.status, m.last_seq, m.result, e.seq, e.t_ms, e.type, e.payload
+FROM matches m
+LEFT JOIN match_events e ON e.match_id = m.id
+                        AND e.seq > 10
+                        AND e.visibility = 'both'
+WHERE m.id = '9348a163-6e39-4f78-8557-09984d57dc04'
+ORDER BY e.seq
+LIMIT 500;
+
+---- Run 1: execution 0.145 ms, planning 0.359 ms ----
+Limit  (cost=124.88..124.95 rows=26 width=362) (actual time=0.116..0.120 rows=21 loops=1)
+  Buffers: shared hit=2 read=8
+  ->  Sort  (cost=124.88..124.95 rows=26 width=362) (actual time=0.115..0.117 rows=21 loops=1)
+        Sort Key: e.seq
+        Sort Method: quicksort  Memory: 35kB
+        Buffers: shared hit=2 read=8
+        ->  Nested Loop Left Join  (cost=5.26..124.27 rows=26 width=362) (actual time=0.089..0.105 rows=21 loops=1)
+              Buffers: shared hit=2 read=8
+              ->  Index Scan using matches_pkey on matches m  (cost=0.42..8.44 rows=1 width=275) (actual time=0.030..0.031 rows=1 loops=1)
+                    Index Cond: ((id)::text = '9348a163-6e39-4f78-8557-09984d57dc04'::text)
+                    Buffers: shared hit=2 read=2
+              ->  Bitmap Heap Scan on match_events e  (cost=4.84..115.58 rows=26 width=161) (actual time=0.055..0.068 rows=21 loops=1)
+                    Recheck Cond: (((match_id)::text = '9348a163-6e39-4f78-8557-09984d57dc04'::text) AND (seq > 10))
+                    Filter: ((visibility)::text = 'both'::text)
+                    Heap Blocks: exact=2
+                    Buffers: shared read=6
+                    ->  Bitmap Index Scan on uq_match_events_match_seq  (cost=0.00..4.83 rows=28 width=0) (actual time=0.038..0.038 rows=21 loops=1)
+                          Index Cond: (((match_id)::text = '9348a163-6e39-4f78-8557-09984d57dc04'::text) AND (seq > 10))
+                          Buffers: shared read=4
+Planning:
+  Buffers: shared hit=68 read=3
+Planning Time: 0.359 ms
+Execution Time: 0.145 ms
+
+---- Run 2: execution 0.109 ms, planning 0.317 ms ----
+Limit  (cost=124.88..124.95 rows=26 width=362) (actual time=0.076..0.080 rows=21 loops=1)
+  Buffers: shared hit=10
+  ->  Sort  (cost=124.88..124.95 rows=26 width=362) (actual time=0.075..0.077 rows=21 loops=1)
+        Sort Key: e.seq
+        Sort Method: quicksort  Memory: 35kB
+        Buffers: shared hit=10
+        ->  Nested Loop Left Join  (cost=5.26..124.27 rows=26 width=362) (actual time=0.055..0.064 rows=21 loops=1)
+              Buffers: shared hit=10
+              ->  Index Scan using matches_pkey on matches m  (cost=0.42..8.44 rows=1 width=275) (actual time=0.013..0.013 rows=1 loops=1)
+                    Index Cond: ((id)::text = '9348a163-6e39-4f78-8557-09984d57dc04'::text)
+                    Buffers: shared hit=4
+              ->  Bitmap Heap Scan on match_events e  (cost=4.84..115.58 rows=26 width=161) (actual time=0.039..0.044 rows=21 loops=1)
+                    Recheck Cond: (((match_id)::text = '9348a163-6e39-4f78-8557-09984d57dc04'::text) AND (seq > 10))
+                    Filter: ((visibility)::text = 'both'::text)
+                    Heap Blocks: exact=2
+                    Buffers: shared hit=6
+                    ->  Bitmap Index Scan on uq_match_events_match_seq  (cost=0.00..4.83 rows=28 width=0) (actual time=0.029..0.029 rows=21 loops=1)
+                          Index Cond: (((match_id)::text = '9348a163-6e39-4f78-8557-09984d57dc04'::text) AND (seq > 10))
+                          Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=71
+Planning Time: 0.317 ms
+Execution Time: 0.109 ms
+
+---- Run 3: execution 0.085 ms, planning 0.262 ms ----
+Limit  (cost=124.88..124.95 rows=26 width=362) (actual time=0.060..0.063 rows=21 loops=1)
+  Buffers: shared hit=10
+  ->  Sort  (cost=124.88..124.95 rows=26 width=362) (actual time=0.060..0.061 rows=21 loops=1)
+        Sort Key: e.seq
+        Sort Method: quicksort  Memory: 35kB
+        Buffers: shared hit=10
+        ->  Nested Loop Left Join  (cost=5.26..124.27 rows=26 width=362) (actual time=0.043..0.050 rows=21 loops=1)
+              Buffers: shared hit=10
+              ->  Index Scan using matches_pkey on matches m  (cost=0.42..8.44 rows=1 width=275) (actual time=0.009..0.010 rows=1 loops=1)
+                    Index Cond: ((id)::text = '9348a163-6e39-4f78-8557-09984d57dc04'::text)
+                    Buffers: shared hit=4
+              ->  Bitmap Heap Scan on match_events e  (cost=4.84..115.58 rows=26 width=161) (actual time=0.031..0.035 rows=21 loops=1)
+                    Recheck Cond: (((match_id)::text = '9348a163-6e39-4f78-8557-09984d57dc04'::text) AND (seq > 10))
+                    Filter: ((visibility)::text = 'both'::text)
+                    Heap Blocks: exact=2
+                    Buffers: shared hit=6
+                    ->  Bitmap Index Scan on uq_match_events_match_seq  (cost=0.00..4.83 rows=28 width=0) (actual time=0.024..0.024 rows=21 loops=1)
+                          Index Cond: (((match_id)::text = '9348a163-6e39-4f78-8557-09984d57dc04'::text) AND (seq > 10))
+                          Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=71
+Planning Time: 0.262 ms
+Execution Time: 0.085 ms

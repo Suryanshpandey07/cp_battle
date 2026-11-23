@@ -1,0 +1,33 @@
+Q05 · WRITE · Issue a refresh token (only its SHA-256 is stored)
+App: api/auth.py:50 (_issue_refresh, on signup, login and refresh)
+
+INSERT INTO refresh_tokens (user_id, token_hash, expires_at)
+VALUES (26, '5d41402abc4b2a76b9719d911017c592aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+        (now() AT TIME ZONE 'utc') + interval '30 days');
+
+---- Run 1: execution 0.530 ms, planning 0.029 ms ----
+Insert on refresh_tokens  (cost=0.00..0.03 rows=0 width=0) (actual time=0.328..0.328 rows=0 loops=1)
+  Buffers: shared hit=47 read=15 dirtied=5
+  ->  Result  (cost=0.00..0.03 rows=1 width=178) (actual time=0.058..0.059 rows=1 loops=1)
+        Buffers: shared hit=11 read=1 dirtied=1
+Planning Time: 0.029 ms
+Trigger for constraint refresh_tokens_user_id_fkey: time=0.184 calls=1
+Execution Time: 0.530 ms
+
+---- Run 2: execution 0.439 ms, planning 0.029 ms ----
+Insert on refresh_tokens  (cost=0.00..0.03 rows=0 width=0) (actual time=0.220..0.220 rows=0 loops=1)
+  Buffers: shared hit=62
+  ->  Result  (cost=0.00..0.03 rows=1 width=178) (actual time=0.036..0.036 rows=1 loops=1)
+        Buffers: shared hit=12
+Planning Time: 0.029 ms
+Trigger for constraint refresh_tokens_user_id_fkey: time=0.200 calls=1
+Execution Time: 0.439 ms
+
+---- Run 3: execution 0.219 ms, planning 0.017 ms ----
+Insert on refresh_tokens  (cost=0.00..0.03 rows=0 width=0) (actual time=0.117..0.118 rows=0 loops=1)
+  Buffers: shared hit=62
+  ->  Result  (cost=0.00..0.03 rows=1 width=178) (actual time=0.028..0.029 rows=1 loops=1)
+        Buffers: shared hit=12
+Planning Time: 0.017 ms
+Trigger for constraint refresh_tokens_user_id_fkey: time=0.091 calls=1
+Execution Time: 0.219 ms

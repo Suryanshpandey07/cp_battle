@@ -1,0 +1,73 @@
+Q68 · WRITE · Admin: give a skin to a user by username
+App: api/admin.py:151-156 (user, profile and owned-check lookups, then
+INSERT); here INSERT ... SELECT over a JOIN.
+
+INSERT INTO inventory (profile_id, skin_id, source)
+SELECT p.id, 'card.glitch', 'admin'
+FROM users u
+JOIN profiles p ON p.user_id = u.id
+WHERE u.username_lower = 'player_26'
+ON CONFLICT (profile_id, skin_id) DO NOTHING;
+
+---- Run 1: execution 0.109 ms, planning 0.213 ms ----
+Insert on inventory  (cost=0.57..16.62 rows=0 width=0) (actual time=0.070..0.070 rows=0 loops=1)
+  Conflict Resolution: NOTHING
+  Conflict Arbiter Indexes: uq_inventory_profile_skin
+  Tuples Inserted: 1
+  Conflicting Tuples: 0
+  Buffers: shared hit=19
+  ->  Nested Loop  (cost=0.57..16.62 rows=1 width=180) (actual time=0.016..0.017 rows=1 loops=1)
+        Buffers: shared hit=8
+        ->  Index Scan using ix_users_username_lower on users u  (cost=0.29..8.30 rows=1 width=4) (actual time=0.005..0.006 rows=1 loops=1)
+              Index Cond: ((username_lower)::text = 'player_26'::text)
+              Buffers: shared hit=4
+        ->  Index Scan using uq_profiles_user_id on profiles p  (cost=0.29..8.30 rows=1 width=8) (actual time=0.004..0.004 rows=1 loops=1)
+              Index Cond: (user_id = u.id)
+              Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=15
+Planning Time: 0.213 ms
+Trigger for constraint inventory_profile_id_fkey: time=0.023 calls=1
+Execution Time: 0.109 ms
+
+---- Run 2: execution 0.120 ms, planning 0.214 ms ----
+Insert on inventory  (cost=0.57..16.62 rows=0 width=0) (actual time=0.075..0.076 rows=0 loops=1)
+  Conflict Resolution: NOTHING
+  Conflict Arbiter Indexes: uq_inventory_profile_skin
+  Tuples Inserted: 1
+  Conflicting Tuples: 0
+  Buffers: shared hit=19
+  ->  Nested Loop  (cost=0.57..16.62 rows=1 width=180) (actual time=0.019..0.020 rows=1 loops=1)
+        Buffers: shared hit=8
+        ->  Index Scan using ix_users_username_lower on users u  (cost=0.29..8.30 rows=1 width=4) (actual time=0.008..0.009 rows=1 loops=1)
+              Index Cond: ((username_lower)::text = 'player_26'::text)
+              Buffers: shared hit=4
+        ->  Index Scan using uq_profiles_user_id on profiles p  (cost=0.29..8.30 rows=1 width=8) (actual time=0.003..0.003 rows=1 loops=1)
+              Index Cond: (user_id = u.id)
+              Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=15
+Planning Time: 0.214 ms
+Trigger for constraint inventory_profile_id_fkey: time=0.023 calls=1
+Execution Time: 0.120 ms
+
+---- Run 3: execution 0.114 ms, planning 0.140 ms ----
+Insert on inventory  (cost=0.57..16.62 rows=0 width=0) (actual time=0.056..0.056 rows=0 loops=1)
+  Conflict Resolution: NOTHING
+  Conflict Arbiter Indexes: uq_inventory_profile_skin
+  Tuples Inserted: 1
+  Conflicting Tuples: 0
+  Buffers: shared hit=19
+  ->  Nested Loop  (cost=0.57..16.62 rows=1 width=180) (actual time=0.013..0.014 rows=1 loops=1)
+        Buffers: shared hit=8
+        ->  Index Scan using ix_users_username_lower on users u  (cost=0.29..8.30 rows=1 width=4) (actual time=0.004..0.004 rows=1 loops=1)
+              Index Cond: ((username_lower)::text = 'player_26'::text)
+              Buffers: shared hit=4
+        ->  Index Scan using uq_profiles_user_id on profiles p  (cost=0.29..8.30 rows=1 width=8) (actual time=0.004..0.004 rows=1 loops=1)
+              Index Cond: (user_id = u.id)
+              Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=15
+Planning Time: 0.140 ms
+Trigger for constraint inventory_profile_id_fkey: time=0.018 calls=1
+Execution Time: 0.114 ms

@@ -1,0 +1,36 @@
+Q42 · READ · One slot's draft
+App: api/matches.py:327
+
+SELECT slot, language, code, problem_slug
+FROM drafts
+WHERE match_id = '552ba0bd-997e-4e6f-8bb9-dc5a3cec1f7f'
+  AND profile_id = 101
+  AND slot = 3
+LIMIT 1;
+
+---- Run 1: execution 0.023 ms, planning 0.072 ms ----
+Limit  (cost=0.27..8.29 rows=1 width=57) (actual time=0.013..0.014 rows=1 loops=1)
+  Buffers: shared hit=3
+  ->  Index Scan using uq_drafts_key on drafts  (cost=0.27..8.29 rows=1 width=57) (actual time=0.013..0.013 rows=1 loops=1)
+        Index Cond: (((match_id)::text = '552ba0bd-997e-4e6f-8bb9-dc5a3cec1f7f'::text) AND (profile_id = 101) AND (slot = 3))
+        Buffers: shared hit=3
+Planning Time: 0.072 ms
+Execution Time: 0.023 ms
+
+---- Run 2: execution 0.016 ms, planning 0.056 ms ----
+Limit  (cost=0.27..8.29 rows=1 width=57) (actual time=0.008..0.009 rows=1 loops=1)
+  Buffers: shared hit=3
+  ->  Index Scan using uq_drafts_key on drafts  (cost=0.27..8.29 rows=1 width=57) (actual time=0.008..0.008 rows=1 loops=1)
+        Index Cond: (((match_id)::text = '552ba0bd-997e-4e6f-8bb9-dc5a3cec1f7f'::text) AND (profile_id = 101) AND (slot = 3))
+        Buffers: shared hit=3
+Planning Time: 0.056 ms
+Execution Time: 0.016 ms
+
+---- Run 3: execution 0.009 ms, planning 0.030 ms ----
+Limit  (cost=0.27..8.29 rows=1 width=57) (actual time=0.004..0.004 rows=1 loops=1)
+  Buffers: shared hit=3
+  ->  Index Scan using uq_drafts_key on drafts  (cost=0.27..8.29 rows=1 width=57) (actual time=0.003..0.003 rows=1 loops=1)
+        Index Cond: (((match_id)::text = '552ba0bd-997e-4e6f-8bb9-dc5a3cec1f7f'::text) AND (profile_id = 101) AND (slot = 3))
+        Buffers: shared hit=3
+Planning Time: 0.030 ms
+Execution Time: 0.009 ms

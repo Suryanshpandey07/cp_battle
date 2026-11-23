@@ -1,0 +1,29 @@
+Q29 · READ · Matchmaking: both players of an accepted pairing
+App: engine/matchmaker.py:248 (two primary-key lookups); here one IN list.
+Also: api/matches.py:72 (the caller's profile before a bot or practice match)
+
+SELECT id, display_name, rating, is_bot, equipped_card, equipped_avatar, equipped_arena,
+       equipped_weapon, avatar_color, queue_ban_until
+FROM profiles
+WHERE id IN (26, 3866);
+
+---- Run 1: execution 0.087 ms, planning 0.079 ms ----
+Index Scan using profiles_pkey on profiles  (cost=0.29..15.62 rows=2 width=83) (actual time=0.037..0.076 rows=2 loops=1)
+  Index Cond: (id = ANY ('{26,3866}'::integer[]))
+  Buffers: shared hit=9
+Planning Time: 0.079 ms
+Execution Time: 0.087 ms
+
+---- Run 2: execution 0.047 ms, planning 0.079 ms ----
+Index Scan using profiles_pkey on profiles  (cost=0.29..15.62 rows=2 width=83) (actual time=0.030..0.036 rows=2 loops=1)
+  Index Cond: (id = ANY ('{26,3866}'::integer[]))
+  Buffers: shared hit=9
+Planning Time: 0.079 ms
+Execution Time: 0.047 ms
+
+---- Run 3: execution 0.035 ms, planning 0.058 ms ----
+Index Scan using profiles_pkey on profiles  (cost=0.29..15.62 rows=2 width=83) (actual time=0.022..0.027 rows=2 loops=1)
+  Index Cond: (id = ANY ('{26,3866}'::integer[]))
+  Buffers: shared hit=9
+Planning Time: 0.058 ms
+Execution Time: 0.035 ms

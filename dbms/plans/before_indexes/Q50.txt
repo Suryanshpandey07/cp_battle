@@ -1,0 +1,32 @@
+Q50 · READ · The people in the match (bots have no rating to change)
+App: engine/finish.py:77 (one primary-key lookup per side); here one IN list.
+
+SELECT id, rating, peak_rating, wins, losses, draws, points, bot_gain_today, casual_ap_today,
+       daily_day, last_win_day, counters, badges
+FROM profiles
+WHERE id IN (26, 3866)
+  AND NOT is_bot;
+
+---- Run 1: execution 0.027 ms, planning 0.054 ms ----
+Index Scan using profiles_pkey on profiles  (cost=0.29..15.62 rows=2 width=147) (actual time=0.012..0.017 rows=2 loops=1)
+  Index Cond: (id = ANY ('{26,3866}'::integer[]))
+  Filter: (NOT is_bot)
+  Buffers: shared hit=6
+Planning Time: 0.054 ms
+Execution Time: 0.027 ms
+
+---- Run 2: execution 0.031 ms, planning 0.067 ms ----
+Index Scan using profiles_pkey on profiles  (cost=0.29..15.62 rows=2 width=147) (actual time=0.014..0.020 rows=2 loops=1)
+  Index Cond: (id = ANY ('{26,3866}'::integer[]))
+  Filter: (NOT is_bot)
+  Buffers: shared hit=6
+Planning Time: 0.067 ms
+Execution Time: 0.031 ms
+
+---- Run 3: execution 0.017 ms, planning 0.033 ms ----
+Index Scan using profiles_pkey on profiles  (cost=0.29..15.62 rows=2 width=147) (actual time=0.007..0.010 rows=2 loops=1)
+  Index Cond: (id = ANY ('{26,3866}'::integer[]))
+  Filter: (NOT is_bot)
+  Buffers: shared hit=6
+Planning Time: 0.033 ms
+Execution Time: 0.017 ms

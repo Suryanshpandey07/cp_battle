@@ -1,0 +1,59 @@
+Q69 · WRITE · Admin: reset a user's daily caps
+App: api/admin.py:166-172 (two lookups, then UPDATE); here UPDATE ... FROM.
+
+UPDATE profiles p
+SET bot_gain_today = 0, casual_ap_today = 0
+FROM users u
+WHERE u.id = p.user_id
+  AND u.username_lower = 'player_26';
+
+---- Run 1: execution 0.092 ms, planning 0.137 ms ----
+Update on profiles p  (cost=0.57..16.61 rows=0 width=0) (actual time=0.056..0.056 rows=0 loops=1)
+  Buffers: shared hit=10
+  ->  Nested Loop  (cost=0.57..16.61 rows=1 width=20) (actual time=0.010..0.011 rows=1 loops=1)
+        Buffers: shared hit=7
+        ->  Index Scan using ix_users_username_lower on users u  (cost=0.29..8.30 rows=1 width=10) (actual time=0.006..0.006 rows=1 loops=1)
+              Index Cond: ((username_lower)::text = 'player_26'::text)
+              Buffers: shared hit=4
+        ->  Index Scan using uq_profiles_user_id on profiles p  (cost=0.29..8.30 rows=1 width=10) (actual time=0.003..0.003 rows=1 loops=1)
+              Index Cond: (user_id = u.id)
+              Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=15
+Planning Time: 0.137 ms
+Trigger for constraint profiles_user_id_fkey: time=0.019 calls=1
+Execution Time: 0.092 ms
+
+---- Run 2: execution 0.080 ms, planning 0.106 ms ----
+Update on profiles p  (cost=0.57..16.61 rows=0 width=0) (actual time=0.040..0.041 rows=0 loops=1)
+  Buffers: shared hit=10
+  ->  Nested Loop  (cost=0.57..16.61 rows=1 width=20) (actual time=0.007..0.008 rows=1 loops=1)
+        Buffers: shared hit=7
+        ->  Index Scan using ix_users_username_lower on users u  (cost=0.29..8.30 rows=1 width=10) (actual time=0.004..0.004 rows=1 loops=1)
+              Index Cond: ((username_lower)::text = 'player_26'::text)
+              Buffers: shared hit=4
+        ->  Index Scan using uq_profiles_user_id on profiles p  (cost=0.29..8.30 rows=1 width=10) (actual time=0.002..0.002 rows=1 loops=1)
+              Index Cond: (user_id = u.id)
+              Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=15
+Planning Time: 0.106 ms
+Trigger for constraint profiles_user_id_fkey: time=0.026 calls=1
+Execution Time: 0.080 ms
+
+---- Run 3: execution 0.069 ms, planning 0.101 ms ----
+Update on profiles p  (cost=0.57..16.61 rows=0 width=0) (actual time=0.041..0.042 rows=0 loops=1)
+  Buffers: shared hit=10
+  ->  Nested Loop  (cost=0.57..16.61 rows=1 width=20) (actual time=0.008..0.008 rows=1 loops=1)
+        Buffers: shared hit=7
+        ->  Index Scan using ix_users_username_lower on users u  (cost=0.29..8.30 rows=1 width=10) (actual time=0.004..0.004 rows=1 loops=1)
+              Index Cond: ((username_lower)::text = 'player_26'::text)
+              Buffers: shared hit=4
+        ->  Index Scan using uq_profiles_user_id on profiles p  (cost=0.29..8.30 rows=1 width=10) (actual time=0.002..0.002 rows=1 loops=1)
+              Index Cond: (user_id = u.id)
+              Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=15
+Planning Time: 0.101 ms
+Trigger for constraint profiles_user_id_fkey: time=0.014 calls=1
+Execution Time: 0.069 ms

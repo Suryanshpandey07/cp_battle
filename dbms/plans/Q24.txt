@@ -1,0 +1,52 @@
+Q24 · READ · Leaderboard, all time: the top 100 by rating
+App: api/players.py:207-208 (the same ORDER BY and LIMIT; the app numbers the
+rows and derives the tier in Python). Tier is derived from rating, not stored.
+Ordering by the window's keys rather than by "rank" gives the same rows and
+lets ix_profiles_ladder hand back the first 100 in order, with no sort.
+
+SELECT row_number() OVER (ORDER BY rating DESC, lower(display_name)) AS rank,
+       id AS profile_id, display_name AS name, rating,
+       CASE WHEN rating >= 1900 THEN 5 WHEN rating >= 1600 THEN 4 WHEN rating >= 1400 THEN 3
+            WHEN rating >= 1200 THEN 2 ELSE 1 END AS tier,
+       rating AS score, wins, losses
+FROM profiles
+WHERE NOT is_bot
+  AND user_id IS NOT NULL
+ORDER BY rating DESC, lower(display_name)
+LIMIT 100;
+
+---- Run 1: execution 0.916 ms, planning 0.177 ms ----
+Limit  (cost=0.29..37.62 rows=100 width=76) (actual time=0.043..0.880 rows=100 loops=1)
+  Buffers: shared hit=7 read=95
+  ->  WindowAgg  (cost=0.29..7465.82 rows=19995 width=76) (actual time=0.042..0.867 rows=100 loops=1)
+        Buffers: shared hit=7 read=95
+        ->  Index Scan using ix_profiles_ladder on profiles  (cost=0.29..6865.97 rows=19995 width=60) (actual time=0.032..0.805 rows=100 loops=1)
+              Buffers: shared hit=7 read=95
+Planning:
+  Buffers: shared hit=4
+Planning Time: 0.177 ms
+Execution Time: 0.916 ms
+
+---- Run 2: execution 0.250 ms, planning 0.099 ms ----
+Limit  (cost=0.29..37.62 rows=100 width=76) (actual time=0.038..0.228 rows=100 loops=1)
+  Buffers: shared hit=102
+  ->  WindowAgg  (cost=0.29..7465.82 rows=19995 width=76) (actual time=0.037..0.221 rows=100 loops=1)
+        Buffers: shared hit=102
+        ->  Index Scan using ix_profiles_ladder on profiles  (cost=0.29..6865.97 rows=19995 width=60) (actual time=0.031..0.184 rows=100 loops=1)
+              Buffers: shared hit=102
+Planning:
+  Buffers: shared hit=4
+Planning Time: 0.099 ms
+Execution Time: 0.250 ms
+
+---- Run 3: execution 0.246 ms, planning 0.129 ms ----
+Limit  (cost=0.29..37.62 rows=100 width=76) (actual time=0.020..0.222 rows=100 loops=1)
+  Buffers: shared hit=102
+  ->  WindowAgg  (cost=0.29..7465.82 rows=19995 width=76) (actual time=0.019..0.214 rows=100 loops=1)
+        Buffers: shared hit=102
+        ->  Index Scan using ix_profiles_ladder on profiles  (cost=0.29..6865.97 rows=19995 width=60) (actual time=0.013..0.179 rows=100 loops=1)
+              Buffers: shared hit=102
+Planning:
+  Buffers: shared hit=4
+Planning Time: 0.129 ms
+Execution Time: 0.246 ms

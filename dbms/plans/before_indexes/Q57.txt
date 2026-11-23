@@ -1,0 +1,34 @@
+Q57 · READ · Shop: was this purchase already made (a retried click)?
+App: skins/service.py:58
+
+SELECT id, skin_id, price
+FROM purchases
+WHERE profile_id = 26
+  AND idem_key = 'b7c1e5d0-buy-arena-sakura';
+
+---- Run 1: execution 0.037 ms, planning 0.327 ms ----
+Index Scan using uq_purchases_profile_idem on purchases  (cost=0.29..8.31 rows=1 width=20) (actual time=0.028..0.028 rows=0 loops=1)
+  Index Cond: ((profile_id = 26) AND ((idem_key)::text = 'b7c1e5d0-buy-arena-sakura'::text))
+  Buffers: shared hit=1 read=3 dirtied=2
+Planning:
+  Buffers: shared hit=55 read=5
+Planning Time: 0.327 ms
+Execution Time: 0.037 ms
+
+---- Run 2: execution 0.031 ms, planning 0.200 ms ----
+Index Scan using uq_purchases_profile_idem on purchases  (cost=0.29..8.31 rows=1 width=20) (actual time=0.021..0.022 rows=0 loops=1)
+  Index Cond: ((profile_id = 26) AND ((idem_key)::text = 'b7c1e5d0-buy-arena-sakura'::text))
+  Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=60
+Planning Time: 0.200 ms
+Execution Time: 0.031 ms
+
+---- Run 3: execution 0.020 ms, planning 0.135 ms ----
+Index Scan using uq_purchases_profile_idem on purchases  (cost=0.29..8.31 rows=1 width=20) (actual time=0.015..0.015 rows=0 loops=1)
+  Index Cond: ((profile_id = 26) AND ((idem_key)::text = 'b7c1e5d0-buy-arena-sakura'::text))
+  Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=60
+Planning Time: 0.135 ms
+Execution Time: 0.020 ms

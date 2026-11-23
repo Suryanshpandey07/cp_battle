@@ -1,0 +1,52 @@
+Q17 · READ · Profile page: accuracy (accepted out of judged)
+App: api/players.py:181 and :182 (two COUNTs); here one scan with FILTER.
+
+SELECT count(*) FILTER (WHERE verdict = 'AC')  AS accepted,
+       count(*) FILTER (WHERE status = 'done') AS judged
+FROM submissions
+WHERE profile_id = 26;
+
+---- Run 1: execution 1.149 ms, planning 0.357 ms ----
+Aggregate  (cost=929.48..929.49 rows=1 width=16) (actual time=1.117..1.118 rows=1 loops=1)
+  Buffers: shared read=112
+  ->  Bitmap Heap Scan on submissions  (cost=6.36..926.98 rows=250 width=8) (actual time=0.065..1.055 rows=269 loops=1)
+        Recheck Cond: (profile_id = 26)
+        Heap Blocks: exact=109
+        Buffers: shared read=112
+        ->  Bitmap Index Scan on ix_submissions_profile_id  (cost=0.00..6.30 rows=250 width=0) (actual time=0.040..0.041 rows=269 loops=1)
+              Index Cond: (profile_id = 26)
+              Buffers: shared read=3
+Planning:
+  Buffers: shared hit=66 read=7
+Planning Time: 0.357 ms
+Execution Time: 1.149 ms
+
+---- Run 2: execution 0.342 ms, planning 0.157 ms ----
+Aggregate  (cost=929.48..929.49 rows=1 width=16) (actual time=0.317..0.317 rows=1 loops=1)
+  Buffers: shared hit=112
+  ->  Bitmap Heap Scan on submissions  (cost=6.36..926.98 rows=250 width=8) (actual time=0.038..0.211 rows=269 loops=1)
+        Recheck Cond: (profile_id = 26)
+        Heap Blocks: exact=109
+        Buffers: shared hit=112
+        ->  Bitmap Index Scan on ix_submissions_profile_id  (cost=0.00..6.30 rows=250 width=0) (actual time=0.019..0.019 rows=269 loops=1)
+              Index Cond: (profile_id = 26)
+              Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=73
+Planning Time: 0.157 ms
+Execution Time: 0.342 ms
+
+---- Run 3: execution 0.297 ms, planning 0.207 ms ----
+Aggregate  (cost=929.48..929.49 rows=1 width=16) (actual time=0.280..0.281 rows=1 loops=1)
+  Buffers: shared hit=112
+  ->  Bitmap Heap Scan on submissions  (cost=6.36..926.98 rows=250 width=8) (actual time=0.035..0.226 rows=269 loops=1)
+        Recheck Cond: (profile_id = 26)
+        Heap Blocks: exact=109
+        Buffers: shared hit=112
+        ->  Bitmap Index Scan on ix_submissions_profile_id  (cost=0.00..6.30 rows=250 width=0) (actual time=0.022..0.022 rows=269 loops=1)
+              Index Cond: (profile_id = 26)
+              Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=73
+Planning Time: 0.207 ms
+Execution Time: 0.297 ms

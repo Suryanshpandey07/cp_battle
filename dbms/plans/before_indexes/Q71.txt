@@ -1,0 +1,35 @@
+Q71 · WRITE · After a database error in a match: abort it
+App: engine/actor.py:287-293
+
+UPDATE matches
+SET status = 'aborted', end_reason = 'aborted', outcome = 'aborted',
+    result = '{"outcome": "aborted", "end_reason": "aborted", "reason": "server_error", "sides": {}}',
+    last_seq = 15
+WHERE id = '8f1f9562-bc91-4039-88fd-b5b2a78559d0';
+
+---- Run 1: execution 0.238 ms, planning 0.083 ms ----
+Update on matches  (cost=0.42..8.44 rows=0 width=0) (actual time=0.221..0.222 rows=0 loops=1)
+  Buffers: shared hit=18 read=2 dirtied=2
+  ->  Index Scan using matches_pkey on matches  (cost=0.42..8.44 rows=1 width=192) (actual time=0.036..0.037 rows=1 loops=1)
+        Index Cond: ((id)::text = '8f1f9562-bc91-4039-88fd-b5b2a78559d0'::text)
+        Buffers: shared hit=3 read=1
+Planning Time: 0.083 ms
+Execution Time: 0.238 ms
+
+---- Run 2: execution 0.154 ms, planning 0.039 ms ----
+Update on matches  (cost=0.42..8.44 rows=0 width=0) (actual time=0.144..0.144 rows=0 loops=1)
+  Buffers: shared hit=23
+  ->  Index Scan using matches_pkey on matches  (cost=0.42..8.44 rows=1 width=192) (actual time=0.015..0.016 rows=1 loops=1)
+        Index Cond: ((id)::text = '8f1f9562-bc91-4039-88fd-b5b2a78559d0'::text)
+        Buffers: shared hit=6
+Planning Time: 0.039 ms
+Execution Time: 0.154 ms
+
+---- Run 3: execution 0.160 ms, planning 0.041 ms ----
+Update on matches  (cost=0.42..8.44 rows=0 width=0) (actual time=0.149..0.149 rows=0 loops=1)
+  Buffers: shared hit=23
+  ->  Index Scan using matches_pkey on matches  (cost=0.42..8.44 rows=1 width=192) (actual time=0.015..0.016 rows=1 loops=1)
+        Index Cond: ((id)::text = '8f1f9562-bc91-4039-88fd-b5b2a78559d0'::text)
+        Buffers: shared hit=6
+Planning Time: 0.041 ms
+Execution Time: 0.160 ms

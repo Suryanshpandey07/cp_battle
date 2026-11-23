@@ -1,0 +1,43 @@
+Q31 · WRITE · Create a match: both players' snapshots, hands and the decks
+App: engine/service.py:161 (and :186 for bot-vs-bot)
+
+INSERT INTO matches (id, mode, map, status, seed, stage_theme, stage_owner_side, decks,
+                     player1_profile_id, player1_name, player1_rating, player1_tier, player1_max_hp, player1_hp,
+                     player1_skins, player1_is_bot, player1_blocks_left, player1_hints_left, player1_rerolls_left, player1_hand,
+                     player2_profile_id, player2_name, player2_rating, player2_tier, player2_max_hp, player2_hp,
+                     player2_skins, player2_is_bot, player2_blocks_left, player2_hints_left, player2_rerolls_left, player2_hand)
+VALUES ('b5e0c0de-1111-4222-8333-444455556666', 'ranked', 'bit', 'starting', 912345, 'arena.neon', 1,
+        '{"1": [1, 2, 3, 4], "2": [5, 6, 7, 8], "3": [9, 10, 11, 12], "4": [13, 14, 15], "5": [16, 17]}',
+        26, 'player_26', 1367, 2, 28000, 28000,
+        '{"card": "card.inferno", "avatar": "bean.ninja", "arena": "arena.neon", "color": "#3b82f6", "weapon": "weapon.arrows"}',
+        FALSE, 2, 3, 2, '{"slots": [{"slug": "xor-pairs", "tier": 1}, {"slug": "gray-ladder", "tier": 2}, {"slug": "lone-bit", "tier": 3}, {"slug": "peak-finder", "tier": 4}]}',
+        3866, 'Player_3866', 1302, 2, 28000, 28000,
+        '{"card": "card.classic", "avatar": "bean.plain", "arena": null, "color": "#22c55e", "weapon": "weapon.fireball"}',
+        FALSE, 2, 3, 2, '{"slots": [{"slug": "bit-count", "tier": 1}, {"slug": "mex-run", "tier": 2}, {"slug": "subset-parade", "tier": 3}, {"slug": "kth-gap", "tier": 4}]}');
+
+---- Run 1: execution 0.786 ms, planning 0.033 ms ----
+Insert on matches  (cost=0.00..0.01 rows=0 width=0) (actual time=0.433..0.433 rows=0 loops=1)
+  Buffers: shared hit=10 read=13 dirtied=7
+  ->  Result  (cost=0.00..0.01 rows=1 width=1114) (actual time=0.005..0.005 rows=1 loops=1)
+Planning Time: 0.033 ms
+Trigger for constraint matches_player1_profile_id_fkey: time=0.245 calls=1
+Trigger for constraint matches_player2_profile_id_fkey: time=0.074 calls=1
+Execution Time: 0.786 ms
+
+---- Run 2: execution 0.637 ms, planning 0.034 ms ----
+Insert on matches  (cost=0.00..0.01 rows=0 width=0) (actual time=0.319..0.320 rows=0 loops=1)
+  Buffers: shared hit=23 read=1 dirtied=1
+  ->  Result  (cost=0.00..0.01 rows=1 width=1114) (actual time=0.005..0.005 rows=1 loops=1)
+Planning Time: 0.034 ms
+Trigger for constraint matches_player1_profile_id_fkey: time=0.205 calls=1
+Trigger for constraint matches_player2_profile_id_fkey: time=0.083 calls=1
+Execution Time: 0.637 ms
+
+---- Run 3: execution 0.539 ms, planning 0.042 ms ----
+Insert on matches  (cost=0.00..0.01 rows=0 width=0) (actual time=0.280..0.280 rows=0 loops=1)
+  Buffers: shared hit=23
+  ->  Result  (cost=0.00..0.01 rows=1 width=1114) (actual time=0.005..0.005 rows=1 loops=1)
+Planning Time: 0.042 ms
+Trigger for constraint matches_player1_profile_id_fkey: time=0.164 calls=1
+Trigger for constraint matches_player2_profile_id_fkey: time=0.068 calls=1
+Execution Time: 0.539 ms

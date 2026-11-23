@@ -1,0 +1,78 @@
+Q13 · WRITE · Claim a finished quest and pay its Arena Points
+App: api/players.py:120-131 (SELECT the quest, SELECT the profile, then two
+UPDATEs); here one statement: the quest is marked claimed only if it was
+earned and not yet claimed, and the points are added through a join on it.
+
+WITH claimed AS (
+    UPDATE quest_progress
+    SET claimed_at = now() AT TIME ZONE 'utc'
+    WHERE profile_id = 30 AND day = '2026-11-23' AND key = 'first_blood'
+      AND earned_at IS NOT NULL
+      AND claimed_at IS NULL
+    RETURNING profile_id
+)
+UPDATE profiles p
+SET points = p.points + 20
+FROM claimed c
+WHERE p.id = c.profile_id
+RETURNING p.points;
+
+---- Run 1: execution 0.437 ms, planning 0.146 ms ----
+Update on profiles p  (cost=8.73..16.78 rows=1 width=38) (actual time=0.324..0.328 rows=1 loops=1)
+  Buffers: shared hit=35 read=12 dirtied=7
+  CTE claimed
+    ->  Update on quest_progress  (cost=0.42..8.45 rows=1 width=14) (actual time=0.222..0.224 rows=1 loops=1)
+          Buffers: shared hit=19 read=9 dirtied=3
+          ->  Index Scan using uq_quest_progress_key on quest_progress  (cost=0.42..8.45 rows=1 width=14) (actual time=0.030..0.031 rows=1 loops=1)
+                Index Cond: ((profile_id = 30) AND ((day)::text = '2026-11-23'::text) AND ((key)::text = 'first_blood'::text))
+                Filter: ((earned_at IS NOT NULL) AND (claimed_at IS NULL))
+                Buffers: shared hit=5 read=1
+  ->  Nested Loop  (cost=0.29..8.33 rows=1 width=38) (actual time=0.264..0.267 rows=1 loops=1)
+        Buffers: shared hit=21 read=11 dirtied=3
+        ->  CTE Scan on claimed c  (cost=0.00..0.02 rows=1 width=32) (actual time=0.234..0.236 rows=1 loops=1)
+              Buffers: shared hit=19 read=9 dirtied=3
+        ->  Index Scan using profiles_pkey on profiles p  (cost=0.29..8.30 rows=1 width=14) (actual time=0.028..0.028 rows=1 loops=1)
+              Index Cond: (id = c.profile_id)
+              Buffers: shared hit=2 read=2
+Planning Time: 0.146 ms
+Execution Time: 0.437 ms
+
+---- Run 2: execution 0.241 ms, planning 0.118 ms ----
+Update on profiles p  (cost=8.73..16.78 rows=1 width=38) (actual time=0.191..0.194 rows=1 loops=1)
+  Buffers: shared hit=46
+  CTE claimed
+    ->  Update on quest_progress  (cost=0.42..8.45 rows=1 width=14) (actual time=0.094..0.096 rows=1 loops=1)
+          Buffers: shared hit=28
+          ->  Index Scan using uq_quest_progress_key on quest_progress  (cost=0.42..8.45 rows=1 width=14) (actual time=0.014..0.015 rows=1 loops=1)
+                Index Cond: ((profile_id = 30) AND ((day)::text = '2026-11-23'::text) AND ((key)::text = 'first_blood'::text))
+                Filter: ((earned_at IS NOT NULL) AND (claimed_at IS NULL))
+                Buffers: shared hit=6
+  ->  Nested Loop  (cost=0.29..8.33 rows=1 width=38) (actual time=0.116..0.118 rows=1 loops=1)
+        Buffers: shared hit=32
+        ->  CTE Scan on claimed c  (cost=0.00..0.02 rows=1 width=32) (actual time=0.105..0.107 rows=1 loops=1)
+              Buffers: shared hit=28
+        ->  Index Scan using profiles_pkey on profiles p  (cost=0.29..8.30 rows=1 width=14) (actual time=0.008..0.009 rows=1 loops=1)
+              Index Cond: (id = c.profile_id)
+              Buffers: shared hit=4
+Planning Time: 0.118 ms
+Execution Time: 0.241 ms
+
+---- Run 3: execution 0.216 ms, planning 0.110 ms ----
+Update on profiles p  (cost=8.73..16.78 rows=1 width=38) (actual time=0.178..0.181 rows=1 loops=1)
+  Buffers: shared hit=47
+  CTE claimed
+    ->  Update on quest_progress  (cost=0.42..8.45 rows=1 width=14) (actual time=0.093..0.094 rows=1 loops=1)
+          Buffers: shared hit=29
+          ->  Index Scan using uq_quest_progress_key on quest_progress  (cost=0.42..8.45 rows=1 width=14) (actual time=0.014..0.015 rows=1 loops=1)
+                Index Cond: ((profile_id = 30) AND ((day)::text = '2026-11-23'::text) AND ((key)::text = 'first_blood'::text))
+                Filter: ((earned_at IS NOT NULL) AND (claimed_at IS NULL))
+                Buffers: shared hit=6
+  ->  Nested Loop  (cost=0.29..8.33 rows=1 width=38) (actual time=0.123..0.125 rows=1 loops=1)
+        Buffers: shared hit=33
+        ->  CTE Scan on claimed c  (cost=0.00..0.02 rows=1 width=32) (actual time=0.103..0.105 rows=1 loops=1)
+              Buffers: shared hit=29
+        ->  Index Scan using profiles_pkey on profiles p  (cost=0.29..8.30 rows=1 width=14) (actual time=0.018..0.018 rows=1 loops=1)
+              Index Cond: (id = c.profile_id)
+              Buffers: shared hit=4
+Planning Time: 0.110 ms
+Execution Time: 0.216 ms

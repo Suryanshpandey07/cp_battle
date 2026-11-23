@@ -1,0 +1,152 @@
+{
+ "with": {
+  "Q02": {
+   "title": "Sign up: create the user, their profile and their default skins",
+   "n": 300,
+   "median_ms": 0.354,
+   "mean_ms": 0.377
+  },
+  "Q31": {
+   "title": "Create a match: both players' snapshots, hands and the decks",
+   "n": 300,
+   "median_ms": 0.203,
+   "mean_ms": 0.209
+  },
+  "Q33": {
+   "title": "Both players are ready: the match goes live",
+   "n": 300,
+   "median_ms": 0.202,
+   "mean_ms": 0.22
+  },
+  "Q35": {
+   "title": "Save the match after a hit lands (HP, hand, stats, last event number)",
+   "n": 300,
+   "median_ms": 0.175,
+   "mean_ms": 0.198
+  },
+  "Q36": {
+   "title": "Append the command's events to the match log",
+   "n": 300,
+   "median_ms": 0.137,
+   "mean_ms": 0.14
+  },
+  "Q46": {
+   "title": "Close the match: outcome, labels, the result screen",
+   "n": 300,
+   "median_ms": 0.185,
+   "mean_ms": 0.201
+  },
+  "Q51": {
+   "title": "Apply the result to a player: rating, peak, W/L/D, AP, daily counters",
+   "n": 300,
+   "median_ms": 0.106,
+   "mean_ms": 0.113
+  },
+  "Q72": {
+   "title": "Start-up: abort every match the last process left running",
+   "n": 300,
+   "median_ms": 2.003,
+   "mean_ms": 2.025
+  }
+ },
+ "without": {
+  "Q02": {
+   "title": "Sign up: create the user, their profile and their default skins",
+   "n": 300,
+   "median_ms": 0.269,
+   "mean_ms": 0.31
+  },
+  "Q31": {
+   "title": "Create a match: both players' snapshots, hands and the decks",
+   "n": 300,
+   "median_ms": 0.158,
+   "mean_ms": 0.171
+  },
+  "Q33": {
+   "title": "Both players are ready: the match goes live",
+   "n": 300,
+   "median_ms": 0.172,
+   "mean_ms": 0.187
+  },
+  "Q35": {
+   "title": "Save the match after a hit lands (HP, hand, stats, last event number)",
+   "n": 300,
+   "median_ms": 0.13,
+   "mean_ms": 0.157
+  },
+  "Q36": {
+   "title": "Append the command's events to the match log",
+   "n": 300,
+   "median_ms": 0.098,
+   "mean_ms": 0.116
+  },
+  "Q46": {
+   "title": "Close the match: outcome, labels, the result screen",
+   "n": 300,
+   "median_ms": 0.124,
+   "mean_ms": 0.15
+  },
+  "Q51": {
+   "title": "Apply the result to a player: rating, peak, W/L/D, AP, daily counters",
+   "n": 300,
+   "median_ms": 0.062,
+   "mean_ms": 0.073
+  },
+  "Q72": {
+   "title": "Start-up: abort every match the last process left running",
+   "n": 300,
+   "median_ms": 1.515,
+   "mean_ms": 1.638
+  }
+ },
+ "with again": {
+  "Q02": {
+   "title": "Sign up: create the user, their profile and their default skins",
+   "n": 300,
+   "median_ms": 0.384,
+   "mean_ms": 0.399
+  },
+  "Q31": {
+   "title": "Create a match: both players' snapshots, hands and the decks",
+   "n": 300,
+   "median_ms": 0.221,
+   "mean_ms": 0.229
+  },
+  "Q33": {
+   "title": "Both players are ready: the match goes live",
+   "n": 300,
+   "median_ms": 0.247,
+   "mean_ms": 0.284
+  },
+  "Q35": {
+   "title": "Save the match after a hit lands (HP, hand, stats, last event number)",
+   "n": 300,
+   "median_ms": 0.196,
+   "mean_ms": 0.222
+  },
+  "Q36": {
+   "title": "Append the command's events to the match log",
+   "n": 300,
+   "median_ms": 0.146,
+   "mean_ms": 0.156
+  },
+  "Q46": {
+   "title": "Close the match: outcome, labels, the result screen",
+   "n": 300,
+   "median_ms": 0.22,
+   "mean_ms": 0.242
+  },
+  "Q51": {
+   "title": "Apply the result to a player: rating, peak, W/L/D, AP, daily counters",
+   "n": 300,
+   "median_ms": 0.119,
+   "mean_ms": 0.126
+  },
+  "Q72": {
+   "title": "Start-up: abort every match the last process left running",
+   "n": 300,
+   "median_ms": 2.041,
+   "mean_ms": 2.187
+  }
+ }
+}

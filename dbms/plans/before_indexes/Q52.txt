@@ -1,0 +1,36 @@
+Q52 · WRITE · Record the rating change and its breakdown
+App: engine/finish.py:109
+
+INSERT INTO rating_history (profile_id, match_id, before, after, delta, steps, multiplier)
+VALUES (26, '9348a163-6e39-4f78-8557-09984d57dc04', 1367, 1388, 21,
+        '[{"key": "base_win", "delta": 16}, {"key": "hp_left", "delta": 3}, {"key": "speed", "delta": 2}]', 100);
+
+---- Run 1: execution 0.489 ms, planning 0.053 ms ----
+Insert on rating_history  (cost=0.00..0.02 rows=0 width=0) (actual time=0.264..0.264 rows=0 loops=1)
+  Buffers: shared hit=19 read=11 dirtied=4
+  ->  Result  (cost=0.00..0.02 rows=1 width=155) (actual time=0.090..0.091 rows=1 loops=1)
+        Buffers: shared hit=11 read=1 dirtied=1
+Planning Time: 0.053 ms
+Trigger for constraint rating_history_profile_id_fkey: time=0.121 calls=1
+Trigger for constraint rating_history_match_id_fkey: time=0.090 calls=1
+Execution Time: 0.489 ms
+
+---- Run 2: execution 0.479 ms, planning 0.020 ms ----
+Insert on rating_history  (cost=0.00..0.02 rows=0 width=0) (actual time=0.224..0.224 rows=0 loops=1)
+  Buffers: shared hit=29
+  ->  Result  (cost=0.00..0.02 rows=1 width=155) (actual time=0.062..0.063 rows=1 loops=1)
+        Buffers: shared hit=12
+Planning Time: 0.020 ms
+Trigger for constraint rating_history_profile_id_fkey: time=0.130 calls=1
+Trigger for constraint rating_history_match_id_fkey: time=0.109 calls=1
+Execution Time: 0.479 ms
+
+---- Run 3: execution 0.253 ms, planning 0.010 ms ----
+Insert on rating_history  (cost=0.00..0.02 rows=0 width=0) (actual time=0.125..0.125 rows=0 loops=1)
+  Buffers: shared hit=29
+  ->  Result  (cost=0.00..0.02 rows=1 width=155) (actual time=0.032..0.032 rows=1 loops=1)
+        Buffers: shared hit=12
+Planning Time: 0.010 ms
+Trigger for constraint rating_history_profile_id_fkey: time=0.064 calls=1
+Trigger for constraint rating_history_match_id_fkey: time=0.056 calls=1
+Execution Time: 0.253 ms

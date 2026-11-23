@@ -1,0 +1,39 @@
+Q33 · WRITE · Both players are ready: the match goes live
+App: engine/actor.py:315 (session.merge of the match after the ready check)
+
+UPDATE matches
+SET status = 'live', start_time = now() AT TIME ZONE 'utc', last_seq = 3
+WHERE id = 'b5e0c0de-1111-4222-8333-444455556666';
+
+---- Run 1: execution 0.500 ms, planning 0.080 ms ----
+Update on matches  (cost=0.42..8.44 rows=0 width=0) (actual time=0.315..0.316 rows=0 loops=1)
+  Buffers: shared hit=33
+  ->  Index Scan using matches_pkey on matches  (cost=0.42..8.44 rows=1 width=68) (actual time=0.017..0.018 rows=1 loops=1)
+        Index Cond: ((id)::text = 'b5e0c0de-1111-4222-8333-444455556666'::text)
+        Buffers: shared hit=4
+Planning Time: 0.080 ms
+Trigger for constraint matches_player1_profile_id_fkey: time=0.094 calls=1
+Trigger for constraint matches_player2_profile_id_fkey: time=0.052 calls=1
+Execution Time: 0.500 ms
+
+---- Run 2: execution 0.389 ms, planning 0.068 ms ----
+Update on matches  (cost=0.42..8.44 rows=0 width=0) (actual time=0.255..0.255 rows=0 loops=1)
+  Buffers: shared hit=33
+  ->  Index Scan using matches_pkey on matches  (cost=0.42..8.44 rows=1 width=68) (actual time=0.013..0.014 rows=1 loops=1)
+        Index Cond: ((id)::text = 'b5e0c0de-1111-4222-8333-444455556666'::text)
+        Buffers: shared hit=4
+Planning Time: 0.068 ms
+Trigger for constraint matches_player1_profile_id_fkey: time=0.071 calls=1
+Trigger for constraint matches_player2_profile_id_fkey: time=0.028 calls=1
+Execution Time: 0.389 ms
+
+---- Run 3: execution 0.327 ms, planning 0.057 ms ----
+Update on matches  (cost=0.42..8.44 rows=0 width=0) (actual time=0.191..0.192 rows=0 loops=1)
+  Buffers: shared hit=33
+  ->  Index Scan using matches_pkey on matches  (cost=0.42..8.44 rows=1 width=68) (actual time=0.010..0.011 rows=1 loops=1)
+        Index Cond: ((id)::text = 'b5e0c0de-1111-4222-8333-444455556666'::text)
+        Buffers: shared hit=4
+Planning Time: 0.057 ms
+Trigger for constraint matches_player1_profile_id_fkey: time=0.082 calls=1
+Trigger for constraint matches_player2_profile_id_fkey: time=0.026 calls=1
+Execution Time: 0.327 ms

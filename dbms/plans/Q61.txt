@@ -1,0 +1,46 @@
+Q61 · READ · Admin: the latest 100 matches, searched by player name or id
+App: api/admin.py:45-48 (the app filters the 100 rows in Python)
+
+SELECT id, mode, map, status, created_at, end_reason, winner_side, player1_name, player2_name
+FROM (SELECT *
+      FROM matches
+      ORDER BY created_at DESC
+      LIMIT 100) recent
+WHERE lower(player1_name || player2_name || id) LIKE '%player_1%'
+ORDER BY created_at DESC;
+
+---- Run 1: execution 0.479 ms, planning 0.124 ms ----
+Subquery Scan on recent  (cost=0.29..24.92 rows=1 width=94) (actual time=0.023..0.446 rows=79 loops=1)
+  Filter: (lower((((recent.player1_name)::text || (recent.player2_name)::text) || (recent.id)::text)) ~~ '%player_1%'::text)
+  Rows Removed by Filter: 21
+  Buffers: shared hit=14 read=24
+  ->  Limit  (cost=0.29..22.92 rows=100 width=742) (actual time=0.013..0.337 rows=100 loops=1)
+        Buffers: shared hit=14 read=24
+        ->  Index Scan Backward using ix_matches_created_at on matches  (cost=0.29..22637.13 rows=100050 width=742) (actual time=0.012..0.312 rows=100 loops=1)
+              Buffers: shared hit=14 read=24
+Planning Time: 0.124 ms
+Execution Time: 0.479 ms
+
+---- Run 2: execution 0.308 ms, planning 0.161 ms ----
+Subquery Scan on recent  (cost=0.29..24.92 rows=1 width=94) (actual time=0.023..0.275 rows=79 loops=1)
+  Filter: (lower((((recent.player1_name)::text || (recent.player2_name)::text) || (recent.id)::text)) ~~ '%player_1%'::text)
+  Rows Removed by Filter: 21
+  Buffers: shared hit=113
+  ->  Limit  (cost=0.29..22.92 rows=100 width=742) (actual time=0.014..0.178 rows=100 loops=1)
+        Buffers: shared hit=113
+        ->  Index Scan Backward using ix_matches_created_at on matches  (cost=0.29..22637.13 rows=100050 width=742) (actual time=0.013..0.167 rows=100 loops=1)
+              Buffers: shared hit=113
+Planning Time: 0.161 ms
+Execution Time: 0.308 ms
+
+---- Run 3: execution 0.211 ms, planning 0.079 ms ----
+Subquery Scan on recent  (cost=0.29..24.92 rows=1 width=94) (actual time=0.019..0.188 rows=79 loops=1)
+  Filter: (lower((((recent.player1_name)::text || (recent.player2_name)::text) || (recent.id)::text)) ~~ '%player_1%'::text)
+  Rows Removed by Filter: 21
+  Buffers: shared hit=113
+  ->  Limit  (cost=0.29..22.92 rows=100 width=742) (actual time=0.012..0.123 rows=100 loops=1)
+        Buffers: shared hit=113
+        ->  Index Scan Backward using ix_matches_created_at on matches  (cost=0.29..22637.13 rows=100050 width=742) (actual time=0.011..0.115 rows=100 loops=1)
+              Buffers: shared hit=113
+Planning Time: 0.079 ms
+Execution Time: 0.211 ms

@@ -1,0 +1,40 @@
+Q72 · WRITE · Start-up: abort every match the last process left running
+App: engine/service.py:63-69 (SELECT them, then save each); here one UPDATE.
+
+UPDATE matches
+SET status = 'aborted', end_reason = 'aborted', outcome = 'aborted',
+    result = '{"outcome": "aborted", "end_reason": "aborted", "reason": "server_restarted", "sides": {}}'
+WHERE status IN ('starting', 'live');
+
+---- Run 1: execution 2.192 ms, planning 0.059 ms ----
+Update on matches  (cost=0.29..29.06 rows=0 width=0) (actual time=2.045..2.045 rows=0 loops=1)
+  Buffers: shared hit=770 read=81 dirtied=77
+  ->  Index Scan using ix_matches_status on matches  (cost=0.29..29.06 rows=27 width=188) (actual time=0.056..0.236 rows=49 loops=1)
+        Index Cond: ((status)::text = ANY ('{starting,live}'::text[]))
+        Buffers: shared hit=9 read=24
+Planning Time: 0.059 ms
+Trigger for constraint matches_player1_profile_id_fkey: time=0.099 calls=1
+Trigger for constraint matches_player2_profile_id_fkey: time=0.032 calls=1
+Execution Time: 2.192 ms
+
+---- Run 2: execution 1.001 ms, planning 0.033 ms ----
+Update on matches  (cost=0.29..29.06 rows=0 width=0) (actual time=0.902..0.902 rows=0 loops=1)
+  Buffers: shared hit=882 dirtied=3
+  ->  Index Scan using ix_matches_status on matches  (cost=0.29..29.06 rows=27 width=188) (actual time=0.025..0.064 rows=49 loops=1)
+        Index Cond: ((status)::text = ANY ('{starting,live}'::text[]))
+        Buffers: shared hit=38
+Planning Time: 0.033 ms
+Trigger for constraint matches_player1_profile_id_fkey: time=0.067 calls=1
+Trigger for constraint matches_player2_profile_id_fkey: time=0.021 calls=1
+Execution Time: 1.001 ms
+
+---- Run 3: execution 1.032 ms, planning 0.042 ms ----
+Update on matches  (cost=0.29..29.06 rows=0 width=0) (actual time=0.905..0.905 rows=0 loops=1)
+  Buffers: shared hit=886 dirtied=3
+  ->  Index Scan using ix_matches_status on matches  (cost=0.29..29.06 rows=27 width=188) (actual time=0.028..0.060 rows=49 loops=1)
+        Index Cond: ((status)::text = ANY ('{starting,live}'::text[]))
+        Buffers: shared hit=38
+Planning Time: 0.042 ms
+Trigger for constraint matches_player1_profile_id_fkey: time=0.087 calls=1
+Trigger for constraint matches_player2_profile_id_fkey: time=0.027 calls=1
+Execution Time: 1.032 ms

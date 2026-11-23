@@ -1,0 +1,38 @@
+Q30 · READ · Pick a bot opponent by personality
+App: engine/service.py:209; also seed.py:104 (ensure_bots)
+
+SELECT *
+FROM profiles
+WHERE is_bot
+  AND personality = 'gambler'
+LIMIT 1;
+
+---- Run 1: execution 2.626 ms, planning 0.051 ms ----
+Limit  (cost=0.00..1789.06 rows=1 width=365) (actual time=2.613..2.614 rows=1 loops=1)
+  Buffers: shared hit=975
+  ->  Seq Scan on profiles  (cost=0.00..1789.06 rows=1 width=365) (actual time=2.611..2.612 rows=1 loops=1)
+        Filter: (is_bot AND ((personality)::text = 'gambler'::text))
+        Rows Removed by Filter: 8929
+        Buffers: shared hit=975
+Planning Time: 0.051 ms
+Execution Time: 2.626 ms
+
+---- Run 2: execution 3.949 ms, planning 0.061 ms ----
+Limit  (cost=0.00..1789.06 rows=1 width=365) (actual time=3.931..3.932 rows=1 loops=1)
+  Buffers: shared hit=975
+  ->  Seq Scan on profiles  (cost=0.00..1789.06 rows=1 width=365) (actual time=3.929..3.929 rows=1 loops=1)
+        Filter: (is_bot AND ((personality)::text = 'gambler'::text))
+        Rows Removed by Filter: 8929
+        Buffers: shared hit=975
+Planning Time: 0.061 ms
+Execution Time: 3.949 ms
+
+---- Run 3: execution 2.442 ms, planning 0.049 ms ----
+Limit  (cost=0.00..1789.06 rows=1 width=365) (actual time=2.428..2.430 rows=1 loops=1)
+  Buffers: shared hit=975
+  ->  Seq Scan on profiles  (cost=0.00..1789.06 rows=1 width=365) (actual time=2.426..2.426 rows=1 loops=1)
+        Filter: (is_bot AND ((personality)::text = 'gambler'::text))
+        Rows Removed by Filter: 8929
+        Buffers: shared hit=975
+Planning Time: 0.049 ms
+Execution Time: 2.442 ms

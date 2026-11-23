@@ -1,0 +1,53 @@
+Q23 · READ · Rank among people: how many rate higher, and how many there are
+App: services/stats.py:161 and :163 (two COUNTs); here one self-join.
+
+SELECT count(*) FILTER (WHERE o.rating > me.rating) + 1 AS position,
+       count(*)                                         AS players
+FROM profiles me
+JOIN profiles o ON NOT o.is_bot AND o.user_id IS NOT NULL
+WHERE me.id = 26;
+
+---- Run 1: execution 21.667 ms, planning 0.095 ms ----
+Aggregate  (cost=2097.27..2097.28 rows=1 width=16) (actual time=21.637..21.639 rows=1 loops=1)
+  Buffers: shared hit=8 read=1534
+  ->  Nested Loop  (cost=0.29..1947.30 rows=19995 width=8) (actual time=0.013..19.922 rows=20001 loops=1)
+        Buffers: shared hit=8 read=1534
+        ->  Index Scan using profiles_pkey on profiles me  (cost=0.29..8.30 rows=1 width=4) (actual time=0.007..0.013 rows=1 loops=1)
+              Index Cond: (id = 26)
+              Buffers: shared hit=3
+        ->  Seq Scan on profiles o  (cost=0.00..1739.05 rows=19995 width=4) (actual time=0.005..17.519 rows=20001 loops=1)
+              Filter: ((NOT is_bot) AND (user_id IS NOT NULL))
+              Rows Removed by Filter: 5
+              Buffers: shared hit=5 read=1534
+Planning Time: 0.095 ms
+Execution Time: 21.667 ms
+
+---- Run 2: execution 11.165 ms, planning 0.069 ms ----
+Aggregate  (cost=2097.27..2097.28 rows=1 width=16) (actual time=11.130..11.132 rows=1 loops=1)
+  Buffers: shared hit=1542
+  ->  Nested Loop  (cost=0.29..1947.30 rows=19995 width=8) (actual time=0.013..9.865 rows=20001 loops=1)
+        Buffers: shared hit=1542
+        ->  Index Scan using profiles_pkey on profiles me  (cost=0.29..8.30 rows=1 width=4) (actual time=0.007..0.012 rows=1 loops=1)
+              Index Cond: (id = 26)
+              Buffers: shared hit=3
+        ->  Seq Scan on profiles o  (cost=0.00..1739.05 rows=19995 width=4) (actual time=0.005..8.143 rows=20001 loops=1)
+              Filter: ((NOT is_bot) AND (user_id IS NOT NULL))
+              Rows Removed by Filter: 5
+              Buffers: shared hit=1539
+Planning Time: 0.069 ms
+Execution Time: 11.165 ms
+
+---- Run 3: execution 11.960 ms, planning 0.046 ms ----
+Aggregate  (cost=2097.27..2097.28 rows=1 width=16) (actual time=11.939..11.941 rows=1 loops=1)
+  Buffers: shared hit=1542
+  ->  Nested Loop  (cost=0.29..1947.30 rows=19995 width=8) (actual time=0.009..10.545 rows=20001 loops=1)
+        Buffers: shared hit=1542
+        ->  Index Scan using profiles_pkey on profiles me  (cost=0.29..8.30 rows=1 width=4) (actual time=0.004..0.010 rows=1 loops=1)
+              Index Cond: (id = 26)
+              Buffers: shared hit=3
+        ->  Seq Scan on profiles o  (cost=0.00..1739.05 rows=19995 width=4) (actual time=0.004..8.457 rows=20001 loops=1)
+              Filter: ((NOT is_bot) AND (user_id IS NOT NULL))
+              Rows Removed by Filter: 5
+              Buffers: shared hit=1539
+Planning Time: 0.046 ms
+Execution Time: 11.960 ms

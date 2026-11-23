@@ -1,0 +1,35 @@
+Q30 · READ · Pick a bot opponent by personality
+App: engine/service.py:209; also seed.py:104 (ensure_bots)
+
+SELECT *
+FROM profiles
+WHERE is_bot
+  AND personality = 'gambler'
+LIMIT 1;
+
+---- Run 1: execution 0.055 ms, planning 0.091 ms ----
+Limit  (cost=0.13..8.15 rows=1 width=365) (actual time=0.042..0.043 rows=1 loops=1)
+  Buffers: shared hit=1 read=1
+  ->  Index Scan using ix_profiles_bot_personality on profiles  (cost=0.13..8.15 rows=1 width=365) (actual time=0.041..0.041 rows=1 loops=1)
+        Index Cond: ((personality)::text = 'gambler'::text)
+        Buffers: shared hit=1 read=1
+Planning Time: 0.091 ms
+Execution Time: 0.055 ms
+
+---- Run 2: execution 0.022 ms, planning 0.106 ms ----
+Limit  (cost=0.13..8.15 rows=1 width=365) (actual time=0.009..0.010 rows=1 loops=1)
+  Buffers: shared hit=2
+  ->  Index Scan using ix_profiles_bot_personality on profiles  (cost=0.13..8.15 rows=1 width=365) (actual time=0.008..0.008 rows=1 loops=1)
+        Index Cond: ((personality)::text = 'gambler'::text)
+        Buffers: shared hit=2
+Planning Time: 0.106 ms
+Execution Time: 0.022 ms
+
+---- Run 3: execution 0.014 ms, planning 0.047 ms ----
+Limit  (cost=0.13..8.15 rows=1 width=365) (actual time=0.007..0.007 rows=1 loops=1)
+  Buffers: shared hit=2
+  ->  Index Scan using ix_profiles_bot_personality on profiles  (cost=0.13..8.15 rows=1 width=365) (actual time=0.005..0.006 rows=1 loops=1)
+        Index Cond: ((personality)::text = 'gambler'::text)
+        Buffers: shared hit=2
+Planning Time: 0.047 ms
+Execution Time: 0.014 ms

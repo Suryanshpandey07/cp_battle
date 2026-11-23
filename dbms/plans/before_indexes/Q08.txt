@@ -1,0 +1,33 @@
+Q08 · WRITE · Refresh: rotate (revoke the token that was just used)
+App: api/auth.py:140
+
+UPDATE refresh_tokens
+SET revoked_at = now() AT TIME ZONE 'utc'
+WHERE id = 126;
+
+---- Run 1: execution 0.106 ms, planning 0.073 ms ----
+Update on refresh_tokens  (cost=0.29..8.31 rows=0 width=0) (actual time=0.089..0.090 rows=0 loops=1)
+  Buffers: shared hit=18 read=2 dirtied=1
+  ->  Index Scan using refresh_tokens_pkey on refresh_tokens  (cost=0.29..8.31 rows=1 width=14) (actual time=0.015..0.017 rows=1 loops=1)
+        Index Cond: (id = 126)
+        Buffers: shared hit=5
+Planning Time: 0.073 ms
+Execution Time: 0.106 ms
+
+---- Run 2: execution 0.070 ms, planning 0.046 ms ----
+Update on refresh_tokens  (cost=0.29..8.31 rows=0 width=0) (actual time=0.055..0.055 rows=0 loops=1)
+  Buffers: shared hit=20
+  ->  Index Scan using refresh_tokens_pkey on refresh_tokens  (cost=0.29..8.31 rows=1 width=14) (actual time=0.014..0.016 rows=1 loops=1)
+        Index Cond: (id = 126)
+        Buffers: shared hit=5
+Planning Time: 0.046 ms
+Execution Time: 0.070 ms
+
+---- Run 3: execution 0.169 ms, planning 0.042 ms ----
+Update on refresh_tokens  (cost=0.29..8.31 rows=0 width=0) (actual time=0.154..0.154 rows=0 loops=1)
+  Buffers: shared hit=20
+  ->  Index Scan using refresh_tokens_pkey on refresh_tokens  (cost=0.29..8.31 rows=1 width=14) (actual time=0.024..0.026 rows=1 loops=1)
+        Index Cond: (id = 126)
+        Buffers: shared hit=5
+Planning Time: 0.042 ms
+Execution Time: 0.169 ms

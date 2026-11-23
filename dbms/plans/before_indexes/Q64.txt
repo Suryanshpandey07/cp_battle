@@ -1,0 +1,32 @@
+Q64 · WRITE · Admin: write the audit log
+App: api/admin.py:24 (_audit, after every admin action)
+
+INSERT INTO audit_log (actor_id, action, target, details)
+VALUES (1, 'void_match', '9348a163-6e39-4f78-8557-09984d57dc04', '{"reason": "shared account", "rows": 2}');
+
+---- Run 1: execution 0.446 ms, planning 0.027 ms ----
+Insert on audit_log  (cost=0.00..0.02 rows=0 width=0) (actual time=0.222..0.223 rows=0 loops=1)
+  Buffers: shared hit=24 read=8 dirtied=3
+  ->  Result  (cost=0.00..0.02 rows=1 width=308) (actual time=0.086..0.087 rows=1 loops=1)
+        Buffers: shared hit=11 read=1 dirtied=1
+Planning Time: 0.027 ms
+Trigger for constraint audit_log_actor_id_fkey: time=0.212 calls=1
+Execution Time: 0.446 ms
+
+---- Run 2: execution 0.282 ms, planning 0.016 ms ----
+Insert on audit_log  (cost=0.00..0.02 rows=0 width=0) (actual time=0.155..0.156 rows=0 loops=1)
+  Buffers: shared hit=32
+  ->  Result  (cost=0.00..0.02 rows=1 width=308) (actual time=0.040..0.041 rows=1 loops=1)
+        Buffers: shared hit=12
+Planning Time: 0.016 ms
+Trigger for constraint audit_log_actor_id_fkey: time=0.118 calls=1
+Execution Time: 0.282 ms
+
+---- Run 3: execution 0.324 ms, planning 0.023 ms ----
+Insert on audit_log  (cost=0.00..0.02 rows=0 width=0) (actual time=0.142..0.142 rows=0 loops=1)
+  Buffers: shared hit=32
+  ->  Result  (cost=0.00..0.02 rows=1 width=308) (actual time=0.051..0.051 rows=1 loops=1)
+        Buffers: shared hit=12
+Planning Time: 0.023 ms
+Trigger for constraint audit_log_actor_id_fkey: time=0.171 calls=1
+Execution Time: 0.324 ms

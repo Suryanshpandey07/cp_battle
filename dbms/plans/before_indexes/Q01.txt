@@ -1,0 +1,33 @@
+Q01 · READ · Sign up: is the username taken?
+App: api/auth.py:77 (POST /auth/signup); also seed.py:72, api/admin.py:132
+
+SELECT id
+FROM users
+WHERE username_lower = 'new_player';
+
+---- Run 1: execution 0.383 ms, planning 0.470 ms ----
+Index Scan using ix_users_username_lower on users  (cost=0.29..8.30 rows=1 width=4) (actual time=0.064..0.065 rows=0 loops=1)
+  Index Cond: ((username_lower)::text = 'new_player'::text)
+  Buffers: shared hit=1 read=3 dirtied=2
+Planning:
+  Buffers: shared hit=48 read=26
+Planning Time: 0.470 ms
+Execution Time: 0.383 ms
+
+---- Run 2: execution 0.119 ms, planning 0.412 ms ----
+Index Scan using ix_users_username_lower on users  (cost=0.29..8.30 rows=1 width=4) (actual time=0.032..0.032 rows=0 loops=1)
+  Index Cond: ((username_lower)::text = 'new_player'::text)
+  Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=84
+Planning Time: 0.412 ms
+Execution Time: 0.119 ms
+
+---- Run 3: execution 0.065 ms, planning 0.304 ms ----
+Index Scan using ix_users_username_lower on users  (cost=0.29..8.30 rows=1 width=4) (actual time=0.028..0.028 rows=0 loops=1)
+  Index Cond: ((username_lower)::text = 'new_player'::text)
+  Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=84
+Planning Time: 0.304 ms
+Execution Time: 0.065 ms

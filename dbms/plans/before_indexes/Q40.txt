@@ -1,0 +1,56 @@
+Q40 · WRITE · Save the editor's draft (insert, or overwrite the same slot and language)
+App: api/matches.py:300-308 (SELECT, then INSERT or UPDATE); here one upsert.
+
+INSERT INTO drafts (match_id, profile_id, slot, language, code, problem_slug, updated_at)
+VALUES ('552ba0bd-997e-4e6f-8bb9-dc5a3cec1f7f', 101, 3, 'python', E'n = int(input())\nprint(bin(n).count("1"))',
+        'bit-count', now() AT TIME ZONE 'utc')
+ON CONFLICT (match_id, profile_id, slot, language)
+DO UPDATE SET code = EXCLUDED.code, problem_slug = EXCLUDED.problem_slug, updated_at = EXCLUDED.updated_at;
+
+---- Run 1: execution 0.511 ms, planning 0.109 ms ----
+Insert on drafts  (cost=0.00..0.02 rows=0 width=0) (actual time=0.264..0.265 rows=0 loops=1)
+  Conflict Resolution: UPDATE
+  Conflict Arbiter Indexes: uq_drafts_key
+  Tuples Inserted: 1
+  Conflicting Tuples: 0
+  Buffers: shared hit=15 read=14 dirtied=6
+  ->  Result  (cost=0.00..0.02 rows=1 width=338) (actual time=0.076..0.076 rows=1 loops=1)
+        Buffers: shared hit=11 read=1 dirtied=1
+Planning:
+  Buffers: shared hit=55
+Planning Time: 0.109 ms
+Trigger for constraint drafts_match_id_fkey: time=0.148 calls=1
+Trigger for constraint drafts_profile_id_fkey: time=0.072 calls=1
+Execution Time: 0.511 ms
+
+---- Run 2: execution 0.584 ms, planning 0.110 ms ----
+Insert on drafts  (cost=0.00..0.02 rows=0 width=0) (actual time=0.292..0.292 rows=0 loops=1)
+  Conflict Resolution: UPDATE
+  Conflict Arbiter Indexes: uq_drafts_key
+  Tuples Inserted: 1
+  Conflicting Tuples: 0
+  Buffers: shared hit=30 dirtied=3 written=2
+  ->  Result  (cost=0.00..0.02 rows=1 width=338) (actual time=0.029..0.029 rows=1 loops=1)
+        Buffers: shared hit=12
+Planning:
+  Buffers: shared hit=55
+Planning Time: 0.110 ms
+Trigger for constraint drafts_match_id_fkey: time=0.186 calls=1
+Trigger for constraint drafts_profile_id_fkey: time=0.064 calls=1
+Execution Time: 0.584 ms
+
+---- Run 3: execution 0.301 ms, planning 0.077 ms ----
+Insert on drafts  (cost=0.00..0.02 rows=0 width=0) (actual time=0.142..0.143 rows=0 loops=1)
+  Conflict Resolution: UPDATE
+  Conflict Arbiter Indexes: uq_drafts_key
+  Tuples Inserted: 1
+  Conflicting Tuples: 0
+  Buffers: shared hit=30
+  ->  Result  (cost=0.00..0.02 rows=1 width=338) (actual time=0.021..0.022 rows=1 loops=1)
+        Buffers: shared hit=12
+Planning:
+  Buffers: shared hit=55
+Planning Time: 0.077 ms
+Trigger for constraint drafts_match_id_fkey: time=0.103 calls=1
+Trigger for constraint drafts_profile_id_fkey: time=0.037 calls=1
+Execution Time: 0.301 ms

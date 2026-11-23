@@ -1,0 +1,40 @@
+Q77 · READ · Leaderboard, all time: my place when I am outside the top 100
+App: api/players.py:243-245 (_ladder_place). The people ordered ahead of me
+on the board: rated higher, or rated the same with a name that sorts first.
+Player 26 is rated 1367.
+
+SELECT count(*) + 1 AS rank
+FROM profiles
+WHERE NOT is_bot
+  AND user_id IS NOT NULL
+  AND (rating > 1367 OR (rating = 1367 AND lower(display_name) < lower('player_26')));
+
+---- Run 1: execution 6.159 ms, planning 0.171 ms ----
+Aggregate  (cost=1958.72..1958.73 rows=1 width=8) (actual time=6.125..6.126 rows=1 loops=1)
+  Buffers: shared hit=1539
+  ->  Seq Scan on profiles  (cost=0.00..1939.10 rows=7847 width=0) (actual time=0.011..5.672 rows=7859 loops=1)
+        Filter: ((NOT is_bot) AND (user_id IS NOT NULL) AND ((rating > 1367) OR ((rating = 1367) AND (lower((display_name)::text) < 'player_26'::text))))
+        Rows Removed by Filter: 12147
+        Buffers: shared hit=1539
+Planning Time: 0.171 ms
+Execution Time: 6.159 ms
+
+---- Run 2: execution 6.468 ms, planning 0.151 ms ----
+Aggregate  (cost=1958.72..1958.73 rows=1 width=8) (actual time=6.434..6.436 rows=1 loops=1)
+  Buffers: shared hit=1539
+  ->  Seq Scan on profiles  (cost=0.00..1939.10 rows=7847 width=0) (actual time=0.010..5.952 rows=7859 loops=1)
+        Filter: ((NOT is_bot) AND (user_id IS NOT NULL) AND ((rating > 1367) OR ((rating = 1367) AND (lower((display_name)::text) < 'player_26'::text))))
+        Rows Removed by Filter: 12147
+        Buffers: shared hit=1539
+Planning Time: 0.151 ms
+Execution Time: 6.468 ms
+
+---- Run 3: execution 6.103 ms, planning 0.171 ms ----
+Aggregate  (cost=1958.72..1958.73 rows=1 width=8) (actual time=6.066..6.068 rows=1 loops=1)
+  Buffers: shared hit=1539
+  ->  Seq Scan on profiles  (cost=0.00..1939.10 rows=7847 width=0) (actual time=0.010..5.569 rows=7859 loops=1)
+        Filter: ((NOT is_bot) AND (user_id IS NOT NULL) AND ((rating > 1367) OR ((rating = 1367) AND (lower((display_name)::text) < 'player_26'::text))))
+        Rows Removed by Filter: 12147
+        Buffers: shared hit=1539
+Planning Time: 0.171 ms
+Execution Time: 6.103 ms

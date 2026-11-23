@@ -1,0 +1,90 @@
+Q18 · READ · Career stats: up to 1000 finished matches (streaks, maps, activity)
+App: services/stats.py:113-115. The app reads whole rows; these are the
+columns the summary uses.
+
+SELECT id, mode, map, created_at, end_reason, outcome, winner_side, elapsed_ms,
+       player1_profile_id, player1_damage_dealt, player1_hits_landed, player1_stats,
+       player2_profile_id, player2_damage_dealt, player2_hits_landed, player2_stats
+FROM matches
+WHERE (player1_profile_id = 26 OR player2_profile_id = 26)
+  AND status = 'finished'
+ORDER BY created_at DESC
+LIMIT 1000;
+
+---- Run 1: execution 0.280 ms, planning 0.183 ms ----
+Limit  (cost=396.88..397.12 rows=98 width=374) (actual time=0.250..0.260 rows=81 loops=1)
+  Buffers: shared hit=89
+  ->  Sort  (cost=396.88..397.12 rows=98 width=374) (actual time=0.249..0.253 rows=81 loops=1)
+        Sort Key: created_at DESC
+        Sort Method: quicksort  Memory: 66kB
+        Buffers: shared hit=89
+        ->  Bitmap Heap Scan on matches  (cost=9.39..393.64 rows=98 width=374) (actual time=0.026..0.205 rows=81 loops=1)
+              Recheck Cond: ((player1_profile_id = 26) OR (player2_profile_id = 26))
+              Filter: ((status)::text = 'finished'::text)
+              Rows Removed by Filter: 4
+              Heap Blocks: exact=85
+              Buffers: shared hit=89
+              ->  BitmapOr  (cost=9.39..9.39 rows=101 width=0) (actual time=0.013..0.014 rows=0 loops=1)
+                    Buffers: shared hit=4
+                    ->  Bitmap Index Scan on ix_matches_player1_profile_id  (cost=0.00..5.02 rows=97 width=0) (actual time=0.008..0.008 rows=79 loops=1)
+                          Index Cond: (player1_profile_id = 26)
+                          Buffers: shared hit=2
+                    ->  Bitmap Index Scan on ix_matches_player2_profile_id  (cost=0.00..4.32 rows=4 width=0) (actual time=0.004..0.004 rows=6 loops=1)
+                          Index Cond: (player2_profile_id = 26)
+                          Buffers: shared hit=2
+Planning:
+  Buffers: shared hit=24 read=3 dirtied=4
+Planning Time: 0.183 ms
+Execution Time: 0.280 ms
+
+---- Run 2: execution 0.235 ms, planning 0.113 ms ----
+Limit  (cost=396.88..397.12 rows=98 width=374) (actual time=0.206..0.215 rows=81 loops=1)
+  Buffers: shared hit=91
+  ->  Sort  (cost=396.88..397.12 rows=98 width=374) (actual time=0.205..0.209 rows=81 loops=1)
+        Sort Key: created_at DESC
+        Sort Method: quicksort  Memory: 66kB
+        Buffers: shared hit=91
+        ->  Bitmap Heap Scan on matches  (cost=9.39..393.64 rows=98 width=374) (actual time=0.025..0.169 rows=81 loops=1)
+              Recheck Cond: ((player1_profile_id = 26) OR (player2_profile_id = 26))
+              Filter: ((status)::text = 'finished'::text)
+              Rows Removed by Filter: 4
+              Heap Blocks: exact=87
+              Buffers: shared hit=91
+              ->  BitmapOr  (cost=9.39..9.39 rows=101 width=0) (actual time=0.013..0.013 rows=0 loops=1)
+                    Buffers: shared hit=4
+                    ->  Bitmap Index Scan on ix_matches_player1_profile_id  (cost=0.00..5.02 rows=97 width=0) (actual time=0.008..0.008 rows=82 loops=1)
+                          Index Cond: (player1_profile_id = 26)
+                          Buffers: shared hit=2
+                    ->  Bitmap Index Scan on ix_matches_player2_profile_id  (cost=0.00..4.32 rows=4 width=0) (actual time=0.004..0.004 rows=6 loops=1)
+                          Index Cond: (player2_profile_id = 26)
+                          Buffers: shared hit=2
+Planning:
+  Buffers: shared hit=27
+Planning Time: 0.113 ms
+Execution Time: 0.235 ms
+
+---- Run 3: execution 0.162 ms, planning 0.086 ms ----
+Limit  (cost=396.88..397.12 rows=98 width=374) (actual time=0.137..0.147 rows=81 loops=1)
+  Buffers: shared hit=93
+  ->  Sort  (cost=396.88..397.12 rows=98 width=374) (actual time=0.136..0.140 rows=81 loops=1)
+        Sort Key: created_at DESC
+        Sort Method: quicksort  Memory: 66kB
+        Buffers: shared hit=93
+        ->  Bitmap Heap Scan on matches  (cost=9.39..393.64 rows=98 width=374) (actual time=0.021..0.107 rows=81 loops=1)
+              Recheck Cond: ((player1_profile_id = 26) OR (player2_profile_id = 26))
+              Filter: ((status)::text = 'finished'::text)
+              Rows Removed by Filter: 4
+              Heap Blocks: exact=89
+              Buffers: shared hit=93
+              ->  BitmapOr  (cost=9.39..9.39 rows=101 width=0) (actual time=0.010..0.010 rows=0 loops=1)
+                    Buffers: shared hit=4
+                    ->  Bitmap Index Scan on ix_matches_player1_profile_id  (cost=0.00..5.02 rows=97 width=0) (actual time=0.006..0.007 rows=85 loops=1)
+                          Index Cond: (player1_profile_id = 26)
+                          Buffers: shared hit=2
+                    ->  Bitmap Index Scan on ix_matches_player2_profile_id  (cost=0.00..4.32 rows=4 width=0) (actual time=0.003..0.003 rows=6 loops=1)
+                          Index Cond: (player2_profile_id = 26)
+                          Buffers: shared hit=2
+Planning:
+  Buffers: shared hit=27
+Planning Time: 0.086 ms
+Execution Time: 0.162 ms

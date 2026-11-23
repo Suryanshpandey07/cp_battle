@@ -1,0 +1,19 @@
+Q70 · READ · Health check
+App: main.py:141 (GET /healthz)
+
+SELECT 1;
+
+---- Run 1: execution 0.004 ms, planning 0.010 ms ----
+Result  (cost=0.00..0.01 rows=1 width=4) (actual time=0.001..0.001 rows=1 loops=1)
+Planning Time: 0.010 ms
+Execution Time: 0.004 ms
+
+---- Run 2: execution 0.004 ms, planning 0.008 ms ----
+Result  (cost=0.00..0.01 rows=1 width=4) (actual time=0.000..0.001 rows=1 loops=1)
+Planning Time: 0.008 ms
+Execution Time: 0.004 ms
+
+---- Run 3: execution 0.004 ms, planning 0.009 ms ----
+Result  (cost=0.00..0.01 rows=1 width=4) (actual time=0.001..0.001 rows=1 loops=1)
+Planning Time: 0.009 ms
+Execution Time: 0.004 ms

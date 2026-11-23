@@ -1,0 +1,40 @@
+Q47 · WRITE · Void submissions still being judged when the match ended
+App: engine/actor.py:654 and :316 (one UPDATE per submission); here one UPDATE.
+
+UPDATE submissions
+SET status = 'void'
+WHERE match_id = '552ba0bd-997e-4e6f-8bb9-dc5a3cec1f7f'
+  AND status = 'judging';
+
+---- Run 1: execution 0.025 ms, planning 0.036 ms ----
+Update on submissions  (cost=0.42..28.54 rows=0 width=0) (actual time=0.017..0.017 rows=0 loops=1)
+  Buffers: shared hit=8
+  ->  Index Scan using ix_submissions_match_id on submissions  (cost=0.42..28.54 rows=1 width=56) (actual time=0.016..0.016 rows=0 loops=1)
+        Index Cond: ((match_id)::text = '552ba0bd-997e-4e6f-8bb9-dc5a3cec1f7f'::text)
+        Filter: ((status)::text = 'judging'::text)
+        Rows Removed by Filter: 1
+        Buffers: shared hit=8
+Planning Time: 0.036 ms
+Execution Time: 0.025 ms
+
+---- Run 2: execution 0.032 ms, planning 0.054 ms ----
+Update on submissions  (cost=0.42..28.54 rows=0 width=0) (actual time=0.021..0.021 rows=0 loops=1)
+  Buffers: shared hit=8
+  ->  Index Scan using ix_submissions_match_id on submissions  (cost=0.42..28.54 rows=1 width=56) (actual time=0.020..0.020 rows=0 loops=1)
+        Index Cond: ((match_id)::text = '552ba0bd-997e-4e6f-8bb9-dc5a3cec1f7f'::text)
+        Filter: ((status)::text = 'judging'::text)
+        Rows Removed by Filter: 1
+        Buffers: shared hit=8
+Planning Time: 0.054 ms
+Execution Time: 0.032 ms
+
+---- Run 3: execution 0.017 ms, planning 0.028 ms ----
+Update on submissions  (cost=0.42..28.54 rows=0 width=0) (actual time=0.012..0.012 rows=0 loops=1)
+  Buffers: shared hit=8
+  ->  Index Scan using ix_submissions_match_id on submissions  (cost=0.42..28.54 rows=1 width=56) (actual time=0.011..0.011 rows=0 loops=1)
+        Index Cond: ((match_id)::text = '552ba0bd-997e-4e6f-8bb9-dc5a3cec1f7f'::text)
+        Filter: ((status)::text = 'judging'::text)
+        Rows Removed by Filter: 1
+        Buffers: shared hit=8
+Planning Time: 0.028 ms
+Execution Time: 0.017 ms

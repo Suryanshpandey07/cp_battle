@@ -1,0 +1,33 @@
+Q67 · WRITE · Admin: suspend a user for a week
+App: api/admin.py:132-136 (SELECT, then UPDATE); here one UPDATE.
+
+UPDATE users
+SET suspended_until = (now() AT TIME ZONE 'utc') + interval '7 days'
+WHERE username_lower = 'player_26';
+
+---- Run 1: execution 0.143 ms, planning 0.050 ms ----
+Update on users  (cost=0.29..8.31 rows=0 width=0) (actual time=0.100..0.100 rows=0 loops=1)
+  Buffers: shared hit=14 dirtied=1
+  ->  Index Scan using ix_users_username_lower on users  (cost=0.29..8.31 rows=1 width=14) (actual time=0.016..0.017 rows=1 loops=1)
+        Index Cond: ((username_lower)::text = 'player_26'::text)
+        Buffers: shared hit=3
+Planning Time: 0.050 ms
+Execution Time: 0.143 ms
+
+---- Run 2: execution 0.108 ms, planning 0.035 ms ----
+Update on users  (cost=0.29..8.31 rows=0 width=0) (actual time=0.077..0.078 rows=0 loops=1)
+  Buffers: shared hit=14
+  ->  Index Scan using ix_users_username_lower on users  (cost=0.29..8.31 rows=1 width=14) (actual time=0.014..0.015 rows=1 loops=1)
+        Index Cond: ((username_lower)::text = 'player_26'::text)
+        Buffers: shared hit=3
+Planning Time: 0.035 ms
+Execution Time: 0.108 ms
+
+---- Run 3: execution 0.108 ms, planning 0.029 ms ----
+Update on users  (cost=0.29..8.31 rows=0 width=0) (actual time=0.069..0.069 rows=0 loops=1)
+  Buffers: shared hit=14
+  ->  Index Scan using ix_users_username_lower on users  (cost=0.29..8.31 rows=1 width=14) (actual time=0.013..0.013 rows=1 loops=1)
+        Index Cond: ((username_lower)::text = 'player_26'::text)
+        Buffers: shared hit=3
+Planning Time: 0.029 ms
+Execution Time: 0.108 ms

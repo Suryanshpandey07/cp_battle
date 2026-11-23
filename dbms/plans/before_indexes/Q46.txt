@@ -1,0 +1,43 @@
+Q46 · WRITE · Close the match: outcome, labels, the result screen
+App: engine/actor.py:315 (session.merge after the final command)
+
+UPDATE matches
+SET status = 'finished', end_time = now() AT TIME ZONE 'utc', elapsed_ms = 1010000,
+    end_reason = 'ko', outcome = 'win', winner_side = 1,
+    labels = '{"1": "victory", "2": "defeat"}',
+    result = '{"outcome": "win", "end_reason": "ko", "winner_side": 1, "sides": {"1": {"before": 1250, "after": 1271, "delta": 21}, "2": {"before": 1222, "after": 1207, "delta": -15}}}',
+    last_seq = 20, player2_hp = 0
+WHERE id = '552ba0bd-997e-4e6f-8bb9-dc5a3cec1f7f';
+
+---- Run 1: execution 0.327 ms, planning 0.040 ms ----
+Update on matches  (cost=0.42..8.44 rows=0 width=0) (actual time=0.178..0.179 rows=0 loops=1)
+  Buffers: shared hit=21
+  ->  Index Scan using matches_pkey on matches  (cost=0.42..8.44 rows=1 width=244) (actual time=0.010..0.011 rows=1 loops=1)
+        Index Cond: ((id)::text = '552ba0bd-997e-4e6f-8bb9-dc5a3cec1f7f'::text)
+        Buffers: shared hit=5
+Planning Time: 0.040 ms
+Trigger for constraint matches_player1_profile_id_fkey: time=0.053 calls=1
+Trigger for constraint matches_player2_profile_id_fkey: time=0.082 calls=1
+Execution Time: 0.327 ms
+
+---- Run 2: execution 0.332 ms, planning 0.097 ms ----
+Update on matches  (cost=0.42..8.44 rows=0 width=0) (actual time=0.201..0.202 rows=0 loops=1)
+  Buffers: shared hit=21
+  ->  Index Scan using matches_pkey on matches  (cost=0.42..8.44 rows=1 width=244) (actual time=0.016..0.017 rows=1 loops=1)
+        Index Cond: ((id)::text = '552ba0bd-997e-4e6f-8bb9-dc5a3cec1f7f'::text)
+        Buffers: shared hit=5
+Planning Time: 0.097 ms
+Trigger for constraint matches_player1_profile_id_fkey: time=0.073 calls=1
+Trigger for constraint matches_player2_profile_id_fkey: time=0.035 calls=1
+Execution Time: 0.332 ms
+
+---- Run 3: execution 0.215 ms, planning 0.021 ms ----
+Update on matches  (cost=0.42..8.44 rows=0 width=0) (actual time=0.147..0.147 rows=0 loops=1)
+  Buffers: shared hit=21
+  ->  Index Scan using matches_pkey on matches  (cost=0.42..8.44 rows=1 width=244) (actual time=0.005..0.006 rows=1 loops=1)
+        Index Cond: ((id)::text = '552ba0bd-997e-4e6f-8bb9-dc5a3cec1f7f'::text)
+        Buffers: shared hit=5
+Planning Time: 0.021 ms
+Trigger for constraint matches_player1_profile_id_fkey: time=0.035 calls=1
+Trigger for constraint matches_player2_profile_id_fkey: time=0.023 calls=1
+Execution Time: 0.215 ms

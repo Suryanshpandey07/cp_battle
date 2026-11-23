@@ -1,0 +1,44 @@
+Q14 · READ · Profile page: find the player by name (case-insensitive)
+App: api/players.py:173 (GET /profiles/{username})
+
+SELECT *
+FROM profiles
+WHERE lower(display_name) = lower('Player_26')
+  AND NOT is_bot
+LIMIT 1;
+
+---- Run 1: execution 0.027 ms, planning 0.103 ms ----
+Limit  (cost=0.00..18.39 rows=1 width=365) (actual time=0.018..0.019 rows=1 loops=1)
+  Buffers: shared hit=1 read=1
+  ->  Seq Scan on profiles  (cost=0.00..1839.08 rows=100 width=365) (actual time=0.017..0.018 rows=1 loops=1)
+        Filter: ((NOT is_bot) AND (lower((display_name)::text) = 'player_26'::text))
+        Rows Removed by Filter: 19
+        Buffers: shared hit=1 read=1
+Planning:
+  Buffers: shared hit=26 read=1 dirtied=1
+Planning Time: 0.103 ms
+Execution Time: 0.027 ms
+
+---- Run 2: execution 0.429 ms, planning 0.093 ms ----
+Limit  (cost=0.00..18.39 rows=1 width=365) (actual time=0.414..0.414 rows=1 loops=1)
+  Buffers: shared hit=2
+  ->  Seq Scan on profiles  (cost=0.00..1839.08 rows=100 width=365) (actual time=0.413..0.413 rows=1 loops=1)
+        Filter: ((NOT is_bot) AND (lower((display_name)::text) = 'player_26'::text))
+        Rows Removed by Filter: 19
+        Buffers: shared hit=2
+Planning:
+  Buffers: shared hit=27
+Planning Time: 0.093 ms
+Execution Time: 0.429 ms
+
+---- Run 3: execution 0.026 ms, planning 0.102 ms ----
+Limit  (cost=0.00..18.39 rows=1 width=365) (actual time=0.017..0.018 rows=1 loops=1)
+  Buffers: shared hit=2
+  ->  Seq Scan on profiles  (cost=0.00..1839.08 rows=100 width=365) (actual time=0.017..0.017 rows=1 loops=1)
+        Filter: ((NOT is_bot) AND (lower((display_name)::text) = 'player_26'::text))
+        Rows Removed by Filter: 19
+        Buffers: shared hit=2
+Planning:
+  Buffers: shared hit=27
+Planning Time: 0.102 ms
+Execution Time: 0.026 ms

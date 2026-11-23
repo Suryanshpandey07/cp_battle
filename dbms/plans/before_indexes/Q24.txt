@@ -1,0 +1,70 @@
+Q24 · READ · Leaderboard, all time: the top 100 by rating
+App: api/players.py:207-208 (the same ORDER BY and LIMIT; the app numbers the
+rows and derives the tier in Python). Tier is derived from rating, not stored.
+Ordering by the window's keys rather than by "rank" gives the same rows and
+lets ix_profiles_ladder hand back the first 100 in order, with no sort.
+
+SELECT row_number() OVER (ORDER BY rating DESC, lower(display_name)) AS rank,
+       id AS profile_id, display_name AS name, rating,
+       CASE WHEN rating >= 1900 THEN 5 WHEN rating >= 1600 THEN 4 WHEN rating >= 1400 THEN 3
+            WHEN rating >= 1200 THEN 2 ELSE 1 END AS tier,
+       rating AS score, wins, losses
+FROM profiles
+WHERE NOT is_bot
+  AND user_id IS NOT NULL
+ORDER BY rating DESC, lower(display_name)
+LIMIT 100;
+
+---- Run 1: execution 28.724 ms, planning 0.183 ms ----
+Limit  (cost=3217.42..3220.67 rows=100 width=76) (actual time=28.638..28.678 rows=100 loops=1)
+  Buffers: shared hit=1539
+  ->  WindowAgg  (cost=3217.42..3867.25 rows=19995 width=76) (actual time=28.636..28.667 rows=100 loops=1)
+        Buffers: shared hit=1539
+        ->  Sort  (cost=3217.42..3267.40 rows=19995 width=60) (actual time=28.620..28.631 rows=100 loops=1)
+              Sort Key: rating DESC, (lower((display_name)::text))
+              Sort Method: quicksort  Memory: 2097kB
+              Buffers: shared hit=1539
+              ->  Seq Scan on profiles  (cost=0.00..1789.04 rows=19995 width=60) (actual time=0.016..14.102 rows=20001 loops=1)
+                    Filter: ((NOT is_bot) AND (user_id IS NOT NULL))
+                    Rows Removed by Filter: 5
+                    Buffers: shared hit=1539
+Planning:
+  Buffers: shared hit=4
+Planning Time: 0.183 ms
+Execution Time: 28.724 ms
+
+---- Run 2: execution 36.382 ms, planning 0.143 ms ----
+Limit  (cost=3217.42..3220.67 rows=100 width=76) (actual time=36.298..36.340 rows=100 loops=1)
+  Buffers: shared hit=1539
+  ->  WindowAgg  (cost=3217.42..3867.25 rows=19995 width=76) (actual time=36.295..36.330 rows=100 loops=1)
+        Buffers: shared hit=1539
+        ->  Sort  (cost=3217.42..3267.40 rows=19995 width=60) (actual time=36.275..36.290 rows=100 loops=1)
+              Sort Key: rating DESC, (lower((display_name)::text))
+              Sort Method: quicksort  Memory: 2097kB
+              Buffers: shared hit=1539
+              ->  Seq Scan on profiles  (cost=0.00..1789.04 rows=19995 width=60) (actual time=0.044..17.509 rows=20001 loops=1)
+                    Filter: ((NOT is_bot) AND (user_id IS NOT NULL))
+                    Rows Removed by Filter: 5
+                    Buffers: shared hit=1539
+Planning:
+  Buffers: shared hit=4
+Planning Time: 0.143 ms
+Execution Time: 36.382 ms
+
+---- Run 3: execution 25.078 ms, planning 0.123 ms ----
+Limit  (cost=3217.42..3220.67 rows=100 width=76) (actual time=24.969..25.038 rows=100 loops=1)
+  Buffers: shared hit=1539
+  ->  WindowAgg  (cost=3217.42..3867.25 rows=19995 width=76) (actual time=24.966..25.026 rows=100 loops=1)
+        Buffers: shared hit=1539
+        ->  Sort  (cost=3217.42..3267.40 rows=19995 width=60) (actual time=24.944..24.975 rows=100 loops=1)
+              Sort Key: rating DESC, (lower((display_name)::text))
+              Sort Method: quicksort  Memory: 2097kB
+              Buffers: shared hit=1539
+              ->  Seq Scan on profiles  (cost=0.00..1789.04 rows=19995 width=60) (actual time=0.012..11.364 rows=20001 loops=1)
+                    Filter: ((NOT is_bot) AND (user_id IS NOT NULL))
+                    Rows Removed by Filter: 5
+                    Buffers: shared hit=1539
+Planning:
+  Buffers: shared hit=4
+Planning Time: 0.123 ms
+Execution Time: 25.078 ms

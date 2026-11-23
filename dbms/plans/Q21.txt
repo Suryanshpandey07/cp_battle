@@ -1,0 +1,33 @@
+Q21 · READ · A player's achievements
+App: services/stats.py:142, engine/finish.py:183, skins/service.py:25
+
+SELECT key, progress, earned_at, claimed_at
+FROM achievements
+WHERE profile_id = 26;
+
+---- Run 1: execution 0.039 ms, planning 0.241 ms ----
+Index Scan using ix_achievements_profile_id on achievements  (cost=0.29..8.30 rows=1 width=29) (actual time=0.029..0.029 rows=0 loops=1)
+  Index Cond: (profile_id = 26)
+  Buffers: shared hit=1 read=3 dirtied=2
+Planning:
+  Buffers: shared hit=54 read=4
+Planning Time: 0.241 ms
+Execution Time: 0.039 ms
+
+---- Run 2: execution 0.014 ms, planning 0.146 ms ----
+Index Scan using ix_achievements_profile_id on achievements  (cost=0.29..8.30 rows=1 width=29) (actual time=0.006..0.006 rows=0 loops=1)
+  Index Cond: (profile_id = 26)
+  Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=58
+Planning Time: 0.146 ms
+Execution Time: 0.014 ms
+
+---- Run 3: execution 0.016 ms, planning 0.127 ms ----
+Index Scan using ix_achievements_profile_id on achievements  (cost=0.29..8.30 rows=1 width=29) (actual time=0.008..0.008 rows=0 loops=1)
+  Index Cond: (profile_id = 26)
+  Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=58
+Planning Time: 0.127 ms
+Execution Time: 0.016 ms

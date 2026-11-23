@@ -1,0 +1,50 @@
+Q23 · READ · Rank among people: how many rate higher, and how many there are
+App: services/stats.py:161 and :163 (two COUNTs); here one self-join.
+
+SELECT count(*) FILTER (WHERE o.rating > me.rating) + 1 AS position,
+       count(*)                                         AS players
+FROM profiles me
+JOIN profiles o ON NOT o.is_bot AND o.user_id IS NOT NULL
+WHERE me.id = 26;
+
+---- Run 1: execution 6.547 ms, planning 0.142 ms ----
+Aggregate  (cost=1050.43..1050.44 rows=1 width=16) (actual time=6.520..6.521 rows=1 loops=1)
+  Buffers: shared hit=79 read=90
+  ->  Nested Loop  (cost=0.57..900.47 rows=19995 width=8) (actual time=0.042..5.063 rows=20001 loops=1)
+        Buffers: shared hit=79 read=90
+        ->  Index Scan using profiles_pkey on profiles me  (cost=0.29..8.30 rows=1 width=4) (actual time=0.008..0.010 rows=1 loops=1)
+              Index Cond: (id = 26)
+              Buffers: shared hit=3
+        ->  Index Only Scan using ix_profiles_ladder on profiles o  (cost=0.29..692.21 rows=19995 width=4) (actual time=0.032..2.938 rows=20001 loops=1)
+              Heap Fetches: 84
+              Buffers: shared hit=76 read=90
+Planning Time: 0.142 ms
+Execution Time: 6.547 ms
+
+---- Run 2: execution 4.636 ms, planning 0.079 ms ----
+Aggregate  (cost=1050.43..1050.44 rows=1 width=16) (actual time=4.621..4.622 rows=1 loops=1)
+  Buffers: shared hit=229
+  ->  Nested Loop  (cost=0.57..900.47 rows=19995 width=8) (actual time=0.016..3.490 rows=20001 loops=1)
+        Buffers: shared hit=229
+        ->  Index Scan using profiles_pkey on profiles me  (cost=0.29..8.30 rows=1 width=4) (actual time=0.005..0.006 rows=1 loops=1)
+              Index Cond: (id = 26)
+              Buffers: shared hit=3
+        ->  Index Only Scan using ix_profiles_ladder on profiles o  (cost=0.29..692.21 rows=19995 width=4) (actual time=0.009..1.857 rows=20001 loops=1)
+              Heap Fetches: 150
+              Buffers: shared hit=226
+Planning Time: 0.079 ms
+Execution Time: 4.636 ms
+
+---- Run 3: execution 4.748 ms, planning 0.078 ms ----
+Aggregate  (cost=1050.43..1050.44 rows=1 width=16) (actual time=4.731..4.733 rows=1 loops=1)
+  Buffers: shared hit=228
+  ->  Nested Loop  (cost=0.57..900.47 rows=19995 width=8) (actual time=0.015..3.596 rows=20001 loops=1)
+        Buffers: shared hit=228
+        ->  Index Scan using profiles_pkey on profiles me  (cost=0.29..8.30 rows=1 width=4) (actual time=0.005..0.006 rows=1 loops=1)
+              Index Cond: (id = 26)
+              Buffers: shared hit=3
+        ->  Index Only Scan using ix_profiles_ladder on profiles o  (cost=0.29..692.21 rows=19995 width=4) (actual time=0.008..1.888 rows=20001 loops=1)
+              Heap Fetches: 150
+              Buffers: shared hit=225
+Planning Time: 0.078 ms
+Execution Time: 4.748 ms

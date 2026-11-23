@@ -1,0 +1,97 @@
+Q63 · WRITE · Admin: void a match (reverse every rating change it made)
+App: api/admin.py:73-80 (SELECT the rows, then a profile lookup and two
+saves per row); here one UPDATE ... FROM over the rows it voids.
+
+WITH reversed AS (
+    UPDATE rating_history
+    SET voided = TRUE
+    WHERE match_id = '9348a163-6e39-4f78-8557-09984d57dc04'
+      AND NOT voided
+    RETURNING profile_id, delta
+)
+UPDATE profiles p
+SET rating = greatest(0, p.rating - r.delta)
+FROM reversed r
+WHERE p.id = r.profile_id
+RETURNING p.id, p.rating;
+
+---- Run 1: execution 0.681 ms, planning 0.195 ms ----
+Update on profiles p  (cost=12.58..28.95 rows=2 width=42) (actual time=0.227..0.362 rows=2 loops=1)
+  Buffers: shared hit=62 read=6 dirtied=5
+  CTE reversed
+    ->  Update on rating_history  (cost=4.44..12.29 rows=2 width=7) (actual time=0.157..0.226 rows=3 loops=1)
+          Buffers: shared hit=36 read=4 dirtied=3
+          ->  Bitmap Heap Scan on rating_history  (cost=4.44..12.29 rows=2 width=7) (actual time=0.022..0.026 rows=3 loops=1)
+                Recheck Cond: ((match_id)::text = '9348a163-6e39-4f78-8557-09984d57dc04'::text)
+                Filter: (NOT voided)
+                Heap Blocks: exact=2
+                Buffers: shared hit=5
+                ->  Bitmap Index Scan on ix_rating_history_match_id  (cost=0.00..4.43 rows=2 width=0) (actual time=0.015..0.016 rows=6 loops=1)
+                      Index Cond: ((match_id)::text = '9348a163-6e39-4f78-8557-09984d57dc04'::text)
+                      Buffers: shared hit=3
+  ->  Nested Loop  (cost=0.29..16.66 rows=2 width=42) (actual time=0.184..0.265 rows=3 loops=1)
+        Buffers: shared hit=45 read=4 dirtied=3
+        ->  CTE Scan on reversed r  (cost=0.00..0.04 rows=2 width=40) (actual time=0.168..0.239 rows=3 loops=1)
+              Buffers: shared hit=36 read=4 dirtied=3
+        ->  Index Scan using profiles_pkey on profiles p  (cost=0.29..8.30 rows=1 width=14) (actual time=0.007..0.007 rows=1 loops=3)
+              Index Cond: (id = r.profile_id)
+              Buffers: shared hit=9
+Planning Time: 0.195 ms
+Trigger for constraint rating_history_profile_id_fkey on rating_history: time=0.090 calls=1
+Trigger for constraint rating_history_match_id_fkey on rating_history: time=0.070 calls=1
+Trigger for constraint profiles_user_id_fkey on profiles: time=0.089 calls=1
+Execution Time: 0.681 ms
+
+---- Run 2: execution 0.399 ms, planning 0.190 ms ----
+Update on profiles p  (cost=12.58..28.95 rows=2 width=42) (actual time=0.145..0.205 rows=2 loops=1)
+  Buffers: shared hit=67
+  CTE reversed
+    ->  Update on rating_history  (cost=4.44..12.29 rows=2 width=7) (actual time=0.093..0.116 rows=3 loops=1)
+          Buffers: shared hit=40
+          ->  Bitmap Heap Scan on rating_history  (cost=4.44..12.29 rows=2 width=7) (actual time=0.020..0.023 rows=3 loops=1)
+                Recheck Cond: ((match_id)::text = '9348a163-6e39-4f78-8557-09984d57dc04'::text)
+                Filter: (NOT voided)
+                Heap Blocks: exact=2
+                Buffers: shared hit=5
+                ->  Bitmap Index Scan on ix_rating_history_match_id  (cost=0.00..4.43 rows=2 width=0) (actual time=0.013..0.013 rows=9 loops=1)
+                      Index Cond: ((match_id)::text = '9348a163-6e39-4f78-8557-09984d57dc04'::text)
+                      Buffers: shared hit=3
+  ->  Nested Loop  (cost=0.29..16.66 rows=2 width=42) (actual time=0.114..0.147 rows=3 loops=1)
+        Buffers: shared hit=49
+        ->  CTE Scan on reversed r  (cost=0.00..0.04 rows=2 width=40) (actual time=0.102..0.126 rows=3 loops=1)
+              Buffers: shared hit=40
+        ->  Index Scan using profiles_pkey on profiles p  (cost=0.29..8.30 rows=1 width=14) (actual time=0.005..0.006 rows=1 loops=3)
+              Index Cond: (id = r.profile_id)
+              Buffers: shared hit=9
+Planning Time: 0.190 ms
+Trigger for constraint rating_history_profile_id_fkey on rating_history: time=0.027 calls=1
+Trigger for constraint rating_history_match_id_fkey on rating_history: time=0.050 calls=1
+Trigger for constraint profiles_user_id_fkey on profiles: time=0.061 calls=1
+Execution Time: 0.399 ms
+
+---- Run 3: execution 0.442 ms, planning 0.163 ms ----
+Update on profiles p  (cost=12.58..28.95 rows=2 width=42) (actual time=0.167..0.234 rows=2 loops=1)
+  Buffers: shared hit=67
+  CTE reversed
+    ->  Update on rating_history  (cost=4.44..12.29 rows=2 width=7) (actual time=0.100..0.128 rows=3 loops=1)
+          Buffers: shared hit=40
+          ->  Bitmap Heap Scan on rating_history  (cost=4.44..12.29 rows=2 width=7) (actual time=0.021..0.024 rows=3 loops=1)
+                Recheck Cond: ((match_id)::text = '9348a163-6e39-4f78-8557-09984d57dc04'::text)
+                Filter: (NOT voided)
+                Heap Blocks: exact=2
+                Buffers: shared hit=5
+                ->  Bitmap Index Scan on ix_rating_history_match_id  (cost=0.00..4.43 rows=2 width=0) (actual time=0.015..0.015 rows=12 loops=1)
+                      Index Cond: ((match_id)::text = '9348a163-6e39-4f78-8557-09984d57dc04'::text)
+                      Buffers: shared hit=3
+  ->  Nested Loop  (cost=0.29..16.66 rows=2 width=42) (actual time=0.125..0.162 rows=3 loops=1)
+        Buffers: shared hit=49
+        ->  CTE Scan on reversed r  (cost=0.00..0.04 rows=2 width=40) (actual time=0.111..0.139 rows=3 loops=1)
+              Buffers: shared hit=40
+        ->  Index Scan using profiles_pkey on profiles p  (cost=0.29..8.30 rows=1 width=14) (actual time=0.006..0.006 rows=1 loops=3)
+              Index Cond: (id = r.profile_id)
+              Buffers: shared hit=9
+Planning Time: 0.163 ms
+Trigger for constraint rating_history_profile_id_fkey on rating_history: time=0.030 calls=1
+Trigger for constraint rating_history_match_id_fkey on rating_history: time=0.054 calls=1
+Trigger for constraint profiles_user_id_fkey on profiles: time=0.066 calls=1
+Execution Time: 0.442 ms

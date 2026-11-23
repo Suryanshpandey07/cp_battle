@@ -1,0 +1,48 @@
+Q76 · WRITE · Seed: create a bot profile if it does not exist
+App: seed.py:104-110 (ensure_bots: SELECT, then INSERT)
+
+INSERT INTO profiles (display_name, is_bot, personality, rating, peak_rating, avatar_color)
+SELECT 'Turtle', TRUE, 'turtle', 1200, 1200, '#22c55e'
+WHERE NOT EXISTS (SELECT 1 FROM profiles WHERE is_bot AND personality = 'turtle');
+
+---- Run 1: execution 0.035 ms, planning 0.088 ms ----
+Insert on profiles  (cost=8.15..8.17 rows=0 width=0) (actual time=0.013..0.013 rows=0 loops=1)
+  Buffers: shared hit=2
+  InitPlan 1 (returns $0)
+    ->  Index Only Scan using ix_profiles_bot_personality on profiles profiles_1  (cost=0.13..8.15 rows=1 width=0) (actual time=0.010..0.011 rows=1 loops=1)
+          Index Cond: (personality = 'turtle'::text)
+          Heap Fetches: 0
+          Buffers: shared hit=2
+  ->  Result  (cost=0.00..0.02 rows=1 width=857) (actual time=0.012..0.012 rows=0 loops=1)
+        One-Time Filter: (NOT $0)
+        Buffers: shared hit=2
+Planning Time: 0.088 ms
+Execution Time: 0.035 ms
+
+---- Run 2: execution 0.023 ms, planning 0.086 ms ----
+Insert on profiles  (cost=8.15..8.17 rows=0 width=0) (actual time=0.008..0.008 rows=0 loops=1)
+  Buffers: shared hit=2
+  InitPlan 1 (returns $0)
+    ->  Index Only Scan using ix_profiles_bot_personality on profiles profiles_1  (cost=0.13..8.15 rows=1 width=0) (actual time=0.006..0.006 rows=1 loops=1)
+          Index Cond: (personality = 'turtle'::text)
+          Heap Fetches: 0
+          Buffers: shared hit=2
+  ->  Result  (cost=0.00..0.02 rows=1 width=857) (actual time=0.008..0.008 rows=0 loops=1)
+        One-Time Filter: (NOT $0)
+        Buffers: shared hit=2
+Planning Time: 0.086 ms
+Execution Time: 0.023 ms
+
+---- Run 3: execution 0.026 ms, planning 0.067 ms ----
+Insert on profiles  (cost=8.15..8.17 rows=0 width=0) (actual time=0.011..0.011 rows=0 loops=1)
+  Buffers: shared hit=2
+  InitPlan 1 (returns $0)
+    ->  Index Only Scan using ix_profiles_bot_personality on profiles profiles_1  (cost=0.13..8.15 rows=1 width=0) (actual time=0.008..0.009 rows=1 loops=1)
+          Index Cond: (personality = 'turtle'::text)
+          Heap Fetches: 0
+          Buffers: shared hit=2
+  ->  Result  (cost=0.00..0.02 rows=1 width=857) (actual time=0.010..0.010 rows=0 loops=1)
+        One-Time Filter: (NOT $0)
+        Buffers: shared hit=2
+Planning Time: 0.067 ms
+Execution Time: 0.026 ms

@@ -1,0 +1,74 @@
+Q27 · READ · Load the problem cache: every published problem with its tests
+App: services/problems.py:78 and :80 (one query for the problems, then one
+per problem for its tests, 1 + N round trips); here one LEFT JOIN.
+
+SELECT p.id, p.slug, p.title, p.biome, p.rating, p.tier, p.base_damage, p.base_recoil,
+       p.time_limit_ms, p.memory_mb, p.checker, p.statement_md, p.hints, p.stubs,
+       t.idx, t.input_text, t.expected_text, t.is_sample
+FROM problems p
+LEFT JOIN test_cases t ON t.problem_id = p.id
+WHERE p.status = 'published'
+ORDER BY p.id, t.idx;
+
+---- Run 1: execution 0.294 ms, planning 0.606 ms ----
+Sort  (cost=15.62..15.98 rows=144 width=833) (actual time=0.232..0.240 rows=144 loops=1)
+  Sort Key: p.id, t.idx
+  Sort Method: quicksort  Memory: 147kB
+  Buffers: shared hit=4 read=4 dirtied=2
+  ->  Hash Right Join  (cost=4.57..10.46 rows=144 width=833) (actual time=0.071..0.144 rows=144 loops=1)
+        Hash Cond: (t.problem_id = p.id)
+        Buffers: shared hit=4 read=4 dirtied=2
+        ->  Seq Scan on test_cases t  (cost=0.00..5.44 rows=144 width=136) (actual time=0.023..0.056 rows=144 loops=1)
+              Buffers: shared read=4 dirtied=2
+        ->  Hash  (cost=4.29..4.29 rows=23 width=701) (actual time=0.040..0.041 rows=17 loops=1)
+              Buckets: 1024  Batches: 1  Memory Usage: 21kB
+              Buffers: shared hit=4
+              ->  Seq Scan on problems p  (cost=0.00..4.29 rows=23 width=701) (actual time=0.010..0.030 rows=17 loops=1)
+                    Filter: ((status)::text = 'published'::text)
+                    Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=105 read=4
+Planning Time: 0.606 ms
+Execution Time: 0.294 ms
+
+---- Run 2: execution 0.267 ms, planning 0.552 ms ----
+Sort  (cost=15.62..15.98 rows=144 width=833) (actual time=0.216..0.228 rows=144 loops=1)
+  Sort Key: p.id, t.idx
+  Sort Method: quicksort  Memory: 147kB
+  Buffers: shared hit=8
+  ->  Hash Right Join  (cost=4.57..10.46 rows=144 width=833) (actual time=0.056..0.120 rows=144 loops=1)
+        Hash Cond: (t.problem_id = p.id)
+        Buffers: shared hit=8
+        ->  Seq Scan on test_cases t  (cost=0.00..5.44 rows=144 width=136) (actual time=0.009..0.024 rows=144 loops=1)
+              Buffers: shared hit=4
+        ->  Hash  (cost=4.29..4.29 rows=23 width=701) (actual time=0.038..0.039 rows=17 loops=1)
+              Buckets: 1024  Batches: 1  Memory Usage: 21kB
+              Buffers: shared hit=4
+              ->  Seq Scan on problems p  (cost=0.00..4.29 rows=23 width=701) (actual time=0.010..0.026 rows=17 loops=1)
+                    Filter: ((status)::text = 'published'::text)
+                    Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=109
+Planning Time: 0.552 ms
+Execution Time: 0.267 ms
+
+---- Run 3: execution 0.286 ms, planning 0.471 ms ----
+Sort  (cost=15.62..15.98 rows=144 width=833) (actual time=0.244..0.254 rows=144 loops=1)
+  Sort Key: p.id, t.idx
+  Sort Method: quicksort  Memory: 147kB
+  Buffers: shared hit=8
+  ->  Hash Right Join  (cost=4.57..10.46 rows=144 width=833) (actual time=0.043..0.154 rows=144 loops=1)
+        Hash Cond: (t.problem_id = p.id)
+        Buffers: shared hit=8
+        ->  Seq Scan on test_cases t  (cost=0.00..5.44 rows=144 width=136) (actual time=0.005..0.018 rows=144 loops=1)
+              Buffers: shared hit=4
+        ->  Hash  (cost=4.29..4.29 rows=23 width=701) (actual time=0.031..0.032 rows=17 loops=1)
+              Buckets: 1024  Batches: 1  Memory Usage: 21kB
+              Buffers: shared hit=4
+              ->  Seq Scan on problems p  (cost=0.00..4.29 rows=23 width=701) (actual time=0.007..0.022 rows=17 loops=1)
+                    Filter: ((status)::text = 'published'::text)
+                    Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=109
+Planning Time: 0.471 ms
+Execution Time: 0.286 ms

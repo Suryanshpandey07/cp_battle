@@ -1,0 +1,37 @@
+Q56 · WRITE · No-show: add a strike, and ban from the queue on the third
+App: engine/finish.py:33-40 (apply_strikes; one lookup and save per player);
+here one UPDATE for both.
+
+UPDATE profiles
+SET no_show_strikes = CASE WHEN no_show_strikes + 1 >= 3 THEN 0 ELSE no_show_strikes + 1 END,
+    queue_ban_until = CASE WHEN no_show_strikes + 1 >= 3
+                           THEN (now() AT TIME ZONE 'utc') + interval '15 minutes'
+                           ELSE queue_ban_until END
+WHERE id IN (101, 5001);
+
+---- Run 1: execution 0.298 ms, planning 0.092 ms ----
+Update on profiles  (cost=0.29..15.66 rows=0 width=0) (actual time=0.269..0.270 rows=0 loops=1)
+  Buffers: shared hit=38 read=4 dirtied=5
+  ->  Index Scan using profiles_pkey on profiles  (cost=0.29..15.66 rows=2 width=18) (actual time=0.036..0.045 rows=2 loops=1)
+        Index Cond: (id = ANY ('{101,5001}'::integer[]))
+        Buffers: shared hit=6
+Planning Time: 0.092 ms
+Execution Time: 0.298 ms
+
+---- Run 2: execution 0.180 ms, planning 0.062 ms ----
+Update on profiles  (cost=0.29..15.66 rows=0 width=0) (actual time=0.163..0.163 rows=0 loops=1)
+  Buffers: shared hit=40
+  ->  Index Scan using profiles_pkey on profiles  (cost=0.29..15.66 rows=2 width=18) (actual time=0.011..0.019 rows=2 loops=1)
+        Index Cond: (id = ANY ('{101,5001}'::integer[]))
+        Buffers: shared hit=6
+Planning Time: 0.062 ms
+Execution Time: 0.180 ms
+
+---- Run 3: execution 0.166 ms, planning 0.060 ms ----
+Update on profiles  (cost=0.29..15.66 rows=0 width=0) (actual time=0.148..0.148 rows=0 loops=1)
+  Buffers: shared hit=40
+  ->  Index Scan using profiles_pkey on profiles  (cost=0.29..15.66 rows=2 width=18) (actual time=0.015..0.022 rows=2 loops=1)
+        Index Cond: (id = ANY ('{101,5001}'::integer[]))
+        Buffers: shared hit=6
+Planning Time: 0.060 ms
+Execution Time: 0.166 ms

@@ -1,0 +1,70 @@
+Q77 · READ · Leaderboard, all time: my place when I am outside the top 100
+App: api/players.py:243-245 (_ladder_place). The people ordered ahead of me
+on the board: rated higher, or rated the same with a name that sorts first.
+Player 26 is rated 1367.
+
+SELECT count(*) + 1 AS rank
+FROM profiles
+WHERE NOT is_bot
+  AND user_id IS NOT NULL
+  AND (rating > 1367 OR (rating = 1367 AND lower(display_name) < lower('player_26')));
+
+---- Run 1: execution 5.225 ms, planning 0.251 ms ----
+Aggregate  (cost=1927.55..1927.56 rows=1 width=8) (actual time=5.183..5.186 rows=1 loops=1)
+  Buffers: shared hit=1560
+  ->  Bitmap Heap Scan on profiles  (cost=211.57..1907.91 rows=7855 width=0) (actual time=0.780..4.664 rows=7859 loops=1)
+        Recheck Cond: (((rating > 1367) AND (NOT is_bot) AND (user_id IS NOT NULL)) OR ((rating = 1367) AND (lower((display_name)::text) < 'player_26'::text) AND (NOT is_bot) AND (user_id IS NOT NULL)))
+        Heap Blocks: exact=1522
+        Buffers: shared hit=1560
+        ->  BitmapOr  (cost=211.57..211.57 rows=7867 width=0) (actual time=0.572..0.573 rows=0 loops=1)
+              Buffers: shared hit=38
+              ->  Bitmap Index Scan on ix_profiles_ladder  (cost=0.00..203.06 rows=7837 width=0) (actual time=0.562..0.563 rows=7831 loops=1)
+                    Index Cond: (rating > 1367)
+                    Buffers: shared hit=36
+              ->  Bitmap Index Scan on ix_profiles_ladder  (cost=0.00..4.58 rows=29 width=0) (actual time=0.008..0.008 rows=28 loops=1)
+                    Index Cond: ((rating = 1367) AND (lower((display_name)::text) < 'player_26'::text))
+                    Buffers: shared hit=2
+Planning:
+  Buffers: shared hit=3
+Planning Time: 0.251 ms
+Execution Time: 5.225 ms
+
+---- Run 2: execution 5.098 ms, planning 0.254 ms ----
+Aggregate  (cost=1927.55..1927.56 rows=1 width=8) (actual time=5.053..5.057 rows=1 loops=1)
+  Buffers: shared hit=1560
+  ->  Bitmap Heap Scan on profiles  (cost=211.57..1907.91 rows=7855 width=0) (actual time=0.834..4.517 rows=7859 loops=1)
+        Recheck Cond: (((rating > 1367) AND (NOT is_bot) AND (user_id IS NOT NULL)) OR ((rating = 1367) AND (lower((display_name)::text) < 'player_26'::text) AND (NOT is_bot) AND (user_id IS NOT NULL)))
+        Heap Blocks: exact=1522
+        Buffers: shared hit=1560
+        ->  BitmapOr  (cost=211.57..211.57 rows=7867 width=0) (actual time=0.633..0.635 rows=0 loops=1)
+              Buffers: shared hit=38
+              ->  Bitmap Index Scan on ix_profiles_ladder  (cost=0.00..203.06 rows=7837 width=0) (actual time=0.566..0.566 rows=7831 loops=1)
+                    Index Cond: (rating > 1367)
+                    Buffers: shared hit=36
+              ->  Bitmap Index Scan on ix_profiles_ladder  (cost=0.00..4.58 rows=29 width=0) (actual time=0.066..0.066 rows=28 loops=1)
+                    Index Cond: ((rating = 1367) AND (lower((display_name)::text) < 'player_26'::text))
+                    Buffers: shared hit=2
+Planning:
+  Buffers: shared hit=3
+Planning Time: 0.254 ms
+Execution Time: 5.098 ms
+
+---- Run 3: execution 3.907 ms, planning 0.194 ms ----
+Aggregate  (cost=1927.55..1927.56 rows=1 width=8) (actual time=3.874..3.877 rows=1 loops=1)
+  Buffers: shared hit=1560
+  ->  Bitmap Heap Scan on profiles  (cost=211.57..1907.91 rows=7855 width=0) (actual time=0.671..3.442 rows=7859 loops=1)
+        Recheck Cond: (((rating > 1367) AND (NOT is_bot) AND (user_id IS NOT NULL)) OR ((rating = 1367) AND (lower((display_name)::text) < 'player_26'::text) AND (NOT is_bot) AND (user_id IS NOT NULL)))
+        Heap Blocks: exact=1522
+        Buffers: shared hit=1560
+        ->  BitmapOr  (cost=211.57..211.57 rows=7867 width=0) (actual time=0.507..0.510 rows=0 loops=1)
+              Buffers: shared hit=38
+              ->  Bitmap Index Scan on ix_profiles_ladder  (cost=0.00..203.06 rows=7837 width=0) (actual time=0.500..0.500 rows=7831 loops=1)
+                    Index Cond: (rating > 1367)
+                    Buffers: shared hit=36
+              ->  Bitmap Index Scan on ix_profiles_ladder  (cost=0.00..4.58 rows=29 width=0) (actual time=0.007..0.007 rows=28 loops=1)
+                    Index Cond: ((rating = 1367) AND (lower((display_name)::text) < 'player_26'::text))
+                    Buffers: shared hit=2
+Planning:
+  Buffers: shared hit=3
+Planning Time: 0.194 ms
+Execution Time: 3.907 ms

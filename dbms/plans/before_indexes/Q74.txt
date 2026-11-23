@@ -1,0 +1,35 @@
+Q74 · WRITE · Seed: remove a problem's old test cases
+App: seed.py:64
+
+DELETE FROM test_cases
+WHERE problem_id = 3;
+
+---- Run 1: execution 0.705 ms, planning 0.051 ms ----
+Delete on test_cases  (cost=0.00..5.80 rows=0 width=0) (actual time=0.681..0.681 rows=0 loops=1)
+  Buffers: shared hit=167 read=36 dirtied=32
+  ->  Seq Scan on test_cases  (cost=0.00..5.80 rows=8 width=6) (actual time=0.007..0.027 rows=8 loops=1)
+        Filter: (problem_id = 3)
+        Rows Removed by Filter: 136
+        Buffers: shared hit=4
+Planning Time: 0.051 ms
+Execution Time: 0.705 ms
+
+---- Run 2: execution 0.235 ms, planning 0.039 ms ----
+Delete on test_cases  (cost=0.00..5.80 rows=0 width=0) (actual time=0.220..0.221 rows=0 loops=1)
+  Buffers: shared hit=203
+  ->  Seq Scan on test_cases  (cost=0.00..5.80 rows=8 width=6) (actual time=0.006..0.021 rows=8 loops=1)
+        Filter: (problem_id = 3)
+        Rows Removed by Filter: 136
+        Buffers: shared hit=4
+Planning Time: 0.039 ms
+Execution Time: 0.235 ms
+
+---- Run 3: execution 0.232 ms, planning 0.054 ms ----
+Delete on test_cases  (cost=0.00..5.80 rows=0 width=0) (actual time=0.217..0.218 rows=0 loops=1)
+  Buffers: shared hit=203
+  ->  Seq Scan on test_cases  (cost=0.00..5.80 rows=8 width=6) (actual time=0.006..0.022 rows=8 loops=1)
+        Filter: (problem_id = 3)
+        Rows Removed by Filter: 136
+        Buffers: shared hit=4
+Planning Time: 0.054 ms
+Execution Time: 0.232 ms

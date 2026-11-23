@@ -1,0 +1,96 @@
+Q04 · READ · The signed-in player (GET /me and every session payload): profile, account role and owned skins
+App: services/profiles.py:30-31 via api/players.py:59 and api/auth.py
+(_session_payload). The app reads the profile, the inventory and the user
+separately; here one LEFT JOIN with the skins aggregated.
+
+SELECT p.id, p.display_name, p.rating, p.peak_rating, p.wins, p.losses, p.draws, p.points,
+       p.equipped_card, p.equipped_avatar, p.equipped_arena, p.equipped_weapon, p.avatar_color,
+       p.settings, p.counters, p.badges, p.queue_ban_until,
+       u.username, u.role,
+       array_agg(i.skin_id ORDER BY i.skin_id) FILTER (WHERE i.skin_id IS NOT NULL) AS owned_skins
+FROM profiles p
+JOIN users u ON u.id = p.user_id
+LEFT JOIN inventory i ON i.profile_id = p.id
+WHERE p.id = 26
+GROUP BY p.id, u.id;
+
+---- Run 1: execution 0.180 ms, planning 0.425 ms ----
+GroupAggregate  (cost=25.58..25.82 rows=12 width=367) (actual time=0.133..0.134 rows=1 loops=1)
+  Group Key: u.id
+  Buffers: shared hit=13 read=4 dirtied=1
+  ->  Sort  (cost=25.58..25.61 rows=12 width=348) (actual time=0.120..0.121 rows=11 loops=1)
+        Sort Key: u.id, i.skin_id
+        Sort Method: quicksort  Memory: 29kB
+        Buffers: shared hit=13 read=4 dirtied=1
+        ->  Nested Loop Left Join  (cost=0.99..25.36 rows=12 width=348) (actual time=0.066..0.079 rows=11 loops=1)
+              Buffers: shared hit=7 read=4 dirtied=1
+              ->  Nested Loop  (cost=0.57..16.61 rows=1 width=335) (actual time=0.026..0.027 rows=1 loops=1)
+                    Buffers: shared hit=5 read=1
+                    ->  Index Scan using profiles_pkey on profiles p  (cost=0.29..8.30 rows=1 width=317) (actual time=0.021..0.021 rows=1 loops=1)
+                          Index Cond: (id = 26)
+                          Buffers: shared hit=2 read=1
+                    ->  Index Scan using users_pkey on users u  (cost=0.29..8.30 rows=1 width=22) (actual time=0.002..0.002 rows=1 loops=1)
+                          Index Cond: (id = p.user_id)
+                          Buffers: shared hit=3
+              ->  Index Only Scan using uq_inventory_profile_skin on inventory i  (cost=0.42..8.63 rows=12 width=17) (actual time=0.038..0.049 rows=11 loops=1)
+                    Index Cond: (profile_id = 26)
+                    Heap Fetches: 4
+                    Buffers: shared hit=2 read=3 dirtied=1
+Planning:
+  Buffers: shared hit=76 read=9 dirtied=6
+Planning Time: 0.425 ms
+Execution Time: 0.180 ms
+
+---- Run 2: execution 0.124 ms, planning 0.397 ms ----
+GroupAggregate  (cost=25.58..25.82 rows=12 width=367) (actual time=0.087..0.088 rows=1 loops=1)
+  Group Key: u.id
+  Buffers: shared hit=18
+  ->  Sort  (cost=25.58..25.61 rows=12 width=348) (actual time=0.075..0.076 rows=11 loops=1)
+        Sort Key: u.id, i.skin_id
+        Sort Method: quicksort  Memory: 29kB
+        Buffers: shared hit=18
+        ->  Nested Loop Left Join  (cost=0.99..25.36 rows=12 width=348) (actual time=0.032..0.041 rows=11 loops=1)
+              Buffers: shared hit=12
+              ->  Nested Loop  (cost=0.57..16.61 rows=1 width=335) (actual time=0.016..0.018 rows=1 loops=1)
+                    Buffers: shared hit=7
+                    ->  Index Scan using profiles_pkey on profiles p  (cost=0.29..8.30 rows=1 width=317) (actual time=0.011..0.013 rows=1 loops=1)
+                          Index Cond: (id = 26)
+                          Buffers: shared hit=4
+                    ->  Index Scan using users_pkey on users u  (cost=0.29..8.30 rows=1 width=22) (actual time=0.002..0.002 rows=1 loops=1)
+                          Index Cond: (id = p.user_id)
+                          Buffers: shared hit=3
+              ->  Index Only Scan using uq_inventory_profile_skin on inventory i  (cost=0.42..8.63 rows=12 width=17) (actual time=0.015..0.021 rows=11 loops=1)
+                    Index Cond: (profile_id = 26)
+                    Heap Fetches: 4
+                    Buffers: shared hit=5
+Planning:
+  Buffers: shared hit=85
+Planning Time: 0.397 ms
+Execution Time: 0.124 ms
+
+---- Run 3: execution 0.129 ms, planning 0.269 ms ----
+GroupAggregate  (cost=25.58..25.82 rows=12 width=367) (actual time=0.098..0.099 rows=1 loops=1)
+  Group Key: u.id
+  Buffers: shared hit=18
+  ->  Sort  (cost=25.58..25.61 rows=12 width=348) (actual time=0.086..0.087 rows=11 loops=1)
+        Sort Key: u.id, i.skin_id
+        Sort Method: quicksort  Memory: 29kB
+        Buffers: shared hit=18
+        ->  Nested Loop Left Join  (cost=0.99..25.36 rows=12 width=348) (actual time=0.047..0.056 rows=11 loops=1)
+              Buffers: shared hit=12
+              ->  Nested Loop  (cost=0.57..16.61 rows=1 width=335) (actual time=0.014..0.016 rows=1 loops=1)
+                    Buffers: shared hit=7
+                    ->  Index Scan using profiles_pkey on profiles p  (cost=0.29..8.30 rows=1 width=317) (actual time=0.010..0.011 rows=1 loops=1)
+                          Index Cond: (id = 26)
+                          Buffers: shared hit=4
+                    ->  Index Scan using users_pkey on users u  (cost=0.29..8.30 rows=1 width=22) (actual time=0.002..0.002 rows=1 loops=1)
+                          Index Cond: (id = p.user_id)
+                          Buffers: shared hit=3
+              ->  Index Only Scan using uq_inventory_profile_skin on inventory i  (cost=0.42..8.63 rows=12 width=17) (actual time=0.012..0.018 rows=11 loops=1)
+                    Index Cond: (profile_id = 26)
+                    Heap Fetches: 4
+                    Buffers: shared hit=5
+Planning:
+  Buffers: shared hit=85
+Planning Time: 0.269 ms
+Execution Time: 0.129 ms

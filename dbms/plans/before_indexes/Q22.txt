@@ -1,0 +1,30 @@
+Q22 · READ · The skins a player owns
+App: skins/service.py:17 (owned), services/stats.py:156, services/profiles.py:30
+
+SELECT skin_id
+FROM inventory
+WHERE profile_id = 26;
+
+---- Run 1: execution 0.035 ms, planning 0.063 ms ----
+Index Only Scan using uq_inventory_profile_skin on inventory  (cost=0.42..8.63 rows=12 width=13) (actual time=0.013..0.015 rows=11 loops=1)
+  Index Cond: (profile_id = 26)
+  Heap Fetches: 0
+  Buffers: shared hit=4
+Planning Time: 0.063 ms
+Execution Time: 0.035 ms
+
+---- Run 2: execution 0.017 ms, planning 0.034 ms ----
+Index Only Scan using uq_inventory_profile_skin on inventory  (cost=0.42..8.63 rows=12 width=13) (actual time=0.009..0.010 rows=11 loops=1)
+  Index Cond: (profile_id = 26)
+  Heap Fetches: 0
+  Buffers: shared hit=4
+Planning Time: 0.034 ms
+Execution Time: 0.017 ms
+
+---- Run 3: execution 0.013 ms, planning 0.024 ms ----
+Index Only Scan using uq_inventory_profile_skin on inventory  (cost=0.42..8.63 rows=12 width=13) (actual time=0.007..0.009 rows=11 loops=1)
+  Index Cond: (profile_id = 26)
+  Heap Fetches: 0
+  Buffers: shared hit=4
+Planning Time: 0.024 ms
+Execution Time: 0.013 ms

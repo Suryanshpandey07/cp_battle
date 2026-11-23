@@ -1,0 +1,33 @@
+Q34 · READ · Before each save, the ORM loads the match row it merges into
+App: engine/actor.py:313 (session.merge issues a primary-key SELECT)
+
+SELECT *
+FROM matches
+WHERE id = '552ba0bd-997e-4e6f-8bb9-dc5a3cec1f7f';
+
+---- Run 1: execution 0.037 ms, planning 0.222 ms ----
+Index Scan using matches_pkey on matches  (cost=0.42..8.44 rows=1 width=1446) (actual time=0.023..0.027 rows=1 loops=1)
+  Index Cond: ((id)::text = '552ba0bd-997e-4e6f-8bb9-dc5a3cec1f7f'::text)
+  Buffers: shared hit=4 read=2 dirtied=1
+Planning:
+  Buffers: shared hit=85 read=2 dirtied=3
+Planning Time: 0.222 ms
+Execution Time: 0.037 ms
+
+---- Run 2: execution 0.036 ms, planning 0.184 ms ----
+Index Scan using matches_pkey on matches  (cost=0.42..8.44 rows=1 width=1446) (actual time=0.023..0.026 rows=1 loops=1)
+  Index Cond: ((id)::text = '552ba0bd-997e-4e6f-8bb9-dc5a3cec1f7f'::text)
+  Buffers: shared hit=6
+Planning:
+  Buffers: shared hit=87
+Planning Time: 0.184 ms
+Execution Time: 0.036 ms
+
+---- Run 3: execution 0.029 ms, planning 0.126 ms ----
+Index Scan using matches_pkey on matches  (cost=0.42..8.44 rows=1 width=1446) (actual time=0.019..0.022 rows=1 loops=1)
+  Index Cond: ((id)::text = '552ba0bd-997e-4e6f-8bb9-dc5a3cec1f7f'::text)
+  Buffers: shared hit=6
+Planning:
+  Buffers: shared hit=87
+Planning Time: 0.126 ms
+Execution Time: 0.029 ms

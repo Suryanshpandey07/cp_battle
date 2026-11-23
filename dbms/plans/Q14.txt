@@ -1,0 +1,44 @@
+Q14 · READ · Profile page: find the player by name (case-insensitive)
+App: api/players.py:173 (GET /profiles/{username})
+
+SELECT *
+FROM profiles
+WHERE lower(display_name) = lower('Player_26')
+  AND NOT is_bot
+LIMIT 1;
+
+---- Run 1: execution 0.034 ms, planning 0.195 ms ----
+Limit  (cost=0.29..8.30 rows=1 width=365) (actual time=0.018..0.019 rows=1 loops=1)
+  Buffers: shared hit=2 read=1
+  ->  Index Scan using ix_profiles_display_name_lower on profiles  (cost=0.29..8.30 rows=1 width=365) (actual time=0.017..0.017 rows=1 loops=1)
+        Index Cond: (lower((display_name)::text) = 'player_26'::text)
+        Filter: (NOT is_bot)
+        Buffers: shared hit=2 read=1
+Planning:
+  Buffers: shared hit=29 read=1 dirtied=1
+Planning Time: 0.195 ms
+Execution Time: 0.034 ms
+
+---- Run 2: execution 0.032 ms, planning 0.137 ms ----
+Limit  (cost=0.29..8.30 rows=1 width=365) (actual time=0.019..0.020 rows=1 loops=1)
+  Buffers: shared hit=3
+  ->  Index Scan using ix_profiles_display_name_lower on profiles  (cost=0.29..8.30 rows=1 width=365) (actual time=0.018..0.018 rows=1 loops=1)
+        Index Cond: (lower((display_name)::text) = 'player_26'::text)
+        Filter: (NOT is_bot)
+        Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=30
+Planning Time: 0.137 ms
+Execution Time: 0.032 ms
+
+---- Run 3: execution 0.026 ms, planning 0.123 ms ----
+Limit  (cost=0.29..8.30 rows=1 width=365) (actual time=0.016..0.016 rows=1 loops=1)
+  Buffers: shared hit=3
+  ->  Index Scan using ix_profiles_display_name_lower on profiles  (cost=0.29..8.30 rows=1 width=365) (actual time=0.015..0.015 rows=1 loops=1)
+        Index Cond: (lower((display_name)::text) = 'player_26'::text)
+        Filter: (NOT is_bot)
+        Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=30
+Planning Time: 0.123 ms
+Execution Time: 0.026 ms

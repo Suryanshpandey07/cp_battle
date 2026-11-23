@@ -1,0 +1,44 @@
+Q51 · WRITE · Apply the result to a player: rating, peak, W/L/D, AP, daily counters
+App: engine/finish.py:89-121 and _progress (the app computes each value and
+writes it; the counters reset when the UTC day changes)
+
+UPDATE profiles
+SET rating = 1388,
+    peak_rating = greatest(peak_rating, 1388),
+    wins = wins + 1,
+    points = points + 85,
+    bot_gain_today = CASE WHEN daily_day = '2026-11-23' THEN bot_gain_today ELSE 0 END,
+    casual_ap_today = CASE WHEN daily_day = '2026-11-23' THEN casual_ap_today ELSE 0 END,
+    daily_day = '2026-11-23',
+    last_win_day = '2026-11-23'
+WHERE id = 26;
+
+---- Run 1: execution 0.213 ms, planning 0.049 ms ----
+Update on profiles  (cost=0.29..8.32 rows=0 width=0) (actual time=0.137..0.137 rows=0 loops=1)
+  Buffers: shared hit=19 read=1 dirtied=3
+  ->  Index Scan using profiles_pkey on profiles  (cost=0.29..8.32 rows=1 width=106) (actual time=0.009..0.010 rows=1 loops=1)
+        Index Cond: (id = 26)
+        Buffers: shared hit=3
+Planning Time: 0.049 ms
+Trigger for constraint profiles_user_id_fkey: time=0.058 calls=1
+Execution Time: 0.213 ms
+
+---- Run 2: execution 0.223 ms, planning 0.060 ms ----
+Update on profiles  (cost=0.29..8.32 rows=0 width=0) (actual time=0.131..0.132 rows=0 loops=1)
+  Buffers: shared hit=20
+  ->  Index Scan using profiles_pkey on profiles  (cost=0.29..8.32 rows=1 width=106) (actual time=0.012..0.013 rows=1 loops=1)
+        Index Cond: (id = 26)
+        Buffers: shared hit=3
+Planning Time: 0.060 ms
+Trigger for constraint profiles_user_id_fkey: time=0.070 calls=1
+Execution Time: 0.223 ms
+
+---- Run 3: execution 0.164 ms, planning 0.053 ms ----
+Update on profiles  (cost=0.29..8.32 rows=0 width=0) (actual time=0.098..0.099 rows=0 loops=1)
+  Buffers: shared hit=20
+  ->  Index Scan using profiles_pkey on profiles  (cost=0.29..8.32 rows=1 width=106) (actual time=0.008..0.009 rows=1 loops=1)
+        Index Cond: (id = 26)
+        Buffers: shared hit=3
+Planning Time: 0.053 ms
+Trigger for constraint profiles_user_id_fkey: time=0.050 calls=1
+Execution Time: 0.164 ms

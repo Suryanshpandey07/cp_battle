@@ -1,0 +1,33 @@
+Q66 · WRITE · Admin: resolve a flag
+App: api/admin.py:113-117
+
+UPDATE flags
+SET status = 'dismissed'
+WHERE id = 1;
+
+---- Run 1: execution 0.164 ms, planning 0.061 ms ----
+Update on flags  (cost=0.28..8.29 rows=0 width=0) (actual time=0.131..0.132 rows=0 loops=1)
+  Buffers: shared hit=15 read=2 dirtied=2
+  ->  Index Scan using flags_pkey on flags  (cost=0.28..8.29 rows=1 width=56) (actual time=0.025..0.027 rows=1 loops=1)
+        Index Cond: (id = 1)
+        Buffers: shared hit=4 read=1
+Planning Time: 0.061 ms
+Execution Time: 0.164 ms
+
+---- Run 2: execution 0.089 ms, planning 0.033 ms ----
+Update on flags  (cost=0.28..8.29 rows=0 width=0) (actual time=0.066..0.066 rows=0 loops=1)
+  Buffers: shared hit=17
+  ->  Index Scan using flags_pkey on flags  (cost=0.28..8.29 rows=1 width=56) (actual time=0.006..0.007 rows=1 loops=1)
+        Index Cond: (id = 1)
+        Buffers: shared hit=5
+Planning Time: 0.033 ms
+Execution Time: 0.089 ms
+
+---- Run 3: execution 0.097 ms, planning 0.047 ms ----
+Update on flags  (cost=0.28..8.29 rows=0 width=0) (actual time=0.071..0.071 rows=0 loops=1)
+  Buffers: shared hit=17
+  ->  Index Scan using flags_pkey on flags  (cost=0.28..8.29 rows=1 width=56) (actual time=0.007..0.009 rows=1 loops=1)
+        Index Cond: (id = 1)
+        Buffers: shared hit=5
+Planning Time: 0.047 ms
+Execution Time: 0.097 ms

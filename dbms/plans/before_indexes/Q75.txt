@@ -1,0 +1,34 @@
+Q75 · WRITE · Seed: write its new test cases
+App: seed.py:66
+
+INSERT INTO test_cases (problem_id, idx, input_text, expected_text, is_sample)
+VALUES (3, 0, E'5\n1 2 3 2 1\n', E'3\n', TRUE),
+       (3, 1, E'1\n7\n', E'7\n', TRUE),
+       (3, 2, E'7\n4 4 9 1 9 1 6\n', E'6\n', FALSE);
+
+---- Run 1: execution 0.473 ms, planning 0.025 ms ----
+Insert on test_cases  (cost=0.00..0.05 rows=0 width=0) (actual time=0.238..0.238 rows=0 loops=1)
+  Buffers: shared hit=28 read=7 dirtied=4
+  ->  Values Scan on "*VALUES*"  (cost=0.00..0.05 rows=3 width=77) (actual time=0.083..0.089 rows=3 loops=1)
+        Buffers: shared hit=13 read=1 dirtied=1
+Planning Time: 0.025 ms
+Trigger for constraint test_cases_problem_id_fkey: time=0.221 calls=3
+Execution Time: 0.473 ms
+
+---- Run 2: execution 0.247 ms, planning 0.014 ms ----
+Insert on test_cases  (cost=0.00..0.05 rows=0 width=0) (actual time=0.100..0.100 rows=0 loops=1)
+  Buffers: shared hit=35
+  ->  Values Scan on "*VALUES*"  (cost=0.00..0.05 rows=3 width=77) (actual time=0.025..0.028 rows=3 loops=1)
+        Buffers: shared hit=14
+Planning Time: 0.014 ms
+Trigger for constraint test_cases_problem_id_fkey: time=0.140 calls=3
+Execution Time: 0.247 ms
+
+---- Run 3: execution 0.248 ms, planning 0.014 ms ----
+Insert on test_cases  (cost=0.00..0.05 rows=0 width=0) (actual time=0.064..0.064 rows=0 loops=1)
+  Buffers: shared hit=35
+  ->  Values Scan on "*VALUES*"  (cost=0.00..0.05 rows=3 width=77) (actual time=0.021..0.023 rows=3 loops=1)
+        Buffers: shared hit=14
+Planning Time: 0.014 ms
+Trigger for constraint test_cases_problem_id_fkey: time=0.176 calls=3
+Execution Time: 0.248 ms

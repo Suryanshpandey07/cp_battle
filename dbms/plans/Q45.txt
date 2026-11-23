@@ -1,0 +1,56 @@
+Q45 · READ · Rebuild a match from its log (replays, recovery)
+App: engine/actor.py:950-951 (_load_events, every visibility)
+
+SELECT seq, t_ms, type, payload, visibility
+FROM match_events
+WHERE match_id = '9348a163-6e39-4f78-8557-09984d57dc04'
+  AND seq > 0
+ORDER BY seq;
+
+---- Run 1: execution 0.128 ms, planning 0.079 ms ----
+Sort  (cost=190.99..191.10 rows=47 width=128) (actual time=0.111..0.113 rows=31 loops=1)
+  Sort Key: seq
+  Sort Method: quicksort  Memory: 29kB
+  Buffers: shared hit=3 read=2
+  ->  Bitmap Heap Scan on match_events  (cost=4.79..189.68 rows=47 width=128) (actual time=0.088..0.096 rows=31 loops=1)
+        Recheck Cond: ((match_id)::text = '9348a163-6e39-4f78-8557-09984d57dc04'::text)
+        Filter: (seq > 0)
+        Heap Blocks: exact=2
+        Buffers: shared hit=3 read=2
+        ->  Bitmap Index Scan on ix_match_events_match_id  (cost=0.00..4.78 rows=47 width=0) (actual time=0.077..0.077 rows=31 loops=1)
+              Index Cond: ((match_id)::text = '9348a163-6e39-4f78-8557-09984d57dc04'::text)
+              Buffers: shared hit=1 read=2
+Planning Time: 0.079 ms
+Execution Time: 0.128 ms
+
+---- Run 2: execution 0.061 ms, planning 0.067 ms ----
+Sort  (cost=190.99..191.10 rows=47 width=128) (actual time=0.046..0.048 rows=31 loops=1)
+  Sort Key: seq
+  Sort Method: quicksort  Memory: 29kB
+  Buffers: shared hit=5
+  ->  Bitmap Heap Scan on match_events  (cost=4.79..189.68 rows=47 width=128) (actual time=0.024..0.033 rows=31 loops=1)
+        Recheck Cond: ((match_id)::text = '9348a163-6e39-4f78-8557-09984d57dc04'::text)
+        Filter: (seq > 0)
+        Heap Blocks: exact=2
+        Buffers: shared hit=5
+        ->  Bitmap Index Scan on ix_match_events_match_id  (cost=0.00..4.78 rows=47 width=0) (actual time=0.015..0.015 rows=31 loops=1)
+              Index Cond: ((match_id)::text = '9348a163-6e39-4f78-8557-09984d57dc04'::text)
+              Buffers: shared hit=3
+Planning Time: 0.067 ms
+Execution Time: 0.061 ms
+
+---- Run 3: execution 0.055 ms, planning 0.063 ms ----
+Sort  (cost=190.99..191.10 rows=47 width=128) (actual time=0.041..0.043 rows=31 loops=1)
+  Sort Key: seq
+  Sort Method: quicksort  Memory: 29kB
+  Buffers: shared hit=5
+  ->  Bitmap Heap Scan on match_events  (cost=4.79..189.68 rows=47 width=128) (actual time=0.024..0.031 rows=31 loops=1)
+        Recheck Cond: ((match_id)::text = '9348a163-6e39-4f78-8557-09984d57dc04'::text)
+        Filter: (seq > 0)
+        Heap Blocks: exact=2
+        Buffers: shared hit=5
+        ->  Bitmap Index Scan on ix_match_events_match_id  (cost=0.00..4.78 rows=47 width=0) (actual time=0.016..0.016 rows=31 loops=1)
+              Index Cond: ((match_id)::text = '9348a163-6e39-4f78-8557-09984d57dc04'::text)
+              Buffers: shared hit=3
+Planning Time: 0.063 ms
+Execution Time: 0.055 ms

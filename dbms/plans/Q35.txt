@@ -1,0 +1,41 @@
+Q35 · WRITE · Save the match after a hit lands (HP, hand, stats, last event number)
+App: engine/actor.py:315 (session.merge). The ORM writes only the changed
+columns, so other commands (block, hint, reroll, connect) update a different
+subset of the player1_*/player2_* columns; this is the largest common one.
+
+UPDATE matches
+SET last_seq = 17,
+    player1_damage_dealt = 8000,
+    player1_hits_landed = 1,
+    player1_hand = '{"slots": [{"slug": "bit-count", "tier": 1}, {"slug": "mex-run", "tier": 2}, {"slug": "lone-bit", "tier": 3}, {"slug": "kth-gap", "tier": 4}]}',
+    player1_stats = '{"crits": 0, "accepted": 1, "submissions": 1, "biggest_hit": 8000, "fastest_solve_ms": 95000}',
+    player2_hp = 6000,
+    player2_stats = '{"damage_taken": 8000}'
+WHERE id = '552ba0bd-997e-4e6f-8bb9-dc5a3cec1f7f';
+
+---- Run 1: execution 0.289 ms, planning 0.041 ms ----
+Update on matches  (cost=0.42..8.44 rows=0 width=0) (actual time=0.274..0.274 rows=0 loops=1)
+  Buffers: shared hit=20 read=3 dirtied=5
+  ->  Index Scan using matches_pkey on matches  (cost=0.42..8.44 rows=1 width=118) (actual time=0.008..0.009 rows=1 loops=1)
+        Index Cond: ((id)::text = '552ba0bd-997e-4e6f-8bb9-dc5a3cec1f7f'::text)
+        Buffers: shared hit=4
+Planning Time: 0.041 ms
+Execution Time: 0.289 ms
+
+---- Run 2: execution 0.198 ms, planning 0.054 ms ----
+Update on matches  (cost=0.42..8.44 rows=0 width=0) (actual time=0.181..0.181 rows=0 loops=1)
+  Buffers: shared hit=22
+  ->  Index Scan using matches_pkey on matches  (cost=0.42..8.44 rows=1 width=118) (actual time=0.015..0.016 rows=1 loops=1)
+        Index Cond: ((id)::text = '552ba0bd-997e-4e6f-8bb9-dc5a3cec1f7f'::text)
+        Buffers: shared hit=4
+Planning Time: 0.054 ms
+Execution Time: 0.198 ms
+
+---- Run 3: execution 0.146 ms, planning 0.025 ms ----
+Update on matches  (cost=0.42..8.44 rows=0 width=0) (actual time=0.135..0.136 rows=0 loops=1)
+  Buffers: shared hit=22
+  ->  Index Scan using matches_pkey on matches  (cost=0.42..8.44 rows=1 width=118) (actual time=0.006..0.006 rows=1 loops=1)
+        Index Cond: ((id)::text = '552ba0bd-997e-4e6f-8bb9-dc5a3cec1f7f'::text)
+        Buffers: shared hit=4
+Planning Time: 0.025 ms
+Execution Time: 0.146 ms

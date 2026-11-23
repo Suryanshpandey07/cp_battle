@@ -1,0 +1,46 @@
+Q55 · WRITE · Unlock skins the player has just earned (tier or achievement)
+App: skins/service.py:36 (evaluate_unlocks; the app checks the owned set first)
+
+INSERT INTO inventory (profile_id, skin_id, source)
+VALUES (26, 'card.azure', 'tier'),
+       (26, 'bean.cape', 'tier')
+ON CONFLICT (profile_id, skin_id) DO NOTHING;
+
+---- Run 1: execution 0.215 ms, planning 0.033 ms ----
+Insert on inventory  (cost=0.00..0.04 rows=0 width=0) (actual time=0.136..0.137 rows=0 loops=1)
+  Conflict Resolution: NOTHING
+  Conflict Arbiter Indexes: uq_inventory_profile_skin
+  Tuples Inserted: 2
+  Conflicting Tuples: 0
+  Buffers: shared hit=24 read=1 dirtied=1
+  ->  Values Scan on "*VALUES*"  (cost=0.00..0.04 rows=2 width=180) (actual time=0.010..0.013 rows=2 loops=1)
+        Buffers: shared hit=2
+Planning Time: 0.033 ms
+Trigger for constraint inventory_profile_id_fkey: time=0.037 calls=2
+Execution Time: 0.215 ms
+
+---- Run 2: execution 0.135 ms, planning 0.029 ms ----
+Insert on inventory  (cost=0.00..0.04 rows=0 width=0) (actual time=0.090..0.090 rows=0 loops=1)
+  Conflict Resolution: NOTHING
+  Conflict Arbiter Indexes: uq_inventory_profile_skin
+  Tuples Inserted: 2
+  Conflicting Tuples: 0
+  Buffers: shared hit=25
+  ->  Values Scan on "*VALUES*"  (cost=0.00..0.04 rows=2 width=180) (actual time=0.008..0.010 rows=2 loops=1)
+        Buffers: shared hit=2
+Planning Time: 0.029 ms
+Trigger for constraint inventory_profile_id_fkey: time=0.034 calls=2
+Execution Time: 0.135 ms
+
+---- Run 3: execution 0.120 ms, planning 0.061 ms ----
+Insert on inventory  (cost=0.00..0.04 rows=0 width=0) (actual time=0.079..0.079 rows=0 loops=1)
+  Conflict Resolution: NOTHING
+  Conflict Arbiter Indexes: uq_inventory_profile_skin
+  Tuples Inserted: 2
+  Conflicting Tuples: 0
+  Buffers: shared hit=25
+  ->  Values Scan on "*VALUES*"  (cost=0.00..0.04 rows=2 width=180) (actual time=0.007..0.009 rows=2 loops=1)
+        Buffers: shared hit=2
+Planning Time: 0.061 ms
+Trigger for constraint inventory_profile_id_fkey: time=0.031 calls=2
+Execution Time: 0.120 ms

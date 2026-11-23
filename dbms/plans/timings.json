@@ -1,0 +1,1003 @@
+[
+ {
+  "id": "Q01",
+  "kind": "READ",
+  "title": "Sign up: is the username taken?",
+  "source": "api/auth.py:77",
+  "runs_ms": [
+   0.126,
+   0.242,
+   0.071
+  ],
+  "avg_ms": 0.146,
+  "planning_avg_ms": 0.606
+ },
+ {
+  "id": "Q02",
+  "kind": "WRITE",
+  "title": "Sign up: create the user, their profile and their default skins",
+  "source": "api/auth.py:80, :84 and seed.py:96-97",
+  "runs_ms": [
+   1.834,
+   1.15,
+   1.309
+  ],
+  "avg_ms": 1.431,
+  "planning_avg_ms": 0.267
+ },
+ {
+  "id": "Q03",
+  "kind": "READ",
+  "title": "Log in: the user and their profile",
+  "source": "api/auth.py:104 and :113",
+  "runs_ms": [
+   0.055,
+   0.044,
+   0.03
+  ],
+  "avg_ms": 0.043,
+  "planning_avg_ms": 0.772
+ },
+ {
+  "id": "Q04",
+  "kind": "READ",
+  "title": "The signed-in player (GET /me and every session payload): profile, account role and owned skins",
+  "source": "services/profiles.py:30-31 via api/players.py:59 and api/auth.py",
+  "runs_ms": [
+   0.18,
+   0.124,
+   0.129
+  ],
+  "avg_ms": 0.144,
+  "planning_avg_ms": 0.364
+ },
+ {
+  "id": "Q05",
+  "kind": "WRITE",
+  "title": "Issue a refresh token (only its SHA-256 is stored)",
+  "source": "api/auth.py:50",
+  "runs_ms": [
+   0.53,
+   0.439,
+   0.219
+  ],
+  "avg_ms": 0.396,
+  "planning_avg_ms": 0.025
+ },
+ {
+  "id": "Q06",
+  "kind": "READ",
+  "title": "Refresh: the token, its user and their profile",
+  "source": "api/auth.py:129, :141 and :145",
+  "runs_ms": [
+   0.054,
+   0.054,
+   0.041
+  ],
+  "avg_ms": 0.05,
+  "planning_avg_ms": 0.39
+ },
+ {
+  "id": "Q07",
+  "kind": "WRITE",
+  "title": "Refresh with a token that was already used: revoke the whole family",
+  "source": "api/auth.py:134-136",
+  "runs_ms": [
+   0.268,
+   0.263,
+   0.25
+  ],
+  "avg_ms": 0.26,
+  "planning_avg_ms": 0.065
+ },
+ {
+  "id": "Q08",
+  "kind": "WRITE",
+  "title": "Refresh: rotate (revoke the token that was just used)",
+  "source": "api/auth.py:140",
+  "runs_ms": [
+   0.105,
+   0.072,
+   0.045
+  ],
+  "avg_ms": 0.074,
+  "planning_avg_ms": 0.039
+ },
+ {
+  "id": "Q09",
+  "kind": "WRITE",
+  "title": "Log out: revoke the cookie's token",
+  "source": "api/auth.py:160-163",
+  "runs_ms": [
+   0.068,
+   0.108,
+   0.035
+  ],
+  "avg_ms": 0.07,
+  "planning_avg_ms": 0.041
+ },
+ {
+  "id": "Q10",
+  "kind": "READ",
+  "title": "Home: my last 8 finished or aborted matches",
+  "source": "api/players.py:62-64",
+  "runs_ms": [
+   0.977,
+   0.318,
+   0.312
+  ],
+  "avg_ms": 0.536,
+  "planning_avg_ms": 0.537
+ },
+ {
+  "id": "Q11",
+  "kind": "READ",
+  "title": "Home: today's quest progress",
+  "source": "api/players.py:47",
+  "runs_ms": [
+   0.085,
+   0.032,
+   0.024
+  ],
+  "avg_ms": 0.047,
+  "planning_avg_ms": 0.178
+ },
+ {
+  "id": "Q12",
+  "kind": "WRITE",
+  "title": "Save settings (volumes, music, code templates)",
+  "source": "api/players.py:103-106",
+  "runs_ms": [
+   0.278,
+   0.15,
+   0.133
+  ],
+  "avg_ms": 0.187,
+  "planning_avg_ms": 0.057
+ },
+ {
+  "id": "Q13",
+  "kind": "WRITE",
+  "title": "Claim a finished quest and pay its Arena Points",
+  "source": "api/players.py:120-131",
+  "runs_ms": [
+   0.437,
+   0.247,
+   0.248
+  ],
+  "avg_ms": 0.311,
+  "planning_avg_ms": 0.137
+ },
+ {
+  "id": "Q14",
+  "kind": "READ",
+  "title": "Profile page: find the player by name (case-insensitive)",
+  "source": "api/players.py:173",
+  "runs_ms": [
+   0.034,
+   0.032,
+   0.026
+  ],
+  "avg_ms": 0.031,
+  "planning_avg_ms": 0.152
+ },
+ {
+  "id": "Q15",
+  "kind": "READ",
+  "title": "Profile page: the last 50 rating changes (the rating chart)",
+  "source": "api/players.py:176-177",
+  "runs_ms": [
+   0.556,
+   0.169,
+   0.1
+  ],
+  "avg_ms": 0.275,
+  "planning_avg_ms": 0.224
+ },
+ {
+  "id": "Q16",
+  "kind": "READ",
+  "title": "Profile page: battle history (last 20 finished or aborted)",
+  "source": "api/players.py:178-180",
+  "runs_ms": [
+   0.376,
+   0.195,
+   0.245
+  ],
+  "avg_ms": 0.272,
+  "planning_avg_ms": 0.11
+ },
+ {
+  "id": "Q17",
+  "kind": "READ",
+  "title": "Profile page: accuracy (accepted out of judged)",
+  "source": "api/players.py:181 and :182",
+  "runs_ms": [
+   1.149,
+   0.342,
+   0.297
+  ],
+  "avg_ms": 0.596,
+  "planning_avg_ms": 0.24
+ },
+ {
+  "id": "Q18",
+  "kind": "READ",
+  "title": "Career stats: up to 1000 finished matches (streaks, maps, activity)",
+  "source": "services/stats.py:113-115. The app reads whole rows",
+  "runs_ms": [
+   0.32,
+   0.216,
+   0.233
+  ],
+  "avg_ms": 0.256,
+  "planning_avg_ms": 0.192
+ },
+ {
+  "id": "Q19",
+  "kind": "READ",
+  "title": "Career stats: submissions by language, by verdict, and in total",
+  "source": "services/stats.py:119-127",
+  "runs_ms": [
+   0.506,
+   0.269,
+   0.344
+  ],
+  "avg_ms": 0.373,
+  "planning_avg_ms": 0.109
+ },
+ {
+  "id": "Q20",
+  "kind": "READ",
+  "title": "Career stats: distinct problems solved, by topic and tier",
+  "source": "services/stats.py:119-134",
+  "runs_ms": [
+   0.464,
+   0.285,
+   0.259
+  ],
+  "avg_ms": 0.336,
+  "planning_avg_ms": 0.321
+ },
+ {
+  "id": "Q21",
+  "kind": "READ",
+  "title": "A player's achievements",
+  "source": "services/stats.py:142, engine/finish.py:183, skins/service.py:25",
+  "runs_ms": [
+   0.039,
+   0.014,
+   0.016
+  ],
+  "avg_ms": 0.023,
+  "planning_avg_ms": 0.171
+ },
+ {
+  "id": "Q22",
+  "kind": "READ",
+  "title": "The skins a player owns",
+  "source": "skins/service.py:17",
+  "runs_ms": [
+   0.028,
+   0.014,
+   0.014
+  ],
+  "avg_ms": 0.019,
+  "planning_avg_ms": 0.035
+ },
+ {
+  "id": "Q23",
+  "kind": "READ",
+  "title": "Rank among people: how many rate higher, and how many there are",
+  "source": "services/stats.py:161 and :163",
+  "runs_ms": [
+   6.547,
+   4.636,
+   4.748
+  ],
+  "avg_ms": 5.31,
+  "planning_avg_ms": 0.1
+ },
+ {
+  "id": "Q24",
+  "kind": "READ",
+  "title": "Leaderboard, all time: the top 100 by rating",
+  "source": "api/players.py:207-208",
+  "runs_ms": [
+   0.916,
+   0.25,
+   0.246
+  ],
+  "avg_ms": 0.471,
+  "planning_avg_ms": 0.135
+ },
+ {
+  "id": "Q25",
+  "kind": "READ",
+  "title": "Leaderboard, this week: rating gained in matches that ended in the last 7 days",
+  "source": "api/players.py:211-232",
+  "runs_ms": [
+   136.385,
+   98.388,
+   96.98
+  ],
+  "avg_ms": 110.584,
+  "planning_avg_ms": 0.468
+ },
+ {
+  "id": "Q26",
+  "kind": "READ",
+  "title": "Leaderboard for one map: most wins there",
+  "source": "api/players.py:211-222",
+  "runs_ms": [
+   48.989,
+   46.776,
+   37.397
+  ],
+  "avg_ms": 44.387,
+  "planning_avg_ms": 0.389
+ },
+ {
+  "id": "Q77",
+  "kind": "READ",
+  "title": "Leaderboard, all time: my place when I am outside the top 100",
+  "source": "api/players.py:243-245",
+  "runs_ms": [
+   5.225,
+   5.098,
+   3.907
+  ],
+  "avg_ms": 4.743,
+  "planning_avg_ms": 0.233
+ },
+ {
+  "id": "Q27",
+  "kind": "READ",
+  "title": "Load the problem cache: every published problem with its tests",
+  "source": "services/problems.py:78 and :80",
+  "runs_ms": [
+   0.35,
+   0.307,
+   0.254
+  ],
+  "avg_ms": 0.304,
+  "planning_avg_ms": 0.502
+ },
+ {
+  "id": "Q28",
+  "kind": "READ",
+  "title": "Practice browser: every problem with whether I have solved it",
+  "source": "api/players.py:272",
+  "runs_ms": [
+   0.405,
+   0.419,
+   0.337
+  ],
+  "avg_ms": 0.387,
+  "planning_avg_ms": 0.17
+ },
+ {
+  "id": "Q29",
+  "kind": "READ",
+  "title": "Matchmaking: both players of an accepted pairing",
+  "source": "engine/matchmaker.py:248",
+  "runs_ms": [
+   0.087,
+   0.047,
+   0.035
+  ],
+  "avg_ms": 0.056,
+  "planning_avg_ms": 0.072
+ },
+ {
+  "id": "Q30",
+  "kind": "READ",
+  "title": "Pick a bot opponent by personality",
+  "source": "engine/service.py:209",
+  "runs_ms": [
+   0.055,
+   0.022,
+   0.014
+  ],
+  "avg_ms": 0.03,
+  "planning_avg_ms": 0.081
+ },
+ {
+  "id": "Q31",
+  "kind": "WRITE",
+  "title": "Create a match: both players' snapshots, hands and the decks",
+  "source": "engine/service.py:161",
+  "runs_ms": [
+   0.786,
+   0.637,
+   0.539
+  ],
+  "avg_ms": 0.654,
+  "planning_avg_ms": 0.036
+ },
+ {
+  "id": "Q32",
+  "kind": "READ",
+  "title": "Reconnect or open the result page: the match and the public events after the last one the browser has",
+  "source": "api/matches.py:202 and :205-206",
+  "runs_ms": [
+   0.177,
+   0.147,
+   0.101
+  ],
+  "avg_ms": 0.142,
+  "planning_avg_ms": 0.337
+ },
+ {
+  "id": "Q33",
+  "kind": "WRITE",
+  "title": "Both players are ready: the match goes live",
+  "source": "engine/actor.py:315",
+  "runs_ms": [
+   0.5,
+   0.389,
+   0.327
+  ],
+  "avg_ms": 0.405,
+  "planning_avg_ms": 0.068
+ },
+ {
+  "id": "Q34",
+  "kind": "READ",
+  "title": "Before each save, the ORM loads the match row it merges into",
+  "source": "engine/actor.py:313",
+  "runs_ms": [
+   0.037,
+   0.036,
+   0.029
+  ],
+  "avg_ms": 0.034,
+  "planning_avg_ms": 0.177
+ },
+ {
+  "id": "Q35",
+  "kind": "WRITE",
+  "title": "Save the match after a hit lands (HP, hand, stats, last event number)",
+  "source": "engine/actor.py:315",
+  "runs_ms": [
+   0.289,
+   0.198,
+   0.146
+  ],
+  "avg_ms": 0.211,
+  "planning_avg_ms": 0.04
+ },
+ {
+  "id": "Q36",
+  "kind": "WRITE",
+  "title": "Append the command's events to the match log",
+  "source": "engine/actor.py:321",
+  "runs_ms": [
+   3.529,
+   1.148,
+   0.665
+  ],
+  "avg_ms": 1.781,
+  "planning_avg_ms": 0.03
+ },
+ {
+  "id": "Q37",
+  "kind": "WRITE",
+  "title": "A player submits a card",
+  "source": "engine/actor.py:316",
+  "runs_ms": [
+   0.827,
+   0.545,
+   0.404
+  ],
+  "avg_ms": 0.592,
+  "planning_avg_ms": 0.025
+ },
+ {
+  "id": "Q38",
+  "kind": "READ",
+  "title": "Before saving the verdict, the ORM loads the submission it merges into",
+  "source": "engine/actor.py:315",
+  "runs_ms": [
+   0.043,
+   0.039,
+   0.028
+  ],
+  "avg_ms": 0.037,
+  "planning_avg_ms": 0.159
+ },
+ {
+  "id": "Q39",
+  "kind": "WRITE",
+  "title": "Record the judge's verdict and the damage it did",
+  "source": "engine/actor.py:316. Other verdicts write failed_test and recoil, or",
+  "runs_ms": [
+   0.358,
+   0.362,
+   0.242
+  ],
+  "avg_ms": 0.321,
+  "planning_avg_ms": 0.049
+ },
+ {
+  "id": "Q40",
+  "kind": "WRITE",
+  "title": "Save the editor's draft (insert, or overwrite the same slot and language)",
+  "source": "api/matches.py:300-308",
+  "runs_ms": [
+   0.547,
+   0.371,
+   0.352
+  ],
+  "avg_ms": 0.423,
+  "planning_avg_ms": 0.114
+ },
+ {
+  "id": "Q41",
+  "kind": "READ",
+  "title": "Reopen the editor: all my drafts in this match",
+  "source": "api/matches.py:317",
+  "runs_ms": [
+   0.029,
+   0.024,
+   0.024
+  ],
+  "avg_ms": 0.026,
+  "planning_avg_ms": 0.134
+ },
+ {
+  "id": "Q42",
+  "kind": "READ",
+  "title": "One slot's draft",
+  "source": "api/matches.py:327",
+  "runs_ms": [
+   0.019,
+   0.013,
+   0.018
+  ],
+  "avg_ms": 0.017,
+  "planning_avg_ms": 0.056
+ },
+ {
+  "id": "Q43",
+  "kind": "WRITE",
+  "title": "A card was submitted: drop that slot's drafts",
+  "source": "engine/actor.py:755",
+  "runs_ms": [
+   0.026,
+   0.021,
+   0.034
+  ],
+  "avg_ms": 0.027,
+  "planning_avg_ms": 0.056
+ },
+ {
+  "id": "Q44",
+  "kind": "WRITE",
+  "title": "Flag a match for review (repeated judge system errors)",
+  "source": "engine/actor.py:661 and :956-959",
+  "runs_ms": [
+   0.542,
+   0.398,
+   0.378
+  ],
+  "avg_ms": 0.439,
+  "planning_avg_ms": 0.018
+ },
+ {
+  "id": "Q45",
+  "kind": "READ",
+  "title": "Rebuild a match from its log (replays, recovery)",
+  "source": "engine/actor.py:950-951",
+  "runs_ms": [
+   0.128,
+   0.061,
+   0.055
+  ],
+  "avg_ms": 0.081,
+  "planning_avg_ms": 0.07
+ },
+ {
+  "id": "Q46",
+  "kind": "WRITE",
+  "title": "Close the match: outcome, labels, the result screen",
+  "source": "engine/actor.py:315",
+  "runs_ms": [
+   0.428,
+   0.306,
+   0.31
+  ],
+  "avg_ms": 0.348,
+  "planning_avg_ms": 0.057
+ },
+ {
+  "id": "Q47",
+  "kind": "WRITE",
+  "title": "Void submissions still being judged when the match ended",
+  "source": "engine/actor.py:654 and :316",
+  "runs_ms": [
+   0.028,
+   0.023,
+   0.052
+  ],
+  "avg_ms": 0.034,
+  "planning_avg_ms": 0.051
+ },
+ {
+  "id": "Q48",
+  "kind": "WRITE",
+  "title": "Delete every draft of the match",
+  "source": "engine/actor.py:894",
+  "runs_ms": [
+   0.05,
+   0.04,
+   0.069
+  ],
+  "avg_ms": 0.053,
+  "planning_avg_ms": 0.146
+ },
+ {
+  "id": "Q49",
+  "kind": "READ",
+  "title": "Rematch rule: ranked meetings of the same pair in the last hour",
+  "source": "engine/finish.py:46-53",
+  "runs_ms": [
+   0.123,
+   0.116,
+   0.1
+  ],
+  "avg_ms": 0.113,
+  "planning_avg_ms": 0.137
+ },
+ {
+  "id": "Q50",
+  "kind": "READ",
+  "title": "The people in the match (bots have no rating to change)",
+  "source": "engine/finish.py:77",
+  "runs_ms": [
+   0.027,
+   0.028,
+   0.024
+  ],
+  "avg_ms": 0.026,
+  "planning_avg_ms": 0.07
+ },
+ {
+  "id": "Q51",
+  "kind": "WRITE",
+  "title": "Apply the result to a player: rating, peak, W/L/D, AP, daily counters",
+  "source": "engine/finish.py:89-121 and _progress",
+  "runs_ms": [
+   0.213,
+   0.223,
+   0.164
+  ],
+  "avg_ms": 0.2,
+  "planning_avg_ms": 0.054
+ },
+ {
+  "id": "Q52",
+  "kind": "WRITE",
+  "title": "Record the rating change and its breakdown",
+  "source": "engine/finish.py:109",
+  "runs_ms": [
+   0.63,
+   0.435,
+   0.311
+  ],
+  "avg_ms": 0.459,
+  "planning_avg_ms": 0.019
+ },
+ {
+  "id": "Q53",
+  "kind": "WRITE",
+  "title": "Daily quest progress (create today's row or add to it)",
+  "source": "engine/finish.py:168-176",
+  "runs_ms": [
+   0.338,
+   0.29,
+   0.146
+  ],
+  "avg_ms": 0.258,
+  "planning_avg_ms": 0.026
+ },
+ {
+  "id": "Q54",
+  "kind": "WRITE",
+  "title": "A new achievement: record it, add the badge, save the counters",
+  "source": "engine/finish.py:181-188",
+  "runs_ms": [
+   0.623,
+   0.611,
+   0.399
+  ],
+  "avg_ms": 0.544,
+  "planning_avg_ms": 0.184
+ },
+ {
+  "id": "Q55",
+  "kind": "WRITE",
+  "title": "Unlock skins the player has just earned (tier or achievement)",
+  "source": "skins/service.py:36",
+  "runs_ms": [
+   0.215,
+   0.135,
+   0.12
+  ],
+  "avg_ms": 0.157,
+  "planning_avg_ms": 0.041
+ },
+ {
+  "id": "Q56",
+  "kind": "WRITE",
+  "title": "No-show: add a strike, and ban from the queue on the third",
+  "source": "engine/finish.py:33-40",
+  "runs_ms": [
+   0.298,
+   0.18,
+   0.166
+  ],
+  "avg_ms": 0.215,
+  "planning_avg_ms": 0.071
+ },
+ {
+  "id": "Q57",
+  "kind": "READ",
+  "title": "Shop: was this purchase already made (a retried click)?",
+  "source": "skins/service.py:58",
+  "runs_ms": [
+   0.04,
+   0.018,
+   0.014
+  ],
+  "avg_ms": 0.024,
+  "planning_avg_ms": 0.213
+ },
+ {
+  "id": "Q58",
+  "kind": "WRITE",
+  "title": "Buy a skin: take the Arena Points, add it to the inventory, record the purchase",
+  "source": "skins/service.py:59-75",
+  "runs_ms": [
+   0.535,
+   0.472,
+   0.343
+  ],
+  "avg_ms": 0.45,
+  "planning_avg_ms": 0.153
+ },
+ {
+  "id": "Q59",
+  "kind": "WRITE",
+  "title": "Equip a skin (card, fighter, arena or weapon)",
+  "source": "api/skins.py:48-64",
+  "runs_ms": [
+   0.127,
+   0.115,
+   0.107
+  ],
+  "avg_ms": 0.116,
+  "planning_avg_ms": 0.037
+ },
+ {
+  "id": "Q60",
+  "kind": "WRITE",
+  "title": "Report an opponent: the target is whoever else was in the match",
+  "source": "api/players.py:155-159",
+  "runs_ms": [
+   0.597,
+   0.511,
+   0.31
+  ],
+  "avg_ms": 0.473,
+  "planning_avg_ms": 0.063
+ },
+ {
+  "id": "Q61",
+  "kind": "READ",
+  "title": "Admin: the latest 100 matches, searched by player name or id",
+  "source": "api/admin.py:45-48",
+  "runs_ms": [
+   0.479,
+   0.308,
+   0.211
+  ],
+  "avg_ms": 0.333,
+  "planning_avg_ms": 0.121
+ },
+ {
+  "id": "Q62",
+  "kind": "READ",
+  "title": "Admin: a match's full event log, private events included",
+  "source": "api/admin.py:58",
+  "runs_ms": [
+   0.065,
+   0.071,
+   0.055
+  ],
+  "avg_ms": 0.064,
+  "planning_avg_ms": 0.058
+ },
+ {
+  "id": "Q63",
+  "kind": "WRITE",
+  "title": "Admin: void a match (reverse every rating change it made)",
+  "source": "api/admin.py:73-80",
+  "runs_ms": [
+   0.612,
+   0.548,
+   0.445
+  ],
+  "avg_ms": 0.535,
+  "planning_avg_ms": 0.129
+ },
+ {
+  "id": "Q64",
+  "kind": "WRITE",
+  "title": "Admin: write the audit log",
+  "source": "api/admin.py:24",
+  "runs_ms": [
+   0.31,
+   0.232,
+   0.167
+  ],
+  "avg_ms": 0.236,
+  "planning_avg_ms": 0.022
+ },
+ {
+  "id": "Q65",
+  "kind": "READ",
+  "title": "Admin: the latest 200 flags",
+  "source": "api/admin.py:100",
+  "runs_ms": [
+   0.734,
+   0.657,
+   0.454
+  ],
+  "avg_ms": 0.615,
+  "planning_avg_ms": 0.112
+ },
+ {
+  "id": "Q66",
+  "kind": "WRITE",
+  "title": "Admin: resolve a flag",
+  "source": "api/admin.py:113-117",
+  "runs_ms": [
+   0.147,
+   0.108,
+   0.081
+  ],
+  "avg_ms": 0.112,
+  "planning_avg_ms": 0.056
+ },
+ {
+  "id": "Q67",
+  "kind": "WRITE",
+  "title": "Admin: suspend a user for a week",
+  "source": "api/admin.py:132-136",
+  "runs_ms": [
+   0.104,
+   0.098,
+   0.092
+  ],
+  "avg_ms": 0.098,
+  "planning_avg_ms": 0.036
+ },
+ {
+  "id": "Q68",
+  "kind": "WRITE",
+  "title": "Admin: give a skin to a user by username",
+  "source": "api/admin.py:151-156",
+  "runs_ms": [
+   0.109,
+   0.12,
+   0.114
+  ],
+  "avg_ms": 0.114,
+  "planning_avg_ms": 0.189
+ },
+ {
+  "id": "Q69",
+  "kind": "WRITE",
+  "title": "Admin: reset a user's daily caps",
+  "source": "api/admin.py:166-172",
+  "runs_ms": [
+   0.086,
+   0.103,
+   0.072
+  ],
+  "avg_ms": 0.087,
+  "planning_avg_ms": 0.142
+ },
+ {
+  "id": "Q70",
+  "kind": "READ",
+  "title": "Health check",
+  "source": "main.py:141",
+  "runs_ms": [
+   0.005,
+   0.017,
+   0.003
+  ],
+  "avg_ms": 0.008,
+  "planning_avg_ms": 0.009
+ },
+ {
+  "id": "Q71",
+  "kind": "WRITE",
+  "title": "After a database error in a match: abort it",
+  "source": "engine/actor.py:287-293",
+  "runs_ms": [
+   0.263,
+   0.249,
+   0.161
+  ],
+  "avg_ms": 0.224,
+  "planning_avg_ms": 0.047
+ },
+ {
+  "id": "Q72",
+  "kind": "WRITE",
+  "title": "Start-up: abort every match the last process left running",
+  "source": "engine/service.py:63-69",
+  "runs_ms": [
+   2.329,
+   1.447,
+   4.43
+  ],
+  "avg_ms": 2.735,
+  "planning_avg_ms": 0.055
+ },
+ {
+  "id": "Q73",
+  "kind": "WRITE",
+  "title": "Seed: add or update a problem by slug",
+  "source": "seed.py:39-62",
+  "runs_ms": [
+   0.246,
+   0.145,
+   0.16
+  ],
+  "avg_ms": 0.184,
+  "planning_avg_ms": 0.032
+ },
+ {
+  "id": "Q74",
+  "kind": "WRITE",
+  "title": "Seed: remove a problem's old test cases",
+  "source": "seed.py:64",
+  "runs_ms": [
+   0.723,
+   0.217,
+   0.22
+  ],
+  "avg_ms": 0.387,
+  "planning_avg_ms": 0.055
+ },
+ {
+  "id": "Q75",
+  "kind": "WRITE",
+  "title": "Seed: write its new test cases",
+  "source": "seed.py:66",
+  "runs_ms": [
+   0.437,
+   0.199,
+   0.183
+  ],
+  "avg_ms": 0.273,
+  "planning_avg_ms": 0.021
+ },
+ {
+  "id": "Q76",
+  "kind": "WRITE",
+  "title": "Seed: create a bot profile if it does not exist",
+  "source": "seed.py:104-110",
+  "runs_ms": [
+   0.035,
+   0.023,
+   0.026
+  ],
+  "avg_ms": 0.028,
+  "planning_avg_ms": 0.08
+ }
+]

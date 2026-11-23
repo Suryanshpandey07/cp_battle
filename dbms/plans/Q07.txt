@@ -1,0 +1,43 @@
+Q07 · WRITE · Refresh with a token that was already used: revoke the whole family
+App: api/auth.py:134-136 (SELECT the live tokens, then UPDATE each); here one UPDATE.
+
+UPDATE refresh_tokens
+SET revoked_at = now() AT TIME ZONE 'utc'
+WHERE user_id = 26
+  AND revoked_at IS NULL;
+
+---- Run 1: execution 0.268 ms, planning 0.067 ms ----
+Update on refresh_tokens  (cost=0.29..8.35 rows=0 width=0) (actual time=0.106..0.106 rows=0 loops=1)
+  Buffers: shared hit=21 read=1 dirtied=1
+  ->  Index Scan using ix_refresh_tokens_user_id on refresh_tokens  (cost=0.29..8.35 rows=1 width=14) (actual time=0.014..0.019 rows=2 loops=1)
+        Index Cond: (user_id = 26)
+        Filter: (revoked_at IS NULL)
+        Rows Removed by Filter: 2
+        Buffers: shared hit=5
+Planning Time: 0.067 ms
+Trigger for constraint refresh_tokens_user_id_fkey: time=0.066 calls=1
+Execution Time: 0.268 ms
+
+---- Run 2: execution 0.263 ms, planning 0.063 ms ----
+Update on refresh_tokens  (cost=0.29..8.35 rows=0 width=0) (actual time=0.095..0.095 rows=0 loops=1)
+  Buffers: shared hit=22
+  ->  Index Scan using ix_refresh_tokens_user_id on refresh_tokens  (cost=0.29..8.35 rows=1 width=14) (actual time=0.016..0.022 rows=2 loops=1)
+        Index Cond: (user_id = 26)
+        Filter: (revoked_at IS NULL)
+        Rows Removed by Filter: 2
+        Buffers: shared hit=5
+Planning Time: 0.063 ms
+Trigger for constraint refresh_tokens_user_id_fkey: time=0.073 calls=1
+Execution Time: 0.263 ms
+
+---- Run 3: execution 0.250 ms, planning 0.064 ms ----
+Update on refresh_tokens  (cost=0.29..8.35 rows=0 width=0) (actual time=0.138..0.138 rows=0 loops=1)
+  Buffers: shared hit=23
+  ->  Index Scan using ix_refresh_tokens_user_id on refresh_tokens  (cost=0.29..8.35 rows=1 width=14) (actual time=0.012..0.016 rows=2 loops=1)
+        Index Cond: (user_id = 26)
+        Filter: (revoked_at IS NULL)
+        Rows Removed by Filter: 2
+        Buffers: shared hit=5
+Planning Time: 0.064 ms
+Trigger for constraint refresh_tokens_user_id_fkey: time=0.055 calls=1
+Execution Time: 0.250 ms

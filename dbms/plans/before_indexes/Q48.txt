@@ -1,0 +1,44 @@
+Q48 · WRITE · Delete every draft of the match
+App: engine/actor.py:894
+
+DELETE FROM drafts
+WHERE match_id = '552ba0bd-997e-4e6f-8bb9-dc5a3cec1f7f';
+
+---- Run 1: execution 0.039 ms, planning 0.027 ms ----
+Delete on drafts  (cost=4.21..12.72 rows=0 width=0) (actual time=0.030..0.030 rows=0 loops=1)
+  Buffers: shared hit=11
+  ->  Bitmap Heap Scan on drafts  (cost=4.21..12.72 rows=8 width=6) (actual time=0.011..0.015 rows=8 loops=1)
+        Recheck Cond: ((match_id)::text = '552ba0bd-997e-4e6f-8bb9-dc5a3cec1f7f'::text)
+        Heap Blocks: exact=2
+        Buffers: shared hit=3
+        ->  Bitmap Index Scan on ix_drafts_match_id  (cost=0.00..4.21 rows=8 width=0) (actual time=0.007..0.007 rows=15 loops=1)
+              Index Cond: ((match_id)::text = '552ba0bd-997e-4e6f-8bb9-dc5a3cec1f7f'::text)
+              Buffers: shared hit=1
+Planning Time: 0.027 ms
+Execution Time: 0.039 ms
+
+---- Run 2: execution 0.048 ms, planning 0.048 ms ----
+Delete on drafts  (cost=4.21..12.72 rows=0 width=0) (actual time=0.035..0.035 rows=0 loops=1)
+  Buffers: shared hit=11
+  ->  Bitmap Heap Scan on drafts  (cost=4.21..12.72 rows=8 width=6) (actual time=0.015..0.019 rows=8 loops=1)
+        Recheck Cond: ((match_id)::text = '552ba0bd-997e-4e6f-8bb9-dc5a3cec1f7f'::text)
+        Heap Blocks: exact=2
+        Buffers: shared hit=3
+        ->  Bitmap Index Scan on ix_drafts_match_id  (cost=0.00..4.21 rows=8 width=0) (actual time=0.009..0.009 rows=16 loops=1)
+              Index Cond: ((match_id)::text = '552ba0bd-997e-4e6f-8bb9-dc5a3cec1f7f'::text)
+              Buffers: shared hit=1
+Planning Time: 0.048 ms
+Execution Time: 0.048 ms
+
+---- Run 3: execution 0.021 ms, planning 0.021 ms ----
+Delete on drafts  (cost=4.21..12.72 rows=0 width=0) (actual time=0.015..0.015 rows=0 loops=1)
+  Buffers: shared hit=11
+  ->  Bitmap Heap Scan on drafts  (cost=4.21..12.72 rows=8 width=6) (actual time=0.007..0.010 rows=8 loops=1)
+        Recheck Cond: ((match_id)::text = '552ba0bd-997e-4e6f-8bb9-dc5a3cec1f7f'::text)
+        Heap Blocks: exact=2
+        Buffers: shared hit=3
+        ->  Bitmap Index Scan on ix_drafts_match_id  (cost=0.00..4.21 rows=8 width=0) (actual time=0.005..0.005 rows=17 loops=1)
+              Index Cond: ((match_id)::text = '552ba0bd-997e-4e6f-8bb9-dc5a3cec1f7f'::text)
+              Buffers: shared hit=1
+Planning Time: 0.021 ms
+Execution Time: 0.021 ms

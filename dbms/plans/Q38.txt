@@ -1,0 +1,42 @@
+Q38 · READ · Before saving the verdict, the ORM loads the submission it merges into
+App: engine/actor.py:315 (session.merge issues a primary-key SELECT). The
+app binds the id; here (SELECT currval(...)) stands for "the id Q37 returned".
+It must be a subquery: a bare currval() is volatile and would make
+PostgreSQL scan the table instead of using the primary key.
+
+SELECT *
+FROM submissions
+WHERE id = (SELECT currval('submissions_id_seq'));
+
+---- Run 1: execution 0.043 ms, planning 0.197 ms ----
+Index Scan using submissions_pkey on submissions  (cost=0.43..8.45 rows=1 width=321) (actual time=0.030..0.030 rows=1 loops=1)
+  Index Cond: (id = $0)
+  Buffers: shared hit=7
+  InitPlan 1 (returns $0)
+    ->  Result  (cost=0.00..0.01 rows=1 width=8) (actual time=0.003..0.003 rows=1 loops=1)
+Planning:
+  Buffers: shared hit=53 read=2
+Planning Time: 0.197 ms
+Execution Time: 0.043 ms
+
+---- Run 2: execution 0.039 ms, planning 0.184 ms ----
+Index Scan using submissions_pkey on submissions  (cost=0.43..8.45 rows=1 width=321) (actual time=0.026..0.027 rows=1 loops=1)
+  Index Cond: (id = $0)
+  Buffers: shared hit=7
+  InitPlan 1 (returns $0)
+    ->  Result  (cost=0.00..0.01 rows=1 width=8) (actual time=0.002..0.002 rows=1 loops=1)
+Planning:
+  Buffers: shared hit=55
+Planning Time: 0.184 ms
+Execution Time: 0.039 ms
+
+---- Run 3: execution 0.028 ms, planning 0.097 ms ----
+Index Scan using submissions_pkey on submissions  (cost=0.43..8.45 rows=1 width=321) (actual time=0.021..0.021 rows=1 loops=1)
+  Index Cond: (id = $0)
+  Buffers: shared hit=7
+  InitPlan 1 (returns $0)
+    ->  Result  (cost=0.00..0.01 rows=1 width=8) (actual time=0.002..0.002 rows=1 loops=1)
+Planning:
+  Buffers: shared hit=55
+Planning Time: 0.097 ms
+Execution Time: 0.028 ms

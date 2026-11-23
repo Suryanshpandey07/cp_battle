@@ -1,0 +1,36 @@
+Q59 · WRITE · Equip a skin (card, fighter, arena or weapon)
+App: api/skins.py:48-64
+
+UPDATE profiles
+SET equipped_arena = 'arena.sakura'
+WHERE id = 26;
+
+---- Run 1: execution 0.127 ms, planning 0.044 ms ----
+Update on profiles  (cost=0.29..8.30 rows=0 width=0) (actual time=0.063..0.063 rows=0 loops=1)
+  Buffers: shared hit=6
+  ->  Index Scan using profiles_pkey on profiles  (cost=0.29..8.30 rows=1 width=120) (actual time=0.011..0.012 rows=1 loops=1)
+        Index Cond: (id = 26)
+        Buffers: shared hit=3
+Planning Time: 0.044 ms
+Trigger for constraint profiles_user_id_fkey: time=0.051 calls=1
+Execution Time: 0.127 ms
+
+---- Run 2: execution 0.115 ms, planning 0.036 ms ----
+Update on profiles  (cost=0.29..8.30 rows=0 width=0) (actual time=0.055..0.055 rows=0 loops=1)
+  Buffers: shared hit=6
+  ->  Index Scan using profiles_pkey on profiles  (cost=0.29..8.30 rows=1 width=120) (actual time=0.006..0.007 rows=1 loops=1)
+        Index Cond: (id = 26)
+        Buffers: shared hit=3
+Planning Time: 0.036 ms
+Trigger for constraint profiles_user_id_fkey: time=0.046 calls=1
+Execution Time: 0.115 ms
+
+---- Run 3: execution 0.107 ms, planning 0.032 ms ----
+Update on profiles  (cost=0.29..8.30 rows=0 width=0) (actual time=0.050..0.051 rows=0 loops=1)
+  Buffers: shared hit=6
+  ->  Index Scan using profiles_pkey on profiles  (cost=0.29..8.30 rows=1 width=120) (actual time=0.006..0.007 rows=1 loops=1)
+        Index Cond: (id = 26)
+        Buffers: shared hit=3
+Planning Time: 0.032 ms
+Trigger for constraint profiles_user_id_fkey: time=0.045 calls=1
+Execution Time: 0.107 ms

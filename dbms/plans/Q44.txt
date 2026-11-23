@@ -1,0 +1,35 @@
+Q44 · WRITE · Flag a match for review (repeated judge system errors)
+App: engine/actor.py:661 and :956-959 (_flag)
+
+INSERT INTO flags (match_id, profile_id, kind, severity, details)
+VALUES ('552ba0bd-997e-4e6f-8bb9-dc5a3cec1f7f', 101, 'judge_system_errors', 1, '{"count": 3}');
+
+---- Run 1: execution 0.542 ms, planning 0.019 ms ----
+Insert on flags  (cost=0.00..0.02 rows=0 width=0) (actual time=0.308..0.309 rows=0 loops=1)
+  Buffers: shared hit=45 read=15 dirtied=5
+  ->  Result  (cost=0.00..0.02 rows=1 width=274) (actual time=0.062..0.062 rows=1 loops=1)
+        Buffers: shared hit=11 read=1 dirtied=1
+Planning Time: 0.019 ms
+Trigger for constraint flags_match_id_fkey: time=0.152 calls=1
+Trigger for constraint flags_profile_id_fkey: time=0.070 calls=1
+Execution Time: 0.542 ms
+
+---- Run 2: execution 0.398 ms, planning 0.017 ms ----
+Insert on flags  (cost=0.00..0.02 rows=0 width=0) (actual time=0.200..0.201 rows=0 loops=1)
+  Buffers: shared hit=60
+  ->  Result  (cost=0.00..0.02 rows=1 width=274) (actual time=0.025..0.025 rows=1 loops=1)
+        Buffers: shared hit=12
+Planning Time: 0.017 ms
+Trigger for constraint flags_match_id_fkey: time=0.131 calls=1
+Trigger for constraint flags_profile_id_fkey: time=0.057 calls=1
+Execution Time: 0.398 ms
+
+---- Run 3: execution 0.378 ms, planning 0.019 ms ----
+Insert on flags  (cost=0.00..0.02 rows=0 width=0) (actual time=0.157..0.158 rows=0 loops=1)
+  Buffers: shared hit=60
+  ->  Result  (cost=0.00..0.02 rows=1 width=274) (actual time=0.023..0.024 rows=1 loops=1)
+        Buffers: shared hit=12
+Planning Time: 0.019 ms
+Trigger for constraint flags_match_id_fkey: time=0.140 calls=1
+Trigger for constraint flags_profile_id_fkey: time=0.067 calls=1
+Execution Time: 0.378 ms

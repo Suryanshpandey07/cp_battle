@@ -1,0 +1,145 @@
+Q25 · READ · Leaderboard, this week: rating gained in matches that ended in the last 7 days
+App: api/players.py:211-232 (reads the week's matches, three columns, through
+ix_matches_finished_end_time and sums result.sides[n].delta per player in
+Python); here each match is split into its two sides with a LATERAL VALUES
+list and joined to profiles.
+
+SELECT row_number() OVER (ORDER BY sum(x.delta) DESC, lower(p.display_name)) AS rank,
+       p.id AS profile_id, p.display_name AS name, p.rating,
+       sum(x.delta) AS score, p.wins, p.losses
+FROM matches m
+CROSS JOIN LATERAL (VALUES (m.player1_profile_id, (m.result -> 'sides' -> '1' ->> 'delta')::int),
+                           (m.player2_profile_id, (m.result -> 'sides' -> '2' ->> 'delta')::int)) AS x (profile_id, delta)
+JOIN profiles p ON p.id = x.profile_id AND NOT p.is_bot AND p.user_id IS NOT NULL
+WHERE m.status = 'finished'
+  AND m.end_time >= timestamp '2026-11-16 12:00'
+  AND x.delta IS NOT NULL
+GROUP BY p.id
+ORDER BY rank
+LIMIT 100;
+
+---- Run 1: execution 161.641 ms, planning 0.458 ms ----
+Limit  (cost=23807.43..23807.68 rows=100 width=76) (actual time=161.490..161.512 rows=100 loops=1)
+  Buffers: shared hit=20751 read=20038 dirtied=1
+  ->  Sort  (cost=23807.43..23836.73 rows=11720 width=76) (actual time=161.488..161.500 rows=100 loops=1)
+        Sort Key: (row_number() OVER (?))
+        Sort Method: top-N heapsort  Memory: 38kB
+        Buffers: shared hit=20751 read=20038 dirtied=1
+        ->  WindowAgg  (cost=23095.80..23359.50 rows=11720 width=76) (actual time=157.718..160.093 rows=6917 loops=1)
+              Buffers: shared hit=20748 read=20038 dirtied=1
+              ->  Sort  (cost=23095.80..23125.10 rows=11720 width=68) (actual time=157.708..158.312 rows=6917 loops=1)
+                    Sort Key: (sum("*VALUES*".column2)) DESC, (lower((p.display_name)::text))
+                    Sort Method: quicksort  Memory: 732kB
+                    Buffers: shared hit=20748 read=20038 dirtied=1
+                    ->  HashAggregate  (cost=22157.23..22303.73 rows=11720 width=68) (actual time=149.121..152.927 rows=6917 loops=1)
+                          Group Key: p.id
+                          Batches: 1  Memory Usage: 1425kB
+                          Buffers: shared hit=20748 read=20038 dirtied=1
+                          ->  Nested Loop  (cost=0.30..22098.63 rows=11720 width=32) (actual time=54.029..143.302 rows=9224 loops=1)
+                                Buffers: shared hit=20748 read=20038 dirtied=1
+                                ->  Nested Loop  (cost=0.00..21780.58 rows=11726 width=8) (actual time=53.949..110.689 rows=11518 loops=1)
+                                      Buffers: shared hit=85 read=19931
+                                      ->  Seq Scan on matches m  (cost=0.00..21516.75 rows=5863 width=234) (actual time=53.898..58.706 rows=5759 loops=1)
+                                            Filter: ((end_time >= '2026-11-16 12:00:00'::timestamp without time zone) AND ((status)::text = 'finished'::text))
+                                            Rows Removed by Filter: 94291
+                                            Buffers: shared hit=85 read=19931
+                                      ->  Values Scan on "*VALUES*"  (cost=0.00..0.03 rows=2 width=8) (actual time=0.004..0.008 rows=2 loops=5759)
+                                            Filter: (column2 IS NOT NULL)
+                                ->  Memoize  (cost=0.30..8.31 rows=1 width=28) (actual time=0.002..0.002 rows=1 loops=11518)
+                                      Cache Key: "*VALUES*".column1
+                                      Cache Mode: logical
+                                      Hits: 4596  Misses: 6922  Evictions: 0  Overflows: 0  Memory Usage: 877kB
+                                      Buffers: shared hit=20663 read=107 dirtied=1
+                                      ->  Index Scan using profiles_pkey on profiles p  (cost=0.29..8.30 rows=1 width=28) (actual time=0.003..0.003 rows=1 loops=6922)
+                                            Index Cond: (id = "*VALUES*".column1)
+                                            Filter: ((NOT is_bot) AND (user_id IS NOT NULL))
+                                            Rows Removed by Filter: 0
+                                            Buffers: shared hit=20661 read=107
+Planning:
+  Buffers: shared hit=116 read=1
+Planning Time: 0.458 ms
+Execution Time: 161.641 ms
+
+---- Run 2: execution 148.678 ms, planning 0.506 ms ----
+Limit  (cost=23807.43..23807.68 rows=100 width=76) (actual time=148.508..148.541 rows=100 loops=1)
+  Buffers: shared hit=21042 read=19747
+  ->  Sort  (cost=23807.43..23836.73 rows=11720 width=76) (actual time=148.507..148.523 rows=100 loops=1)
+        Sort Key: (row_number() OVER (?))
+        Sort Method: top-N heapsort  Memory: 38kB
+        Buffers: shared hit=21042 read=19747
+        ->  WindowAgg  (cost=23095.80..23359.50 rows=11720 width=76) (actual time=143.582..146.767 rows=6917 loops=1)
+              Buffers: shared hit=21039 read=19747
+              ->  Sort  (cost=23095.80..23125.10 rows=11720 width=68) (actual time=143.564..144.513 rows=6917 loops=1)
+                    Sort Key: (sum("*VALUES*".column2)) DESC, (lower((p.display_name)::text))
+                    Sort Method: quicksort  Memory: 732kB
+                    Buffers: shared hit=21039 read=19747
+                    ->  HashAggregate  (cost=22157.23..22303.73 rows=11720 width=68) (actual time=133.067..137.120 rows=6917 loops=1)
+                          Group Key: p.id
+                          Batches: 1  Memory Usage: 1425kB
+                          Buffers: shared hit=21039 read=19747
+                          ->  Nested Loop  (cost=0.30..22098.63 rows=11720 width=32) (actual time=49.270..126.740 rows=9224 loops=1)
+                                Buffers: shared hit=21039 read=19747
+                                ->  Nested Loop  (cost=0.00..21780.58 rows=11726 width=8) (actual time=49.189..99.289 rows=11518 loops=1)
+                                      Buffers: shared hit=269 read=19747
+                                      ->  Seq Scan on matches m  (cost=0.00..21516.75 rows=5863 width=234) (actual time=49.137..53.606 rows=5759 loops=1)
+                                            Filter: ((end_time >= '2026-11-16 12:00:00'::timestamp without time zone) AND ((status)::text = 'finished'::text))
+                                            Rows Removed by Filter: 94291
+                                            Buffers: shared hit=269 read=19747
+                                      ->  Values Scan on "*VALUES*"  (cost=0.00..0.03 rows=2 width=8) (actual time=0.004..0.007 rows=2 loops=5759)
+                                            Filter: (column2 IS NOT NULL)
+                                ->  Memoize  (cost=0.30..8.31 rows=1 width=28) (actual time=0.002..0.002 rows=1 loops=11518)
+                                      Cache Key: "*VALUES*".column1
+                                      Cache Mode: logical
+                                      Hits: 4596  Misses: 6922  Evictions: 0  Overflows: 0  Memory Usage: 877kB
+                                      Buffers: shared hit=20770
+                                      ->  Index Scan using profiles_pkey on profiles p  (cost=0.29..8.30 rows=1 width=28) (actual time=0.002..0.002 rows=1 loops=6922)
+                                            Index Cond: (id = "*VALUES*".column1)
+                                            Filter: ((NOT is_bot) AND (user_id IS NOT NULL))
+                                            Rows Removed by Filter: 0
+                                            Buffers: shared hit=20768
+Planning:
+  Buffers: shared hit=117
+Planning Time: 0.506 ms
+Execution Time: 148.678 ms
+
+---- Run 3: execution 147.985 ms, planning 0.785 ms ----
+Limit  (cost=23807.43..23807.68 rows=100 width=76) (actual time=147.760..147.779 rows=100 loops=1)
+  Buffers: shared hit=21202 read=19587
+  ->  Sort  (cost=23807.43..23836.73 rows=11720 width=76) (actual time=147.758..147.768 rows=100 loops=1)
+        Sort Key: (row_number() OVER (?))
+        Sort Method: top-N heapsort  Memory: 38kB
+        Buffers: shared hit=21202 read=19587
+        ->  WindowAgg  (cost=23095.80..23359.50 rows=11720 width=76) (actual time=145.302..146.695 rows=6917 loops=1)
+              Buffers: shared hit=21199 read=19587
+              ->  Sort  (cost=23095.80..23125.10 rows=11720 width=68) (actual time=145.291..145.597 rows=6917 loops=1)
+                    Sort Key: (sum("*VALUES*".column2)) DESC, (lower((p.display_name)::text))
+                    Sort Method: quicksort  Memory: 732kB
+                    Buffers: shared hit=21199 read=19587
+                    ->  HashAggregate  (cost=22157.23..22303.73 rows=11720 width=68) (actual time=138.123..140.746 rows=6917 loops=1)
+                          Group Key: p.id
+                          Batches: 1  Memory Usage: 1425kB
+                          Buffers: shared hit=21199 read=19587
+                          ->  Nested Loop  (cost=0.30..22098.63 rows=11720 width=32) (actual time=48.255..133.018 rows=9224 loops=1)
+                                Buffers: shared hit=21199 read=19587
+                                ->  Nested Loop  (cost=0.00..21780.58 rows=11726 width=8) (actual time=48.172..103.260 rows=11518 loops=1)
+                                      Buffers: shared hit=429 read=19587
+                                      ->  Seq Scan on matches m  (cost=0.00..21516.75 rows=5863 width=234) (actual time=48.133..52.981 rows=5759 loops=1)
+                                            Filter: ((end_time >= '2026-11-16 12:00:00'::timestamp without time zone) AND ((status)::text = 'finished'::text))
+                                            Rows Removed by Filter: 94291
+                                            Buffers: shared hit=429 read=19587
+                                      ->  Values Scan on "*VALUES*"  (cost=0.00..0.03 rows=2 width=8) (actual time=0.004..0.008 rows=2 loops=5759)
+                                            Filter: (column2 IS NOT NULL)
+                                ->  Memoize  (cost=0.30..8.31 rows=1 width=28) (actual time=0.002..0.002 rows=1 loops=11518)
+                                      Cache Key: "*VALUES*".column1
+                                      Cache Mode: logical
+                                      Hits: 4596  Misses: 6922  Evictions: 0  Overflows: 0  Memory Usage: 877kB
+                                      Buffers: shared hit=20770
+                                      ->  Index Scan using profiles_pkey on profiles p  (cost=0.29..8.30 rows=1 width=28) (actual time=0.003..0.003 rows=1 loops=6922)
+                                            Index Cond: (id = "*VALUES*".column1)
+                                            Filter: ((NOT is_bot) AND (user_id IS NOT NULL))
+                                            Rows Removed by Filter: 0
+                                            Buffers: shared hit=20768
+Planning:
+  Buffers: shared hit=117
+Planning Time: 0.785 ms
+Execution Time: 147.985 ms

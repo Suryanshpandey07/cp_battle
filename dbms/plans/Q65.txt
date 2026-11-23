@@ -1,0 +1,49 @@
+Q65 · READ · Admin: the latest 200 flags
+App: api/admin.py:100
+
+SELECT id, match_id, profile_id, kind, severity, details, status, created_at
+FROM flags
+ORDER BY created_at DESC
+LIMIT 200;
+
+---- Run 1: execution 0.734 ms, planning 0.119 ms ----
+Limit  (cost=140.44..140.94 rows=200 width=95) (actual time=0.689..0.716 rows=200 loops=1)
+  Buffers: shared hit=1 read=33 dirtied=1
+  ->  Sort  (cost=140.44..145.44 rows=2000 width=95) (actual time=0.687..0.698 rows=200 loops=1)
+        Sort Key: created_at DESC
+        Sort Method: top-N heapsort  Memory: 69kB
+        Buffers: shared hit=1 read=33 dirtied=1
+        ->  Seq Scan on flags  (cost=0.00..54.00 rows=2000 width=95) (actual time=0.014..0.370 rows=2001 loops=1)
+              Buffers: shared hit=1 read=33 dirtied=1
+Planning:
+  Buffers: shared hit=25 read=3
+Planning Time: 0.119 ms
+Execution Time: 0.734 ms
+
+---- Run 2: execution 0.657 ms, planning 0.136 ms ----
+Limit  (cost=140.44..140.94 rows=200 width=95) (actual time=0.607..0.636 rows=200 loops=1)
+  Buffers: shared hit=34
+  ->  Sort  (cost=140.44..145.44 rows=2000 width=95) (actual time=0.606..0.618 rows=200 loops=1)
+        Sort Key: created_at DESC
+        Sort Method: top-N heapsort  Memory: 69kB
+        Buffers: shared hit=34
+        ->  Seq Scan on flags  (cost=0.00..54.00 rows=2000 width=95) (actual time=0.008..0.269 rows=2001 loops=1)
+              Buffers: shared hit=34
+Planning:
+  Buffers: shared hit=28
+Planning Time: 0.136 ms
+Execution Time: 0.657 ms
+
+---- Run 3: execution 0.454 ms, planning 0.081 ms ----
+Limit  (cost=140.44..140.94 rows=200 width=95) (actual time=0.418..0.441 rows=200 loops=1)
+  Buffers: shared hit=34
+  ->  Sort  (cost=140.44..145.44 rows=2000 width=95) (actual time=0.418..0.426 rows=200 loops=1)
+        Sort Key: created_at DESC
+        Sort Method: top-N heapsort  Memory: 69kB
+        Buffers: shared hit=34
+        ->  Seq Scan on flags  (cost=0.00..54.00 rows=2000 width=95) (actual time=0.005..0.142 rows=2001 loops=1)
+              Buffers: shared hit=34
+Planning:
+  Buffers: shared hit=28
+Planning Time: 0.081 ms
+Execution Time: 0.454 ms
