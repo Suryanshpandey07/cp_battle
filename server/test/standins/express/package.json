@@ -1,8 +1,0 @@
-{
-  "name": "express",
-  "version": "0.0.0-standin",
-  "description": "A small stand-in for Express 5, only for running the tests where npm cannot reach the registry. Real installs use express from npm.",
-  "type": "module",
-  "main": "index.js",
-  "exports": "./index.js"
-}
