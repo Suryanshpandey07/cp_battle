@@ -1,0 +1,105 @@
+// Write prisma/migrations/20261123000000_init/migration.sql from schema.prisma,
+// in the form `prisma migrate dev` produces, plus the five partial and
+// expression indexes Prisma's schema language cannot describe.
+//
+//     node scripts/migration-sql.js           write the file
+//     node scripts/migration-sql.js --check   fail if the committed file is stale
+
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { readSchema } from '../src/db/prisma-schema.js';
+
+const OUT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'prisma', 'migrations', '20261123000000_init', 'migration.sql');
+
+export const EXTRA_INDEXES = `-- Indexes Prisma's schema language cannot express (partial and expression
+-- indexes). The WHERE clauses repeat the app's own filters, so the planner can
+-- prove a query is covered. See dbms/05_query_timings.md.
+
+-- all-time leaderboard in order, and "how many rate higher"
+CREATE INDEX "ix_profiles_ladder" ON "profiles"("rating" DESC, lower("display_name")) WHERE "is_bot" = false AND "user_id" IS NOT NULL;
+
+-- profile pages find a player by name, ignoring case
+CREATE INDEX "ix_profiles_display_name_lower" ON "profiles"(lower("display_name"));
+
+-- matchmaking and the seed find a bot by personality
+CREATE INDEX "ix_profiles_bot_personality" ON "profiles"("personality") WHERE "is_bot" = true;
+
+-- weekly leaderboard: matches that finished since a date
+CREATE INDEX "ix_matches_finished_end_time" ON "matches"("end_time") WHERE "status" = 'finished';
+
+-- map leaderboard: wins on one map, answered from the index alone
+CREATE INDEX "ix_matches_map_winners" ON "matches"("map") INCLUDE ("winner_side", "player1_profile_id", "player2_profile_id") WHERE "status" = 'finished' AND "winner_side" IS NOT NULL;
+`;
+
+function columnType(f) {
+  if (f.default && f.default.auto) return 'SERIAL';
+  if (f.db) {
+    if (f.db.type === 'VarChar') return f.db.arg ? `VARCHAR(${f.db.arg})` : 'VARCHAR';
+    if (f.db.type === 'Timestamp') return `TIMESTAMP(${f.db.arg ?? 3})`;
+    if (f.db.type === 'Json') return 'JSON';
+  }
+  return { Int: 'INTEGER', String: 'TEXT', Boolean: 'BOOLEAN', DateTime: 'TIMESTAMP(3)', Json: 'JSONB', Float: 'DOUBLE PRECISION' }[f.type];
+}
+
+function defaultSql(f) {
+  if (!f.default || f.default.auto) return '';
+  if (f.default.now) return ' DEFAULT CURRENT_TIMESTAMP';
+  const v = f.default.value;
+  if (typeof v === 'string') return ` DEFAULT '${v.replace(/'/g, "''")}'`;
+  return ` DEFAULT ${v}`;
+}
+
+export function render() {
+  const models = readSchema();
+  const out = [];
+  for (const m of Object.values(models)) {
+    out.push('-- CreateTable');
+    const cols = m.order.filter((n) => m.fields[n].scalar).map((n) => {
+      const f = m.fields[n];
+      return `    "${n}" ${columnType(f)}${f.optional ? '' : ' NOT NULL'}${defaultSql(f)},`;
+    });
+    cols.push(`    CONSTRAINT "${m.table}_pkey" PRIMARY KEY ("${m.id}")`);
+    out.push(`CREATE TABLE "${m.table}" (\n${cols.join('\n')}\n);\n`);
+  }
+  for (const m of Object.values(models)) {
+    for (const ix of m.indexes) {
+      const name = ix.map || `${m.table}_${ix.fields.join('_')}_idx`;
+      out.push('-- CreateIndex');
+      out.push(`CREATE INDEX "${name}" ON "${m.table}"(${ix.fields.map((c) => `"${c}"`).join(', ')});\n`);
+    }
+    for (const u of m.uniques) {
+      const name = u.map || `${m.table}_${u.fields.join('_')}_key`;
+      out.push('-- CreateIndex');
+      out.push(`CREATE UNIQUE INDEX "${name}" ON "${m.table}"(${u.fields.map((c) => `"${c}"`).join(', ')});\n`);
+    }
+  }
+  for (const m of Object.values(models)) {
+    for (const f of Object.values(m.fields)) {
+      if (!f.relation || !f.relation.fields) continue;
+      const target = models[f.type];
+      const on = (k) => ({ NoAction: 'NO ACTION', Cascade: 'CASCADE', Restrict: 'RESTRICT', SetNull: 'SET NULL' }[f.relation[k]] || 'NO ACTION');
+      out.push('-- AddForeignKey');
+      out.push(`ALTER TABLE "${m.table}" ADD CONSTRAINT "${m.table}_${f.relation.fields.join('_')}_fkey" FOREIGN KEY (${f.relation.fields.map((c) => `"${c}"`).join(', ')}) REFERENCES "${target.table}"(${f.relation.references.map((c) => `"${c}"`).join(', ')}) ON DELETE ${on('onDelete')} ON UPDATE ${on('onUpdate')};\n`);
+    }
+  }
+  out.push(EXTRA_INDEXES);
+  return out.join('\n');
+}
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  const text = render();
+  if (process.argv.includes('--check')) {
+    if (!fs.existsSync(OUT) || fs.readFileSync(OUT, 'utf8') !== text) {
+      console.error('prisma/migrations/.../migration.sql is stale: run node scripts/migration-sql.js');
+      process.exit(1);
+    }
+    console.log('migration.sql matches schema.prisma');
+  } else {
+    fs.mkdirSync(path.dirname(OUT), { recursive: true });
+    fs.writeFileSync(OUT, text);
+    fs.writeFileSync(path.join(path.dirname(OUT), '..', 'migration_lock.toml'),
+      '# Please do not edit this file manually\n# It should be added in your version-control system (e.g., Git)\nprovider = "postgresql"\n');
+    console.log(`wrote ${path.relative(process.cwd(), OUT)}`);
+  }
+}

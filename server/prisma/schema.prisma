@@ -1,0 +1,363 @@
+// AlgoArena's database: the same 17 tables, columns and keys the Python backend
+// used (see dbms/03_schema.sql), so dbms/04_queries.sql and the timings still apply.
+// Field names stay snake_case to match the columns and the JSON the API sends.
+//
+// Five partial and expression indexes cannot be written in Prisma's schema
+// language; they are created by the SQL of the init migration
+// (prisma/migrations/20261123000000_init/migration.sql, the end of the file).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int            @id @default(autoincrement())
+  username        String         @db.VarChar(20)
+  username_lower  String         @unique(map: "ix_users_username_lower") @db.VarChar(20)
+  password_hash   String
+  role            String         @default("player") @db.VarChar(16)
+  suspended_until DateTime?      @db.Timestamp(6)
+  created_at      DateTime       @default(now()) @db.Timestamp(6)
+  refresh_tokens  RefreshToken[]
+  profile         Profile?
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id         Int       @id @default(autoincrement())
+  user_id    Int
+  token_hash String    @unique(map: "ix_refresh_tokens_token_hash") @db.VarChar(64)
+  expires_at DateTime  @db.Timestamp(6)
+  revoked_at DateTime? @db.Timestamp(6)
+  created_at DateTime  @default(now()) @db.Timestamp(6)
+  user       User      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([user_id], map: "ix_refresh_tokens_user_id")
+  @@map("refresh_tokens")
+}
+
+model Profile {
+  id              Int             @id @default(autoincrement())
+  user_id         Int?            @unique
+  display_name    String          @db.VarChar(32)
+  rating          Int             @default(1200)
+  peak_rating     Int             @default(1200)
+  wins            Int             @default(0)
+  losses          Int             @default(0)
+  draws           Int             @default(0)
+  points          Int             @default(0)
+  equipped_card   String          @default("card.classic") @db.VarChar(48)
+  equipped_avatar String          @default("bean.plain") @db.VarChar(48)
+  equipped_arena  String?         @db.VarChar(48)
+  equipped_weapon String          @default("weapon.fireball") @db.VarChar(48)
+  avatar_color    String          @default("#3b82f6") @db.VarChar(9)
+  settings        Json?           @default("{}") @db.Json
+  is_bot          Boolean         @default(false)
+  personality     String?         @db.VarChar(16)
+  bot_gain_today  Int             @default(0)
+  casual_ap_today Int             @default(0)
+  daily_day       String          @default("") @db.VarChar(10)
+  last_win_day    String          @default("") @db.VarChar(10)
+  no_show_strikes Int             @default(0)
+  queue_ban_until DateTime?       @db.Timestamp(6)
+  counters        Json?           @default("{}") @db.Json
+  badges          Json?           @default("[]") @db.Json
+  created_at      DateTime        @default(now()) @db.Timestamp(6)
+  user            User?           @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  inventory       Inventory[]
+  rating_history  RatingHistory[]
+
+  @@index([display_name], map: "ix_profiles_display_name")
+  @@map("profiles")
+}
+
+model Problem {
+  id                 Int        @id @default(autoincrement())
+  slug               String     @unique(map: "ix_problems_slug") @db.VarChar(64)
+  title              String     @db.VarChar(120)
+  statement_md       String?
+  input_md           String?
+  output_md          String?
+  constraints_md     String?
+  biome              String     @db.VarChar(24)
+  rating             Int
+  tier               Int
+  base_damage        Int
+  base_recoil        Int
+  time_limit_ms      Int        @default(2000)
+  memory_mb          Int        @default(256)
+  checker            String     @default("exact") @db.VarChar(24)
+  checker_script     String?
+  tags               Json?      @default("[]") @db.Json
+  hints              Json?      @default("[]") @db.Json
+  stubs              Json?      @default("{}") @db.Json
+  reference_solution String?
+  status             String     @default("published") @db.VarChar(16)
+  test_cases         TestCase[]
+
+  @@index([biome], map: "ix_problems_biome")
+  @@index([tier], map: "ix_problems_tier")
+  @@map("problems")
+}
+
+model TestCase {
+  id            Int     @id @default(autoincrement())
+  problem_id    Int
+  idx           Int
+  input_text    String?
+  expected_text String?
+  is_sample     Boolean @default(false)
+  problem       Problem @relation(fields: [problem_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([problem_id, idx])
+  @@index([problem_id], map: "ix_test_cases_problem_id")
+  @@map("test_cases")
+}
+
+/// One row per match; the two sides are the player1_* and player2_* columns.
+model Match {
+  id                      String       @id @db.VarChar(36)
+  mode                    String       @db.VarChar(16)
+  map                     String       @db.VarChar(16)
+  status                  String       @default("starting") @db.VarChar(16)
+  seed                    Int
+  stage_theme             String       @default("arena.bit") @db.VarChar(48)
+  stage_owner_side        Int?
+  created_at              DateTime     @default(now()) @db.Timestamp(6)
+  start_time              DateTime?    @db.Timestamp(6)
+  end_time                DateTime?    @db.Timestamp(6)
+  elapsed_ms              Int          @default(0)
+  end_reason              String?      @db.VarChar(16)
+  outcome                 String?      @db.VarChar(16)
+  winner_side             Int?
+  labels                  Json?        @default("{}") @db.Json
+  result                  Json?        @default("{}") @db.Json
+  decks                   Json?        @default("{}") @db.Json
+  last_seq                Int          @default(0)
+  player1_profile_id      Int
+  player1_name            String       @default("")
+  player1_rating          Int          @default(0)
+  player1_tier            Int          @default(1)
+  player1_max_hp          Int          @default(0)
+  player1_hp              Int          @default(0)
+  player1_damage_dealt    Int          @default(0)
+  player1_hits_landed     Int          @default(0)
+  player1_skins           Json?        @default("{}") @db.Json
+  player1_is_bot          Boolean      @default(false)
+  player1_blocks_left     Int          @default(0)
+  player1_hints_left      Int          @default(0)
+  player1_shield_until_ms Int?
+  player1_rerolls_left    Int          @default(0)
+  player1_last_reroll_ms  Int?
+  player1_hand            Json?        @default("{}") @db.Json
+  player1_hints_revealed  Json?        @default("{}") @db.Json
+  player1_stats           Json?        @default("{}") @db.Json
+  player1_connected       Boolean      @default(false)
+  player2_profile_id      Int
+  player2_name            String       @default("")
+  player2_rating          Int          @default(0)
+  player2_tier            Int          @default(1)
+  player2_max_hp          Int          @default(0)
+  player2_hp              Int          @default(0)
+  player2_damage_dealt    Int          @default(0)
+  player2_hits_landed     Int          @default(0)
+  player2_skins           Json?        @default("{}") @db.Json
+  player2_is_bot          Boolean      @default(false)
+  player2_blocks_left     Int          @default(0)
+  player2_hints_left      Int          @default(0)
+  player2_shield_until_ms Int?
+  player2_rerolls_left    Int          @default(0)
+  player2_last_reroll_ms  Int?
+  player2_hand            Json?        @default("{}") @db.Json
+  player2_hints_revealed  Json?        @default("{}") @db.Json
+  player2_stats           Json?        @default("{}") @db.Json
+  player2_connected       Boolean      @default(false)
+  submissions             Submission[]
+  events                  MatchEvent[]
+
+  @@index([mode], map: "ix_matches_mode")
+  @@index([status], map: "ix_matches_status")
+  @@index([player1_profile_id], map: "ix_matches_player1_profile_id")
+  @@index([player2_profile_id], map: "ix_matches_player2_profile_id")
+  @@index([created_at], map: "ix_matches_created_at")
+  @@map("matches")
+}
+
+model Submission {
+  id           Int      @id @default(autoincrement())
+  match_id     String   @db.VarChar(36)
+  profile_id   Int
+  problem_id   Int
+  slot         Int
+  language     String   @db.VarChar(16)
+  code         String?
+  cmd_id       String   @db.VarChar(64)
+  status       String   @default("judging") @db.VarChar(16)
+  verdict      String?  @db.VarChar(8)
+  failed_test  Int?
+  tests_passed Int      @default(0)
+  tests_total  Int      @default(0)
+  time_ms      Int      @default(0)
+  memory_kb    Int      @default(0)
+  damage       Int      @default(0)
+  recoil       Int      @default(0)
+  blocked      Boolean  @default(false)
+  crit         Boolean  @default(false)
+  is_bot       Boolean  @default(false)
+  created_at   DateTime @default(now()) @db.Timestamp(6)
+  match        Match    @relation(fields: [match_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([profile_id, cmd_id])
+  @@index([match_id], map: "ix_submissions_match_id")
+  @@index([profile_id], map: "ix_submissions_profile_id")
+  @@map("submissions")
+}
+
+/// The append-only event log of a match; it can rebuild any match.
+model MatchEvent {
+  id         Int    @id @default(autoincrement())
+  match_id   String @db.VarChar(36)
+  seq        Int
+  t_ms       Int
+  type       String @db.VarChar(40)
+  payload    Json?  @default("{}") @db.Json
+  visibility String @default("both") @db.VarChar(10)
+  match      Match  @relation(fields: [match_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([match_id, seq])
+  @@index([match_id], map: "ix_match_events_match_id")
+  @@map("match_events")
+}
+
+model Draft {
+  id           Int      @id @default(autoincrement())
+  match_id     String   @db.VarChar(36)
+  profile_id   Int
+  slot         Int
+  language     String   @db.VarChar(16)
+  code         String?
+  problem_slug String   @default("") @db.VarChar(64)
+  updated_at   DateTime @default(now()) @db.Timestamp(6)
+
+  @@unique([match_id, profile_id, slot, language])
+  @@index([match_id], map: "ix_drafts_match_id")
+  @@index([profile_id], map: "ix_drafts_profile_id")
+  @@map("drafts")
+}
+
+model Inventory {
+  id          Int      @id @default(autoincrement())
+  profile_id  Int
+  skin_id     String   @db.VarChar(48)
+  acquired_at DateTime @default(now()) @db.Timestamp(6)
+  source      String   @default("default") @db.VarChar(16)
+  profile     Profile  @relation(fields: [profile_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([profile_id, skin_id])
+  @@index([profile_id], map: "ix_inventory_profile_id")
+  @@map("inventory")
+}
+
+model Purchase {
+  id         Int      @id @default(autoincrement())
+  profile_id Int
+  skin_id    String   @db.VarChar(48)
+  idem_key   String   @db.VarChar(64)
+  price      Int
+  created_at DateTime @default(now()) @db.Timestamp(6)
+
+  @@unique([profile_id, idem_key])
+  @@index([profile_id], map: "ix_purchases_profile_id")
+  @@map("purchases")
+}
+
+model RatingHistory {
+  id         Int      @id @default(autoincrement())
+  profile_id Int
+  match_id   String   @db.VarChar(36)
+  before     Int
+  after      Int
+  delta      Int
+  steps      Json?    @default("[]") @db.Json
+  multiplier Int      @default(100)
+  voided     Boolean  @default(false)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  profile    Profile  @relation(fields: [profile_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([profile_id], map: "ix_rating_history_profile_id")
+  @@index([match_id], map: "ix_rating_history_match_id")
+  @@index([profile_id, created_at], map: "ix_rating_history_profile_created")
+  @@map("rating_history")
+}
+
+model QuestProgress {
+  id         Int       @id @default(autoincrement())
+  profile_id Int
+  day        String    @db.VarChar(10)
+  key        String    @db.VarChar(32)
+  progress   Int       @default(0)
+  target     Int       @default(1)
+  earned_at  DateTime? @db.Timestamp(6)
+  claimed_at DateTime? @db.Timestamp(6)
+
+  @@unique([profile_id, day, key])
+  @@index([profile_id], map: "ix_quest_progress_profile_id")
+  @@map("quest_progress")
+}
+
+model Achievement {
+  id         Int       @id @default(autoincrement())
+  profile_id Int
+  key        String    @db.VarChar(32)
+  progress   Int       @default(0)
+  earned_at  DateTime? @db.Timestamp(6)
+  claimed_at DateTime? @db.Timestamp(6)
+
+  @@unique([profile_id, key])
+  @@index([profile_id], map: "ix_achievements_profile_id")
+  @@map("achievements")
+}
+
+model Flag {
+  id         Int      @id @default(autoincrement())
+  match_id   String?  @db.VarChar(36)
+  profile_id Int?
+  kind       String   @db.VarChar(32)
+  severity   Int      @default(1)
+  details    Json?    @default("{}") @db.Json
+  status     String   @default("open") @db.VarChar(16)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+
+  @@index([match_id], map: "ix_flags_match_id")
+  @@index([profile_id], map: "ix_flags_profile_id")
+  @@map("flags")
+}
+
+model AuditLog {
+  id         Int      @id @default(autoincrement())
+  actor_id   Int?
+  action     String   @db.VarChar(48)
+  target     String   @default("") @db.VarChar(64)
+  details    Json?    @default("{}") @db.Json
+  created_at DateTime @default(now()) @db.Timestamp(6)
+
+  @@map("audit_log")
+}
+
+model Report {
+  id                Int      @id @default(autoincrement())
+  reporter_id       Int
+  match_id          String?  @db.VarChar(36)
+  target_profile_id Int?
+  reason            String   @db.VarChar(500)
+  created_at        DateTime @default(now()) @db.Timestamp(6)
+
+  @@index([reporter_id], map: "ix_reports_reporter_id")
+  @@map("reports")
+}

@@ -1,0 +1,72 @@
+{
+ "slug": "stair-ways",
+ "title": "Stair Ways",
+ "biome": "general",
+ "rating": 800,
+ "statement_md": "A fighter climbs a staircase of $n$ steps, taking either 1 or 2 steps at a time. In how many different ways can they reach the top? Print the answer modulo $1\\,000\\,000\\,007$.",
+ "input_md": "One integer $n$.",
+ "output_md": "Print the number of ways modulo $10^9 + 7$.",
+ "constraints_md": "- $1 \\le n \\le 10^6$",
+ "tags": [
+  "dynamic programming"
+ ],
+ "hints": [
+  "Pattern: dynamic programming over the step number.",
+  "The last move was a 1-step or a 2-step, so ways(n) = ways(n-1) + ways(n-2).",
+  "a, b = 1, 1\nfor _ in range(n - 1):\n    a, b = b, (a + b) % MOD\nprint(b)"
+ ],
+ "stubs": {
+  "python": "import sys\ninput = sys.stdin.readline\n\n\nMOD = 10**9 + 7\n\n\ndef main():\n    n = int(input())\n    # your code here\n\n\nmain()\n"
+ },
+ "time_limit_ms": 2000,
+ "memory_mb": 256,
+ "checker": "exact",
+ "reference_solution": "MOD = 10**9 + 7\n\n\ndef main():\n    n = int(input())\n    a, b = 1, 1\n    for _ in range(n - 1):\n        a, b = b, (a + b) % MOD\n    print(b)\n\n\nmain()\n",
+ "tests": [
+  {
+   "input": "2\n",
+   "expected": "2\n",
+   "is_sample": true
+  },
+  {
+   "input": "3\n",
+   "expected": "3\n",
+   "is_sample": true
+  },
+  {
+   "input": "5\n",
+   "expected": "8\n",
+   "is_sample": true
+  },
+  {
+   "input": "1\n",
+   "expected": "1\n",
+   "is_sample": false
+  },
+  {
+   "input": "2\n",
+   "expected": "2\n",
+   "is_sample": false
+  },
+  {
+   "input": "44\n",
+   "expected": "134903163\n",
+   "is_sample": false
+  },
+  {
+   "input": "1000\n",
+   "expected": "107579939\n",
+   "is_sample": false
+  },
+  {
+   "input": "999999\n",
+   "expected": "918091266\n",
+   "is_sample": false
+  },
+  {
+   "input": "1000000\n",
+   "expected": "534400663\n",
+   "is_sample": false
+  }
+ ]
+}
