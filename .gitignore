@@ -1,13 +1,25 @@
 # Node
 node_modules/
+**/node_modules/
 frontend/dist/
 e2e/test-results/
 e2e/playwright-report/
-# Reference solutions are run with python3
+
+# Python
+venv/
+**/venv/
 __pycache__/
+**/__pycache__/
 *.pyc
-# Local
+
+# Reference solutions are run with python3
+
+# Local and environment files
 .env
+**/.env
+**/.env.*
+!**/.env.example
+
 .transfer/
 _to_delete/
 .DS_Store
